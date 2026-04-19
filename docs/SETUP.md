@@ -16,7 +16,7 @@ Pastikan tools berikut sudah terinstall:
 - **PostgreSQL** 15 atau lebih baru
 - **Git**
 
-> 💡 **Disarankan menggunakan WSL2 (Ubuntu)** untuk konsistensi environment dengan tim.
+
 
 ---
 
