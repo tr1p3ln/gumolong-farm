@@ -211,7 +211,7 @@ php artisan view:clear
 
 | Masalah | Solusi |
 |---|---|
-| `php artisan serve` error path WSL/Windows | Jalankan dari **terminal WSL** (bukan PowerShell), pastikan PHP terinstall di WSL |
+| `php artisan serve` error path WSL/Windows | Jalankan dari **Path Project** , pastikan PHP terinstall |
 | Migration gagal `connection refused` | Cek `sudo service postgresql status` — pastikan running |
 | Migration gagal `password authentication failed` | Cek `DB_USERNAME` & `DB_PASSWORD` di `.env` sesuai user PostgreSQL |
 | Migration gagal `database "gumolong_db" does not exist` | Jalankan dulu SQL init di section [Database Setup](#-database-setup-postgresql) |
@@ -258,14 +258,9 @@ php artisan view:clear
 
 ---
 
-## 📚 Dokumentasi Tambahan
+## 📚 Dokumentasi 
 
-- **Functional Requirements:** `docs/FR.pdf`
-- **Use Case Diagram:** `docs/use_case.puml`
-- **BPMN:** `docs/bpmn/`
-- **ERD:** `database/erd_gumolong_v2.dbml`
-- **Lo-fi Wireframes:** `docs/wireframes/`
-- **Hi-fi Designs:** Stitch project link (lihat di docs)
+- **SEMUA ADA DI GRUP ^_^** 
 
 ---
 
