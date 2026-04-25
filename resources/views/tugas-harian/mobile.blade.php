@@ -48,10 +48,29 @@
                 </p>
             </div>
         </div>
-        <a href="{{ route('tugas-harian.index') }}"
-           class="text-white/70 hover:text-white text-xs font-bold transition-colors">
-            ← Web Admin
-        </a>
+        <div class="flex items-center gap-3">
+            {{-- Web Admin shortcut — hidden for Pengurus Kandang (no web access) --}}
+            @if(auth()->user()->role !== 'pengurus_kandang')
+                <a href="{{ route('tugas-harian.index') }}"
+                   class="text-white/70 hover:text-white text-xs font-bold transition-colors">
+                    ← Web
+                </a>
+            @endif
+
+            {{-- Logout --}}
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit"
+                        class="flex items-center gap-1.5 text-white/70 hover:text-white
+                               text-xs font-bold transition-colors">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    Keluar
+                </button>
+            </form>
+        </div>
     </div>
 
     <h1 class="text-2xl font-black tracking-tight">Tugas Hari Ini</h1>

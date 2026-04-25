@@ -32,11 +32,18 @@ class DatabaseSeeder extends Seeder
                 'nomor_hp' => '081234567891',
             ],
             [
+                'nama'     => 'Siti Rahayu',
+                'email'    => 'kepala@gumolong.farm',
+                'password' => Hash::make('kepala123'),
+                'role'     => 'kepala_kandang',
+                'nomor_hp' => '081234567892',
+            ],
+            [
                 'nama'     => 'Budi Santoso',
                 'email'    => 'kandang@gumolong.farm',
                 'password' => Hash::make('kandang123'),
                 'role'     => 'pengurus_kandang',
-                'nomor_hp' => '081234567892',
+                'nomor_hp' => '081234567893',
             ],
         ];
 
@@ -101,9 +108,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->command->info('✅ Users seeded:');
-        $this->command->info('   Super Admin  → admin@gumolong.farm       / admin123');
-        $this->command->info('   Admin        → operasional@gumolong.farm / admin123');
-        $this->command->info('   Pengurus     → kandang@gumolong.farm     / kandang123');
+        $this->command->info('   Super Admin      → admin@gumolong.farm       / admin123');
+        $this->command->info('   Admin            → operasional@gumolong.farm / admin123');
+        $this->command->info('   Kepala Kandang   → kepala@gumolong.farm      / kepala123');
+        $this->command->info('   Pengurus Kandang → kandang@gumolong.farm     / kandang123');
         $this->command->info('✅ Seeded: 3 Kandang (A, B, Isolasi)');
         $this->command->info('✅ Seeded: 2 Pakan Stok (Rumput, Konsentrat)');
     }

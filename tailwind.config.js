@@ -12,6 +12,11 @@ export default {
     theme: {
         extend: {
             colors: {
+                // ── Mobile UI aliases (mobile/pk/* and mobile/kk/* views) ─
+                'forest-green': '#2E7D32',
+                'sage-muted':   '#607F5B',
+                'berry-accent': '#B14B6F',
+
                 // ── Core brand (Modern Homestead) ──────────────────────
                 primary:            '#2E7D32',   // Forest Green — CTA, active states
                 secondary:          '#607F5B',   // Earthy Green — borders, secondary text

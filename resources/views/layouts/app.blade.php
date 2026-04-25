@@ -15,34 +15,45 @@
 <body class="font-sans antialiased bg-surface text-gray-900">
 
 @php
-    $notifCount = $notifCount ?? 0;
-    $user       = auth()->user();
-    $userNama   = $user?->nama ?? $user?->name ?? 'User';
-    $userRole   = $user?->role ? ucwords(str_replace('_', ' ', $user->role)) : '';
-    $userInitial= mb_strtoupper(mb_substr($userNama, 0, 1));
+    $notifCount  = $notifCount ?? 0;
+    $user        = auth()->user();
+    $userNama    = $user?->nama ?? $user?->name ?? 'User';
+    $userRole    = $user?->role ?? '';
+    $userRoleLabel = $userRole ? ucwords(str_replace('_', ' ', $userRole)) : '';
+    $userInitial = mb_strtoupper(mb_substr($userNama, 0, 1));
+
+    // Role shorthand sets
+    $ALL_WEB   = ['super_admin', 'admin', 'kepala_kandang'];          // no pengurus
+    $MGMT_ONLY = ['super_admin', 'admin'];
+    $ALL_ROLES = ['super_admin', 'admin', 'kepala_kandang', 'pengurus_kandang'];
 
     $navGroups = [
         'MENU UTAMA' => [
-            ['label' => 'Dashboard',   'route' => 'dashboard'],
-            ['label' => 'Data Domba',  'route' => 'domba.index',   'active' => 'domba.*'],
+            ['label' => 'Dashboard',  'route' => 'dashboard',    'roles' => $ALL_WEB],
+            ['label' => 'Data Domba', 'route' => 'domba.index',  'active' => 'domba.*', 'roles' => $ALL_WEB],
         ],
         'INVENTARIS' => [
-            ['label' => 'Stok Pakan',    'route' => 'stok-pakan.index',  'active' => 'stok-pakan.*'],
-            ['label' => 'Obat & Vaksin', 'route' => 'obat-vaksin.index', 'active' => 'obat-vaksin.*'],
+            ['label' => 'Stok Pakan',    'route' => 'stok-pakan.index',  'active' => 'stok-pakan.*',  'roles' => $ALL_WEB],
+            ['label' => 'Obat & Vaksin', 'route' => 'obat-vaksin.index', 'active' => 'obat-vaksin.*', 'roles' => $ALL_WEB],
         ],
         'MONITORING' => [
-            ['label' => 'Tracking Pertumbuhan', 'route' => 'pertumbuhan.index',      'active' => 'pertumbuhan.*'],
-            ['label' => 'Kesehatan Ternak',     'route' => 'kesehatan.index',        'active' => 'kesehatan.*'],
-            ['label' => 'Pakan Individual',     'route' => 'pakan-individual.index', 'active' => 'pakan-individual.*'],
+            ['label' => 'Tracking Pertumbuhan', 'route' => 'pertumbuhan.index',      'active' => 'pertumbuhan.*',      'roles' => $ALL_WEB],
+            ['label' => 'Kesehatan Ternak',     'route' => 'kesehatan.index',        'active' => 'kesehatan.*',        'roles' => $ALL_WEB],
+            ['label' => 'Pakan Individual',     'route' => 'pakan-individual.index', 'active' => 'pakan-individual.*', 'roles' => $ALL_WEB],
         ],
         'REPRODUKSI' => [
-            ['label' => 'Reproduksi', 'route' => 'reproduksi.index', 'active' => 'reproduksi.*'],
-            ['label' => 'Silsilah',   'route' => 'silsilah.index',   'active' => 'silsilah.*'],
+            ['label' => 'Reproduksi', 'route' => 'reproduksi.index', 'active' => 'reproduksi.*', 'roles' => $ALL_WEB],
+            // Silsilah: No Access for Pengurus Kandang
+            ['label' => 'Silsilah',   'route' => 'silsilah.index',   'active' => 'silsilah.*',   'roles' => $ALL_WEB],
         ],
         'OPERASIONAL' => [
-            ['label' => 'Daily Task',  'route' => 'tugas-harian.index', 'active' => 'tugas-harian.*'],
-            ['label' => 'Notifikasi',  'route' => 'notifikasi.index', 'active' => 'notifikasi.*',
-             'badge' => $notifCount > 0 ? (string) $notifCount : null],
+            ['label' => 'Daily Task', 'route' => 'tugas-harian.index', 'active' => 'tugas-harian.*', 'roles' => $ALL_WEB],
+            ['label' => 'Notifikasi', 'route' => 'notifikasi.index',   'active' => 'notifikasi.*',
+             'badge' => $notifCount > 0 ? (string) $notifCount : null, 'roles' => $ALL_WEB],
+        ],
+        'ADMIN' => [
+            // Account Management: Super Admin & Admin only
+            ['label' => 'Manajemen User', 'route' => 'users.index', 'active' => 'users.*', 'roles' => $MGMT_ONLY],
         ],
     ];
 @endphp
@@ -62,45 +73,54 @@
     {{-- Navigation --}}
     <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-4">
         @foreach ($navGroups as $groupName => $items)
-            <div>
-                <p class="px-2 mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400 select-none">
-                    {{ $groupName }}
-                </p>
-                <ul class="space-y-0.5">
-                    @foreach ($items as $item)
-                        @php
-                            $activePattern = $item['active'] ?? $item['route'];
-                            $isActive      = request()->routeIs($activePattern);
-                        @endphp
-                        <li>
-                            <a href="{{ route($item['route']) }}"
-                               @class([
-                                   'flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors duration-150',
-                                   'bg-primary text-white font-semibold shadow-sm' => $isActive,
-                                   'text-gray-600 hover:bg-gray-100 font-medium'   => !$isActive,
-                               ])
-                               @if($isActive) aria-current="page" @endif>
+            @php
+                // Filter items the current user is allowed to see
+                $visibleItems = collect($items)->filter(function ($item) use ($userRole) {
+                    $allowed = $item['roles'] ?? null;
+                    return !$allowed || in_array($userRole, $allowed);
+                });
+            @endphp
 
-                                {{-- Bullet: filled when active, hollow when not --}}
-                                <span @class([
-                                    'w-1.5 h-1.5 rounded-full flex-shrink-0',
-                                    'bg-white'                 => $isActive,
-                                    'border border-gray-400'   => !$isActive,
-                                ])></span>
+            @if($visibleItems->isNotEmpty())
+                <div>
+                    <p class="px-2 mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400 select-none">
+                        {{ $groupName }}
+                    </p>
+                    <ul class="space-y-0.5">
+                        @foreach ($visibleItems as $item)
+                            @php
+                                $activePattern = $item['active'] ?? $item['route'];
+                                $isActive      = request()->routeIs($activePattern);
+                            @endphp
+                            <li>
+                                <a href="{{ route($item['route']) }}"
+                                   @class([
+                                       'flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm transition-colors duration-150',
+                                       'bg-primary text-white font-semibold shadow-sm' => $isActive,
+                                       'text-gray-600 hover:bg-gray-100 font-medium'   => !$isActive,
+                                   ])
+                                   @if($isActive) aria-current="page" @endif>
 
-                                <span class="flex-1 truncate">{{ $item['label'] }}</span>
+                                    <span @class([
+                                        'w-1.5 h-1.5 rounded-full flex-shrink-0',
+                                        'bg-white'               => $isActive,
+                                        'border border-gray-400' => !$isActive,
+                                    ])></span>
 
-                                @if(!empty($item['badge']))
-                                    <span class="ml-auto text-[10px] font-semibold px-1.5 py-0.5 rounded-full
-                                                 {{ $isActive ? 'bg-white text-primary' : 'bg-accent text-white' }}">
-                                        {{ $item['badge'] }}
-                                    </span>
-                                @endif
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
+                                    <span class="flex-1 truncate">{{ $item['label'] }}</span>
+
+                                    @if(!empty($item['badge']))
+                                        <span class="ml-auto text-[10px] font-semibold px-1.5 py-0.5 rounded-full
+                                                     {{ $isActive ? 'bg-white text-primary' : 'bg-accent text-white' }}">
+                                            {{ $item['badge'] }}
+                                        </span>
+                                    @endif
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         @endforeach
     </nav>
 
@@ -112,7 +132,7 @@
             </div>
             <div class="flex-1 min-w-0">
                 <p class="text-xs font-semibold text-gray-800 truncate">{{ $userNama }}</p>
-                <p class="text-[10px] text-gray-500 truncate">{{ $userRole }}</p>
+                <p class="text-[10px] text-gray-500 truncate">{{ $userRoleLabel }}</p>
             </div>
         </div>
         <form method="POST" action="{{ route('logout') }}" class="mt-2">
@@ -164,7 +184,7 @@
                 </div>
                 <div class="leading-tight">
                     <p class="text-sm font-semibold text-gray-900">{{ $userNama }}</p>
-                    <p class="text-[11px] text-gray-500">{{ $userRole }}</p>
+                    <p class="text-[11px] text-gray-500">{{ $userRoleLabel }}</p>
                 </div>
             </div>
         </div>

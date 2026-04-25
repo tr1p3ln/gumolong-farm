@@ -124,13 +124,6 @@
                                 Password
                                 <span class="text-[#B14B6F]">*</span>
                             </label>
-                            @if (Route::has('password.request'))
-                                <a href="{{ route('password.request') }}"
-                                   class="text-[10px] uppercase tracking-widest font-bold text-[#2E7D32]
-                                          hover:opacity-75 transition-opacity">
-                                    Lupa password?
-                                </a>
-                            @endif
                         </div>
                         <div class="relative group">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none
@@ -179,16 +172,86 @@
                     Halaman ini hanya untuk Owner &amp; Admin. Lupa akses? Hubungi Administrator sistem.
                 </p>
 
-                {{-- Reset Password Info Box --}}
-                <div class="mt-8 p-5 border border-dashed border-gray-200 rounded-xl flex gap-4">
-                    <span class="material-symbols-outlined text-gray-400 shrink-0">info</span>
-                    <div>
-                        <p class="text-xs font-bold text-[#1F2937] mb-1 uppercase tracking-wider">
-                            Reset Password
+                {{-- Demo Credentials Box --}}
+                <div class="mt-6 border border-dashed border-gray-200 rounded-xl overflow-hidden">
+
+                    {{-- Header --}}
+                    <div class="flex items-center gap-2 px-4 py-3 bg-gray-50 border-b border-dashed border-gray-200">
+                        <span class="material-symbols-outlined text-gray-400 text-base">key</span>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                            Demo Credentials
                         </p>
-                        <p class="text-xs text-gray-500 leading-normal">
-                            Hubungi Admin untuk melakukan reset password akun Anda.<br>
-                            <span class="font-semibold text-[#2E7D32]">Kontak: admin@gumolong.com</span>
+                    </div>
+
+                    {{-- Credential rows --}}
+                    <div class="divide-y divide-dashed divide-gray-100">
+
+                        {{-- Super Admin --}}
+                        <div class="px-4 py-3 flex items-center gap-3">
+                            <span class="w-2 h-2 rounded-full bg-[#2E7D32] shrink-0"></span>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-[10px] font-bold text-[#1F2937] uppercase tracking-wider">Super Admin</p>
+                                <p class="text-[11px] text-gray-500 font-mono truncate">admin@gumolong.farm</p>
+                            </div>
+                            <button type="button"
+                                    onclick="fillCredential('admin@gumolong.farm','admin123')"
+                                    class="shrink-0 text-[10px] font-bold text-[#2E7D32] border border-[#2E7D32]/30
+                                           px-2 py-1 rounded-lg hover:bg-[#2E7D32]/5 transition-colors">
+                                Gunakan
+                            </button>
+                        </div>
+
+                        {{-- Admin --}}
+                        <div class="px-4 py-3 flex items-center gap-3">
+                            <span class="w-2 h-2 rounded-full bg-blue-400 shrink-0"></span>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-[10px] font-bold text-[#1F2937] uppercase tracking-wider">Admin</p>
+                                <p class="text-[11px] text-gray-500 font-mono truncate">operasional@gumolong.farm</p>
+                            </div>
+                            <button type="button"
+                                    onclick="fillCredential('operasional@gumolong.farm','admin123')"
+                                    class="shrink-0 text-[10px] font-bold text-blue-500 border border-blue-300
+                                           px-2 py-1 rounded-lg hover:bg-blue-50 transition-colors">
+                                Gunakan
+                            </button>
+                        </div>
+
+                        {{-- Kepala Kandang --}}
+                        <div class="px-4 py-3 flex items-center gap-3">
+                            <span class="w-2 h-2 rounded-full bg-[#607F5B] shrink-0"></span>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-[10px] font-bold text-[#1F2937] uppercase tracking-wider">Kepala Kandang</p>
+                                <p class="text-[11px] text-gray-500 font-mono truncate">kepala@gumolong.farm</p>
+                            </div>
+                            <button type="button"
+                                    onclick="fillCredential('kepala@gumolong.farm','kepala123')"
+                                    class="shrink-0 text-[10px] font-bold text-[#607F5B] border border-[#607F5B]/30
+                                           px-2 py-1 rounded-lg hover:bg-[#607F5B]/5 transition-colors">
+                                Gunakan
+                            </button>
+                        </div>
+
+                        {{-- Pengurus Kandang --}}
+                        <div class="px-4 py-3 flex items-center gap-3">
+                            <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-[10px] font-bold text-[#1F2937] uppercase tracking-wider">Pengurus Kandang</p>
+                                <p class="text-[11px] text-gray-500 font-mono truncate">kandang@gumolong.farm</p>
+                            </div>
+                            <button type="button"
+                                    onclick="fillCredential('kandang@gumolong.farm','kandang123')"
+                                    class="shrink-0 text-[10px] font-bold text-amber-500 border border-amber-300
+                                           px-2 py-1 rounded-lg hover:bg-amber-50 transition-colors">
+                                Gunakan
+                            </button>
+                        </div>
+
+                    </div>
+
+                    {{-- Footer note --}}
+                    <div class="px-4 py-2.5 bg-gray-50 border-t border-dashed border-gray-200">
+                        <p class="text-[10px] text-gray-400 text-center">
+                            Klik "Gunakan" untuk mengisi form otomatis
                         </p>
                     </div>
                 </div>
@@ -205,5 +268,12 @@
     </section>
 
 </main>
+<script>
+function fillCredential(email, password) {
+    document.getElementById('email').value    = email;
+    document.getElementById('password').value = password;
+    document.getElementById('email').dispatchEvent(new Event('input'));
+}
+</script>
 </body>
 </html>
