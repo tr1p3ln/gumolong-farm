@@ -12,9 +12,11 @@ class TugasHarian extends Model
     protected $fillable = [
         'kandang_id',
         'user_id',
+        'assigned_by',
         'judul',
         'deskripsi',
         'tanggal',
+        'tipe',
         'prioritas',
         'status',
         'waktu_mulai',
@@ -38,6 +40,11 @@ class TugasHarian extends Model
     public function petugas()
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
+
+    public function assignedBy()
+    {
+        return $this->belongsTo(User::class, 'assigned_by', 'user_id');
     }
 
     // ─── SCOPES ──────────────────────────────────────────────────
@@ -71,6 +78,14 @@ class TugasHarian extends Model
             'sedang' => 'amber',
             'rendah' => 'green',
             default  => 'gray',
+        };
+    }
+
+    public function getTipeLabelAttribute(): string
+    {
+        return match ($this->tipe) {
+            'kondisional' => 'Kondisional',
+            default       => 'Rutin',
         };
     }
 

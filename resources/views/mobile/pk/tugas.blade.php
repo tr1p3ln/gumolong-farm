@@ -67,9 +67,16 @@
     <div class="p-4">
       <div class="flex items-start justify-between gap-3">
         <div class="flex-1 min-w-0">
-          <span class="inline-block px-2 py-0.5 text-[10px] font-bold rounded-full mb-1.5 {{ $badgeClass }}">
-            {{ ucfirst($t->prioritas ?? 'sedang') }}
-          </span>
+          <div class="flex items-center gap-1.5 mb-1.5">
+            <span class="inline-block px-2 py-0.5 text-[10px] font-bold rounded-full {{ $badgeClass }}">
+              {{ ucfirst($t->prioritas ?? 'sedang') }}
+            </span>
+            @if(($t->tipe ?? 'rutin') === 'kondisional')
+            <span class="inline-block px-2 py-0.5 text-[10px] font-bold rounded-full bg-purple-100 text-purple-700">
+              Mendadak
+            </span>
+            @endif
+          </div>
           <h3 class="text-sm font-bold text-[#1F2937] {{ $t->status === 'selesai' ? 'line-through text-gray-400' : '' }}">
             {{ $t->judul }}
           </h3>

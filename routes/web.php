@@ -11,6 +11,8 @@ use App\Http\Controllers\PakanIndividualController;
 use App\Http\Controllers\ReproduksiController;
 use App\Http\Controllers\SilsilahController;
 use App\Http\Controllers\TugasHarianController;
+use App\Http\Controllers\TemplateTugasController;
+use App\Http\Controllers\KandangController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Mobile\MobilePKController;
@@ -124,13 +126,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->middleware('role:super_admin,admin');
 
         // ── Tugas Harian (web) ───────────────────────────────────────────────
-        Route::get('/tugas-harian',        [TugasHarianController::class, 'index'])->name('tugas-harian.index');
-        Route::get('/tugas-harian/{id}',   [TugasHarianController::class, 'show'])->name('tugas-harian.show');
+        Route::get('/tugas-harian',                      [TugasHarianController::class, 'index'])->name('tugas-harian.index');
+        Route::get('/tugas-harian/{id}',                 [TugasHarianController::class, 'show'])->name('tugas-harian.show');
 
         // Assign & manage tasks: Super Admin, Admin, Kepala Kandang
-        Route::post('/tugas-harian',       [TugasHarianController::class, 'store'])->name('tugas-harian.store');
-        Route::put('/tugas-harian/{id}',   [TugasHarianController::class, 'update'])->name('tugas-harian.update');
-        Route::delete('/tugas-harian/{id}',[TugasHarianController::class, 'destroy'])->name('tugas-harian.destroy');
+        Route::post('/tugas-harian',                     [TugasHarianController::class, 'store'])->name('tugas-harian.store');
+        Route::put('/tugas-harian/{id}',                 [TugasHarianController::class, 'update'])->name('tugas-harian.update');
+        Route::delete('/tugas-harian/{id}',              [TugasHarianController::class, 'destroy'])->name('tugas-harian.destroy');
+
+        // Bulk reassign: untuk menangani petugas absen/sakit
+        Route::post('/tugas-harian/bulk-reassign',       [TugasHarianController::class, 'bulkReassign'])->name('tugas-harian.bulk-reassign');
+
+        // Template tugas rutin + generate: Super Admin & Admin only
+        Route::middleware('role:super_admin,admin')->group(function () {
+            Route::post('/tugas-harian/generate-rutin',  [TugasHarianController::class, 'generateRutin'])->name('tugas-harian.generate-rutin');
+            Route::get('/template-tugas',                [TemplateTugasController::class, 'index'])->name('template-tugas.index');
+            Route::post('/template-tugas',               [TemplateTugasController::class, 'store'])->name('template-tugas.store');
+            Route::put('/template-tugas/{id}',           [TemplateTugasController::class, 'update'])->name('template-tugas.update');
+            Route::patch('/template-tugas/{id}/toggle',  [TemplateTugasController::class, 'toggle'])->name('template-tugas.toggle');
+            Route::delete('/template-tugas/{id}',        [TemplateTugasController::class, 'destroy'])->name('template-tugas.destroy');
+        });
 
         // ── Notifikasi ───────────────────────────────────────────────────────
         Route::resource('notifikasi', NotifikasiController::class);
@@ -138,6 +153,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // ── Account Management: Super Admin & Admin only ─────────────────────
         Route::middleware('role:super_admin,admin')->group(function () {
             Route::resource('users', UserController::class);
+
+            // ── Manajemen Kandang ─────────────────────────────────────────────
+            Route::get('/kandang',          [KandangController::class, 'index'])->name('kandang.index');
+            Route::post('/kandang',         [KandangController::class, 'store'])->name('kandang.store');
+            Route::get('/kandang/{id}',     [KandangController::class, 'show'])->name('kandang.show');
+            Route::put('/kandang/{id}',     [KandangController::class, 'update'])->name('kandang.update');
+            Route::delete('/kandang/{id}',  [KandangController::class, 'destroy'])->name('kandang.destroy');
         });
     });
 });

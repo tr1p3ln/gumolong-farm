@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TugasHarian;
+use App\Models\TemplateTugasRutin;
 use App\Models\Kandang;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,20 +12,19 @@ class TugasHarianController extends Controller
 {
     public function index(Request $request)
     {
-        $tanggal   = $request->get('tanggal', today()->toDateString());
-        $kandangId = $request->get('kandang_id');
-        $status    = $request->get('status');
+        $tanggal        = $request->get('tanggal', today()->toDateString());
+        $kandangId      = $request->get('kandang_id');
+        $status         = $request->get('status');
+        $selectedUserId = $request->get('user_id');
+        $selectedTipe   = $request->get('tipe');
 
         $query = TugasHarian::with(['kandang', 'petugas'])
             ->whereDate('tanggal', $tanggal);
 
-        if ($kandangId) {
-            $query->where('kandang_id', $kandangId);
-        }
-
-        if ($status) {
-            $query->where('status', $status);
-        }
+        if ($kandangId)      $query->where('kandang_id', $kandangId);
+        if ($status)         $query->where('status', $status);
+        if ($selectedUserId) $query->where('user_id', $selectedUserId);
+        if ($selectedTipe)   $query->where('tipe', $selectedTipe);
 
         $tugas = $query->orderBy('prioritas', 'desc')
                        ->orderBy('created_at', 'asc')
@@ -63,11 +63,11 @@ class TugasHarianController extends Controller
                 : 0,
         ];
 
-        $petugasList = User::whereIn('role', ['admin', 'petugas'])->get();
+        $petugasList = User::whereIn('role', ['kepala_kandang', 'pengurus_kandang'])->get();
 
         return view('tugas-harian.index', compact(
-            'tugas', 'kandangs', 'summaryPerKandang',
-            'globalSummary', 'tanggal', 'petugasList'
+            'tugas', 'kandangs', 'summaryPerKandang', 'globalSummary',
+            'tanggal', 'petugasList', 'selectedUserId', 'selectedTipe'
         ));
     }
 
@@ -79,11 +79,15 @@ class TugasHarianController extends Controller
             'kandang_id'  => 'required|exists:kandang,kandang_id',
             'user_id'     => 'nullable|exists:user,user_id',
             'tanggal'     => 'required|date',
+            'tipe'        => 'required|in:rutin,kondisional',
             'prioritas'   => 'required|in:rendah,sedang,tinggi',
             'waktu_mulai' => 'nullable|date_format:H:i',
         ]);
 
-        $tugas = TugasHarian::create(array_merge($validated, ['status' => 'belum']));
+        $validated['status']      = 'belum';
+        $validated['assigned_by'] = auth()->id();
+
+        $tugas = TugasHarian::create($validated);
 
         return response()->json([
             'success' => true,
@@ -108,6 +112,7 @@ class TugasHarianController extends Controller
             'kandang_id' => 'required|exists:kandang,kandang_id',
             'user_id'    => 'nullable|exists:user,user_id',
             'tanggal'    => 'required|date',
+            'tipe'       => 'required|in:rutin,kondisional',
             'prioritas'  => 'required|in:rendah,sedang,tinggi',
         ]);
 
@@ -149,14 +154,90 @@ class TugasHarianController extends Controller
 
     public function destroy($id)
     {
-        $tugas = TugasHarian::findOrFail($id);
-        $tugas->delete();
+        TugasHarian::findOrFail($id)->delete();
 
         return response()->json([
             'success' => true,
             'message' => 'Tugas berhasil dihapus',
         ]);
     }
+
+    // ─── BULK REASSIGN ────────────────────────────────────────────────────────
+    // Digunakan saat petugas absen/sakit: pindahkan banyak tugas sekaligus
+
+    public function bulkReassign(Request $request)
+    {
+        $validated = $request->validate([
+            'ids'     => 'required|array|min:1',
+            'ids.*'   => 'integer|exists:tugas_harian,id',
+            'user_id' => 'required|exists:user,user_id',
+        ]);
+
+        $count = TugasHarian::whereIn('id', $validated['ids'])
+            ->update([
+                'user_id'     => $validated['user_id'],
+                'assigned_by' => auth()->id(),
+            ]);
+
+        $petugas = User::where('user_id', $validated['user_id'])->first();
+
+        return response()->json([
+            'success' => true,
+            'message' => "$count tugas berhasil dipindahkan ke {$petugas->nama}",
+            'count'   => $count,
+        ]);
+    }
+
+    // ─── GENERATE RUTIN ───────────────────────────────────────────────────────
+    // Generate tugas harian dari template rutin untuk tanggal tertentu
+
+    public function generateRutin(Request $request)
+    {
+        $validated = $request->validate([
+            'tanggal' => 'required|date',
+        ]);
+
+        $templates = TemplateTugasRutin::where('is_active', true)->get();
+        $generated = 0;
+
+        foreach ($templates as $template) {
+            $exists = TugasHarian::whereDate('tanggal', $validated['tanggal'])
+                ->where('kandang_id', $template->kandang_id)
+                ->where('judul', $template->judul)
+                ->where('tipe', 'rutin')
+                ->exists();
+
+            if ($exists) continue;
+
+            TugasHarian::create([
+                'judul'       => $template->judul,
+                'deskripsi'   => $template->deskripsi,
+                'kandang_id'  => $template->kandang_id,
+                'user_id'     => $template->user_id,
+                'tanggal'     => $validated['tanggal'],
+                'tipe'        => 'rutin',
+                'prioritas'   => $template->prioritas,
+                'status'      => 'belum',
+                'waktu_mulai' => $template->waktu_default
+                    ? \Carbon\Carbon::parse($template->waktu_default)->format('H:i')
+                    : null,
+                'assigned_by' => auth()->id(),
+            ]);
+
+            $generated++;
+        }
+
+        $skipped = $templates->count() - $generated;
+
+        return response()->json([
+            'success'   => true,
+            'message'   => "$generated tugas rutin di-generate" . ($skipped > 0 ? ", $skipped dilewati (sudah ada)" : ""),
+            'generated' => $generated,
+            'skipped'   => $skipped,
+        ]);
+    }
+
+    // ─── MOBILE ───────────────────────────────────────────────────────────────
 
     public function mobile(Request $request)
     {
