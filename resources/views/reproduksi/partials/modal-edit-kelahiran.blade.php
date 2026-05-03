@@ -21,7 +21,8 @@
             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">EDIT MODE — Data diisi dari kelahiran yang dipilih</p>
         </div>
 
-        <form method="POST" :action="'/reproduksi/' + editKelahiranData.kawin_id + '/kelahiran/' + editKelahiranData.lahir_id" class="overflow-y-auto">
+        {{-- PUT form (fields only, no footer) --}}
+        <form id="edit-kelahiran-form" method="POST" :action="'/reproduksi/' + editKelahiranData.kawin_id + '/kelahiran/' + editKelahiranData.lahir_id" class="overflow-y-auto flex-1">
             @csrf
             @method('PUT')
 
@@ -65,32 +66,33 @@
                     <label class="text-xs font-semibold text-gray-700">Catatan</label>
                     <textarea name="catatan" rows="2"
                               class="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
-                              x-text="editKelahiranData.catatan"></textarea>
+                              x-model="editKelahiranData.catatan"></textarea>
                 </div>
 
-            </div>
-
-            <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
-                <form method="POST"
-                      :action="'/reproduksi/' + editKelahiranData.kawin_id + '/kelahiran/' + editKelahiranData.lahir_id"
-                      @submit.prevent="if(confirm('Hapus data kelahiran ini? Status perkawinan akan dikembalikan ke Bunting.')) $el.submit()">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-secondary border border-secondary/30 rounded-lg hover:bg-secondary/5 transition-colors">
-                        <span class="material-symbols-outlined text-base">delete</span> Hapus
-                    </button>
-                </form>
-                <div class="flex gap-3">
-                    <button type="button" @click="showEditKelahiran = false"
-                            class="px-5 py-2.5 border border-gray-300 text-gray-600 font-semibold text-sm rounded-lg hover:bg-gray-100 transition-colors">
-                        Batal
-                    </button>
-                    <button type="submit"
-                            class="px-6 py-2.5 bg-primary text-white font-bold text-sm rounded-lg shadow-lg shadow-green-900/20 hover:bg-green-800 transition-all active:scale-95">
-                        Simpan Perubahan
-                    </button>
-                </div>
             </div>
         </form>
+
+        {{-- Footer (outside PUT form — delete form is a sibling, not nested) --}}
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center flex-shrink-0">
+            <form method="POST"
+                  :action="'/reproduksi/' + editKelahiranData.kawin_id + '/kelahiran/' + editKelahiranData.lahir_id"
+                  @submit.prevent="if(confirm('Hapus data kelahiran ini? Status perkawinan akan dikembalikan ke Bunting.')) $el.submit()">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-secondary border border-secondary/30 rounded-lg hover:bg-secondary/5 transition-colors">
+                    <span class="material-symbols-outlined text-base">delete</span> Hapus
+                </button>
+            </form>
+            <div class="flex gap-3">
+                <button type="button" @click="showEditKelahiran = false"
+                        class="px-5 py-2.5 border border-gray-300 text-gray-600 font-semibold text-sm rounded-lg hover:bg-gray-100 transition-colors">
+                    Batal
+                </button>
+                <button type="submit" form="edit-kelahiran-form"
+                        class="px-6 py-2.5 bg-primary text-white font-bold text-sm rounded-lg shadow-lg shadow-green-900/20 hover:bg-green-800 transition-all active:scale-95">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </div>
     </div>
 </div>

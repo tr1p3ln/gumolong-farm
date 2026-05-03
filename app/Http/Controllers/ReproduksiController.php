@@ -81,7 +81,8 @@ class ReproduksiController extends Controller
             ->get()
             ->map(function ($row) {
                 $hpl = Carbon::parse($row->estimasi_lahir);
-                $row->hari_tersisa = (int) now()->diffInDays($hpl, false);
+                // diffInDays(now, false): negative means now is ahead of $hpl (past due)
+                $row->hari_tersisa = (int) ($hpl->diffInDays(now(), false) * -1);
                 $row->progress     = max(0, min(100, round((150 - max(0, $row->hari_tersisa)) / 150 * 100)));
                 if ($row->hari_tersisa <= 3)       $row->alert = 'kritis';
                 elseif ($row->hari_tersisa <= 14)  $row->alert = 'warning';
@@ -256,6 +257,10 @@ class ReproduksiController extends Controller
 
     public function konfirmasi(Request $request, string $id)
     {
+        $perkawinan = DB::table('perkawinan')->where('kawin_id', $id)->first();
+        abort_if(!$perkawinan, 404, 'Perkawinan tidak ditemukan.');
+        abort_if($perkawinan->status !== 'menunggu_konfirmasi', 422, 'Perkawinan ini sudah dikonfirmasi.');
+
         $request->validate([
             'hasil'              => 'required|in:bunting,tidak_bunting',
             'metode_konfirmasi'  => 'required|in:USG,observasi_fisik',
@@ -293,64 +298,67 @@ class ReproduksiController extends Controller
 
         // Ambil data perkawinan + indukan untuk mengisi data domba baru
         $perkawinan = DB::table('perkawinan')->where('kawin_id', $kawin_id)->first();
-        $indukan    = DB::table('domba')->where('ear_tag_id', $perkawinan->indukan_id)->first();
-
-        $lahirId = DB::table('kelahiran')->insertGetId([
-            'kawin_id'          => $kawin_id,
-            'user_id'           => auth()->id(),
-            'tanggal_kelahiran' => $request->tanggal_kelahiran,
-            'jml_anak_hidup'    => $request->jml_anak_hidup,
-            'jml_anak_mati'     => $request->jml_anak_mati,
-            'bobot_rata_rata'   => $request->bobot_rata_rata,
-            'catatan'           => $request->catatan,
-            'created_at'        => now(),
-            'updated_at'        => now(),
-        ], 'lahir_id');
+        abort_if(!$perkawinan, 404, 'Perkawinan tidak ditemukan.');
+        $indukan = DB::table('domba')->where('ear_tag_id', $perkawinan->indukan_id)->first();
 
         $dombaRegistered = 0;
 
-        foreach ($request->input('anak', []) as $anak) {
-            $earTagId = !empty($anak['ear_tag_id']) ? trim($anak['ear_tag_id']) : null;
+        DB::transaction(function () use ($request, $kawin_id, $perkawinan, $indukan, &$dombaRegistered) {
+            $lahirId = DB::table('kelahiran')->insertGetId([
+                'kawin_id'          => $kawin_id,
+                'user_id'           => auth()->id(),
+                'tanggal_kelahiran' => $request->tanggal_kelahiran,
+                'jml_anak_hidup'    => $request->jml_anak_hidup,
+                'jml_anak_mati'     => $request->jml_anak_mati,
+                'bobot_rata_rata'   => $request->bobot_rata_rata,
+                'catatan'           => $request->catatan,
+                'created_at'        => now(),
+                'updated_at'        => now(),
+            ], 'lahir_id');
 
-            // Insert domba DULU sebelum anak_lahir (FK constraint)
-            if ($earTagId && $indukan) {
-                $sudahAda = DB::table('domba')->where('ear_tag_id', $earTagId)->exists();
-                if (!$sudahAda) {
-                    DB::table('domba')->insert([
-                        'ear_tag_id'    => $earTagId,
-                        'jenis_kelamin' => $anak['jenis_kelamin'],
-                        'ras'           => $indukan->ras,
-                        'kategori'      => 'cempe',
-                        'status'        => 'aktif',
-                        'asal'          => 'lahir_di_kandang',
-                        'tanggal_lahir' => $request->tanggal_kelahiran,
-                        'kandang_id'    => $indukan->kandang_id,
-                        'induk_id'      => $perkawinan->indukan_id,
-                        'ayah_id'       => $perkawinan->pejantan_id,
-                        'catatan'       => 'Lahir dari perkawinan KWN-' . $kawin_id,
-                        'created_at'    => now(),
-                        'updated_at'    => now(),
-                    ]);
-                    $dombaRegistered++;
+            foreach ($request->input('anak', []) as $anak) {
+                $earTagId = !empty($anak['ear_tag_id']) ? trim($anak['ear_tag_id']) : null;
+
+                // Insert domba DULU sebelum anak_lahir (FK constraint)
+                if ($earTagId && $indukan) {
+                    $sudahAda = DB::table('domba')->where('ear_tag_id', $earTagId)->exists();
+                    if (!$sudahAda) {
+                        DB::table('domba')->insert([
+                            'ear_tag_id'    => $earTagId,
+                            'jenis_kelamin' => $anak['jenis_kelamin'],
+                            'ras'           => $indukan->ras,
+                            'kategori'      => 'cempe',
+                            'status'        => 'aktif',
+                            'asal'          => 'lahir_di_kandang',
+                            'tanggal_lahir' => $request->tanggal_kelahiran,
+                            'kandang_id'    => $indukan->kandang_id,
+                            'induk_id'      => $perkawinan->indukan_id,
+                            'ayah_id'       => $perkawinan->pejantan_id,
+                            'catatan'       => 'Lahir dari perkawinan KWN-' . $kawin_id,
+                            'created_at'    => now(),
+                            'updated_at'    => now(),
+                        ]);
+                        $dombaRegistered++;
+                    }
                 }
+
+                // Baru insert anak_lahir
+                DB::table('anak_lahir')->insert([
+                    'lahir_id'      => $lahirId,
+                    'ear_tag_id'    => $earTagId,
+                    'jenis_kelamin' => $anak['jenis_kelamin'],
+                    'bobot_lahir'   => $anak['bobot_lahir'] ?: null,
+                    'kondisi'       => $anak['kondisi'],
+                    'created_at'    => now(),
+                    'updated_at'    => now(),
+                ]);
             }
 
-            // Baru insert anak_lahir
-            DB::table('anak_lahir')->insert([
-                'lahir_id'      => $lahirId,
-                'ear_tag_id'    => $earTagId,
-                'jenis_kelamin' => $anak['jenis_kelamin'],
-                'bobot_lahir'   => $anak['bobot_lahir'] ?: null,
-                'kondisi'       => $anak['kondisi'],
-                'created_at'    => now(),
-                'updated_at'    => now(),
+            DB::table('perkawinan')->where('kawin_id', $kawin_id)->update([
+                'status'     => 'lahir',
+                'updated_at' => now(),
             ]);
-        }
-
-        DB::table('perkawinan')->where('kawin_id', $kawin_id)->update([
-            'status'     => 'lahir',
-            'updated_at' => now(),
-        ]);
+        });
 
         $msg = 'Data kelahiran berhasil disimpan.';
         if ($dombaRegistered > 0) {

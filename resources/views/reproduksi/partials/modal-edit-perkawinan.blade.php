@@ -21,7 +21,8 @@
             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">EDIT MODE — Data terisi dari perkawinan yang dipilih</p>
         </div>
 
-        <form method="POST" :action="'/reproduksi/' + editData.kawin_id" class="overflow-y-auto">
+        {{-- PUT form (fields only, no footer) --}}
+        <form id="edit-perkawinan-form" method="POST" :action="'/reproduksi/' + editData.kawin_id" class="overflow-y-auto flex-1">
             @csrf
             @method('PUT')
 
@@ -78,27 +79,28 @@
                 </div>
 
             </div>
-
-            <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
-                <form method="POST" :action="'/reproduksi/' + editData.kawin_id"
-                      @submit.prevent="if(confirm('Hapus data perkawinan ini?')) $el.submit()">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-secondary border border-secondary/30 rounded-lg hover:bg-secondary/5 transition-colors">
-                        <span class="material-symbols-outlined text-base">delete</span> Hapus
-                    </button>
-                </form>
-                <div class="flex gap-3">
-                    <button type="button" @click="showEditPerkawinan = false"
-                            class="px-5 py-2.5 border border-gray-300 text-gray-600 font-semibold text-sm rounded-lg hover:bg-gray-100 transition-colors">
-                        Batal
-                    </button>
-                    <button type="submit"
-                            class="px-6 py-2.5 bg-primary text-white font-bold text-sm rounded-lg shadow-lg shadow-green-900/20 hover:bg-green-800 transition-all active:scale-95">
-                        Simpan Perubahan
-                    </button>
-                </div>
-            </div>
         </form>
+
+        {{-- Footer (outside PUT form — delete form is a sibling, not nested) --}}
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center flex-shrink-0">
+            <form method="POST" :action="'/reproduksi/' + editData.kawin_id"
+                  @submit.prevent="if(confirm('Hapus data perkawinan ini?')) $el.submit()">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-secondary border border-secondary/30 rounded-lg hover:bg-secondary/5 transition-colors">
+                    <span class="material-symbols-outlined text-base">delete</span> Hapus
+                </button>
+            </form>
+            <div class="flex gap-3">
+                <button type="button" @click="showEditPerkawinan = false"
+                        class="px-5 py-2.5 border border-gray-300 text-gray-600 font-semibold text-sm rounded-lg hover:bg-gray-100 transition-colors">
+                    Batal
+                </button>
+                <button type="submit" form="edit-perkawinan-form"
+                        class="px-6 py-2.5 bg-primary text-white font-bold text-sm rounded-lg shadow-lg shadow-green-900/20 hover:bg-green-800 transition-all active:scale-95">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </div>
     </div>
 </div>
