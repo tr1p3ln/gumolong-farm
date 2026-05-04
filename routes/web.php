@@ -109,7 +109,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // ── Monitoring ───────────────────────────────────────────────────────
         Route::resource('pertumbuhan',      PertumbuhanController::class);
-        Route::resource('kesehatan',        KesehatanController::class);
+        Route::post('/kesehatan/vaksinasi',                                      [KesehatanController::class, 'storeVaksinasi'])->name('kesehatan.vaksinasi.store');
+        Route::put('/kesehatan/vaksinasi/{id}',                                  [KesehatanController::class, 'updateVaksinasi'])->name('kesehatan.vaksinasi.update');
+        Route::delete('/kesehatan/vaksinasi/{id}',                               [KesehatanController::class, 'destroyVaksinasi'])->name('kesehatan.vaksinasi.destroy');
+        Route::patch('/kesehatan/karantina/{earTagId}/pindah',                   [KesehatanController::class, 'pindahKandang'])->name('kesehatan.karantina.pindah');
+        Route::delete('/kesehatan/{rekamId}/obat/{pakaiId}',                     [KesehatanController::class, 'destroyPemakaianObat'])->name('kesehatan.obat.destroy');
+        Route::resource('kesehatan',        KesehatanController::class)->except(['create', 'edit', 'show']);
         Route::resource('pakan-individual', PakanIndividualController::class);
 
         // ── Reproduksi ───────────────────────────────────────────────────────
