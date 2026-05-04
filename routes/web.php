@@ -113,7 +113,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('pakan-individual', PakanIndividualController::class);
 
         // ── Reproduksi ───────────────────────────────────────────────────────
-        Route::resource('reproduksi',       ReproduksiController::class);
+        Route::post('/reproduksi/{id}/konfirmasi',                    [ReproduksiController::class, 'konfirmasi'])->name('reproduksi.konfirmasi');
+        Route::post('/reproduksi/{kawin_id}/kelahiran',               [ReproduksiController::class, 'storeKelahiran'])->name('reproduksi.kelahiran.store');
+        Route::put('/reproduksi/{kawin_id}/kelahiran/{lahir_id}',     [ReproduksiController::class, 'updateKelahiran'])->name('reproduksi.kelahiran.update');
+        Route::delete('/reproduksi/{kawin_id}/kelahiran/{lahir_id}',  [ReproduksiController::class, 'destroyKelahiran'])->name('reproduksi.kelahiran.destroy');
+        Route::resource('reproduksi',       ReproduksiController::class)->except(['create', 'edit', 'show']);
 
         // ── Silsilah: Super Admin, Admin, Kepala Kandang (Pengurus = No Access) ─
         Route::get('/silsilah',                        [SilsilahController::class, 'index'])->name('silsilah.index');
