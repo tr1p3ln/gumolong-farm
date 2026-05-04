@@ -75,7 +75,7 @@
             <span class="text-[10px] font-semibold uppercase tracking-wider text-[#607F5B] bg-[#607F5B]/10 px-2 py-1 rounded-full">Betina</span>
         </div>
         <p class="text-3xl font-bold text-[#1F2937]">{{ number_format($betina) }}</p>
-        <p class="text-xs text-gray-500 mt-1 font-medium">Betina (Ewe / Induk)</p>
+        <p class="text-xs text-gray-500 mt-1 font-medium">Betina (Induk)</p>
         <div class="mt-3 pt-3 border-t border-gray-100">
             <p class="text-[11px] text-gray-400">
                 {{ $totalAktif > 0 ? round(($betina / $totalAktif) * 100) : 0 }}% dari total populasi
@@ -100,7 +100,7 @@
         <p class="text-3xl font-bold {{ $mortalitasBulanIni > 0 ? 'text-[#B14B6F]' : 'text-[#1F2937]' }}">
             {{ $mortalitasBulanIni }}
         </p>
-        <p class="text-xs text-gray-500 mt-1 font-medium">Mortalitas Bulan Ini</p>
+        <p class="text-xs text-gray-500 mt-1 font-medium">Kematian Bulan Ini</p>
         <div class="mt-3 pt-3 border-t border-gray-100">
             <p class="text-[11px] text-gray-400">{{ now()->locale('id')->isoFormat('MMMM YYYY') }}</p>
         </div>
@@ -131,7 +131,7 @@
     <div class="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
         <div class="flex items-center justify-between mb-5">
             <div>
-                <h3 class="text-sm font-semibold text-[#1F2937]">Tingkat Mortalitas</h3>
+                <h3 class="text-sm font-semibold text-[#1F2937]">Tingkat Kematian</h3>
                 <p class="text-xs text-gray-400 mt-0.5">6 bulan terakhir (ekor)</p>
             </div>
             <span class="w-2.5 h-2.5 rounded-full bg-[#B14B6F]"></span>

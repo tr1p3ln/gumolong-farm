@@ -138,6 +138,7 @@
     },
 
     async updateStatus(id, status, catatan = '') {
+        if (status === 'dilewati' && !confirm('Lewati tugas ini?\nTugas akan ditandai sebagai dilewati.')) return;
         this.statusLoading = true;
         try {
             const res = await fetch('/tugas-harian/' + id + '/status', {

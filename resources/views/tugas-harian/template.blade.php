@@ -63,7 +63,9 @@
         } catch (err) { console.error(err); }
     },
 
-    async toggleTemplate(id) {
+    async toggleTemplate(id, isActive) {
+        const msg = isActive ? 'Nonaktifkan template ini? Template tidak akan di-generate otomatis.' : 'Aktifkan template ini?';
+        if (!confirm(msg)) return;
         try {
             const res = await fetch('/template-tugas/' + id + '/toggle', {
                 method:  'PATCH',
@@ -219,12 +221,12 @@
                 </td>
                 <td class="px-6 py-4">
                     <div class="flex gap-1.5 justify-end">
-                        <button @click='loadEdit({{ $t->id }}, @json(["judul" => $t->judul, "deskripsi" => $t->deskripsi, "kandang_id" => $t->kandang_id, "user_id" => $t->user_id, "waktu_default" => $t->waktu_default, "prioritas" => $t->prioritas]))'
+                        <button @click="loadEdit({{ $t->id }}, {{ json_encode(['judul' => $t->judul, 'deskripsi' => $t->deskripsi, 'kandang_id' => $t->kandang_id, 'user_id' => $t->user_id, 'waktu_default' => $t->waktu_default, 'prioritas' => $t->prioritas]) }})"
                                 class="px-3 py-1 text-xs font-bold border border-gray-300 text-gray-600
                                        rounded-lg hover:bg-gray-50 transition-colors">
                             Edit
                         </button>
-                        <button @click="toggleTemplate({{ $t->id }})"
+                        <button @click="toggleTemplate({{ $t->id }}, {{ $t->is_active ? 'true' : 'false' }})"
                                 class="px-3 py-1 text-xs font-bold border rounded-lg transition-colors
                                        {{ $t->is_active
                                            ? 'border-amber-200 text-amber-600 hover:bg-amber-50'
