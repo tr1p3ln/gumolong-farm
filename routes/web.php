@@ -150,9 +150,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // ── Notifikasi ───────────────────────────────────────────────────────
         Route::resource('notifikasi', NotifikasiController::class);
 
+        // ── Stok Pakan: pencatatan masuk/keluar manual (non-pemberian) ─────────
+        Route::prefix('stok-pakan')->name('stok-pakan.')->group(function () {
+            Route::get('/', [StokPakanController::class, 'index'])
+                ->name('index');
+            Route::post('/masuk', [StokPakanController::class, 'catatMasuk'])
+                ->name('masuk');
+            Route::post('keluar', [StokPakanController::class, 'catatKeluar'])
+                ->name('keluar');
+        });
+
         // ── Account Management: Super Admin & Admin only ─────────────────────
         Route::middleware('role:super_admin,admin')->group(function () {
             Route::resource('users', UserController::class);
+            Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
 
             // ── Manajemen Kandang ─────────────────────────────────────────────
             Route::get('/kandang',          [KandangController::class, 'index'])->name('kandang.index');
