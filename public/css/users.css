@@ -515,3 +515,27 @@
 .btn-reset i {
     margin-right: 6px;
 }
+
+.bi {
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.btn-primary i,
+.btn-outline i,
+.btn-filter i,
+.btn-icon i {
+    margin-right: 6px;
+}
+
+.sp-alert-icon i {
+    font-size: 20px;
+}
+
+.toast-icon i {
+    font-size: 18px;
+}
+
+h3 i {
+    margin-right: 8px;
+}
