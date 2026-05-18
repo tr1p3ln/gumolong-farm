@@ -164,6 +164,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::middleware('role:super_admin,admin')->group(function () {
             Route::resource('users', UserController::class);
             Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+            Route::patch('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
 
             // ── Manajemen Kandang ─────────────────────────────────────────────
             Route::get('/kandang',          [KandangController::class, 'index'])->name('kandang.index');

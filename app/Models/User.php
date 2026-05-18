@@ -47,4 +47,9 @@ class User extends Authenticatable
     {
         return in_array($this->role, ['super_admin', 'admin'], true);
     }
+
+    public function getRouteKeyName()
+    {
+        return 'user_id';
+    }
 }
