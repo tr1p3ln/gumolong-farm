@@ -32,6 +32,12 @@ class ObatVaksin extends Model
         'interval_vaksinasi' => 'integer',
     ];
 
+    // ── RELASI DENGAN PEMAKAIAN OBAT ──────────────────────────────
+    public function pemakaianObat()
+    {
+        return $this->hasMany(PemakaianObat::class, 'obat_id', 'obat_id');
+    }
+
     // ── Prefix per tipe ──────────────────────────────────────────
     public static function prefixForTipe(string $tipe): string
     {
@@ -81,5 +87,17 @@ class ObatVaksin extends Model
             'menipis'   => ['label' => 'Menipis',       'class' => 'bg-orange-100 text-orange-700'],
             default     => ['label' => 'Aman',          'class' => 'bg-green-100 text-green-700'],
         };
+    }
+
+    // ── Helper: Get stok info untuk display ─────────────────────
+    public function getStokInfoAttribute(): string
+    {
+        return "{$this->stok} {$this->satuan}";
+    }
+
+    // ── Helper: Is stok available ──────────────────────────────
+    public function isStokAvailable($jumlah): bool
+    {
+        return $this->stok >= $jumlah;
     }
 }

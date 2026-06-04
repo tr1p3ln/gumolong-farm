@@ -7,7 +7,7 @@
     {{-- ── Flash messages ─────────────────────────────────────── --}}
     @if(session('success'))
     <div class="mx-8 mt-6 flex items-center gap-3 px-5 py-3.5 bg-primary/10 border border-primary/20 rounded-xl text-sm text-primary font-semibold"
-         x-data="{ show: true }" x-show="show">
+        x-data="{ show: true }" x-show="show">
         <span class="material-symbols-outlined text-lg">check_circle</span>
         {{ session('success') }}
         <button @click="show = false" class="ml-auto text-primary/50 hover:text-primary"><span class="material-symbols-outlined text-base">close</span></button>
@@ -15,7 +15,7 @@
     @endif
     @if(session('error'))
     <div class="mx-8 mt-6 flex items-center gap-3 px-5 py-3.5 bg-error/10 border border-error/20 rounded-xl text-sm text-error font-semibold"
-         x-data="{ show: true }" x-show="show">
+        x-data="{ show: true }" x-show="show">
         <span class="material-symbols-outlined text-lg">error</span>
         {{ session('error') }}
         <button @click="show = false" class="ml-auto text-error/50 hover:text-error"><span class="material-symbols-outlined text-base">close</span></button>
