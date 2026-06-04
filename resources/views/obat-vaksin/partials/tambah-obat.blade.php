@@ -13,7 +13,7 @@
         <p class="text-xs text-green-800 leading-relaxed">
             Tambah stok obat, vaksin, atau vitamin baru ke inventaris. Sistem akan otomatis
             mengirimi notifikasi jika stok berada di bawah batas minimum atau mendekati
-            expired (FR-31, NFR-02).
+            tanggal kadaluwarsa.
         </p>
     </div>
 

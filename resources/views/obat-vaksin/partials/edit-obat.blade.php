@@ -76,7 +76,7 @@
     {{-- ── TANGGAL EXPIRED ── --}}
     <div>
         <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-3">
-            Kadaluwarsa <span class="normal-case font-normal">(KAMUS DATA: TANGGAL_EXPIRED DATE)</span>
+            Kadaluwarsa
         </p>
         <label class="block text-xs font-semibold text-gray-700 mb-1">
             Tanggal Expired <span class="text-gray-400 font-normal">Opsional</span>
