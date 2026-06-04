@@ -96,11 +96,8 @@
                         <label class="text-xs font-semibold text-on-surface">
                             Tanggal Sakit <span class="text-error">*</span>
                         </label>
-                        <div class="relative">
-                            <input type="date" name="tanggal_sakit" required
-                                   class="w-full pl-3 pr-10 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm"/>
-                            <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">calendar_today</span>
-                        </div>
+                        <input type="date" name="tanggal_sakit" required
+                               class="w-full px-3 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm"/>
                     </div>
                     <div class="flex flex-col gap-1.5">
                         <label class="text-xs font-semibold text-on-surface">Status</label>
@@ -139,11 +136,8 @@
                         <label class="text-xs font-semibold text-on-surface">Tanggal Sembuh</label>
                         <span class="text-xs text-outline">(opsional — isi jika sudah sembuh)</span>
                     </div>
-                    <div class="relative">
-                        <input type="date" name="tanggal_sembuh"
-                               class="w-full pl-3 pr-10 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm"/>
-                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">calendar_today</span>
-                    </div>
+                    <input type="date" name="tanggal_sembuh"
+                           class="w-full px-3 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm"/>
                 </section>
 
                 {{-- SECTION 6: Status Karantina --}}

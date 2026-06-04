@@ -12,7 +12,6 @@
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
             <div>
                 <h2 class="text-base font-bold text-gray-800">Tambah Obat / Vaksin</h2>
-                <p class="text-[11px] text-gray-400 mt-0.5 font-mono">UC-02-01 | KAMUS DATA: TABEL OBAT_VAKSIN</p>
             </div>
             <button onclick="closeTambahObatModal()"
                 class="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 transition text-xl leading-none">&times;</button>
@@ -60,10 +59,7 @@
 <div class="flex items-center justify-between mb-5">
     <div>
         <h1 class="text-2xl font-bold text-gray-800">Obat & Vaksin</h1>
-        <p class="text-xs text-gray-400 mt-0.5">
-            Kamus Data: tabel <span class="font-mono bg-gray-100 px-1 rounded">OBAT_VAKSIN</span>
-            — ENUM tipe: <span class="text-gray-500">obat, vaksin, vitamin</span>
-        </p>
+
     </div>
     <button onclick="openTambahObatModal()"
         class="inline-flex items-center gap-2 bg-primary hover:opacity-90 text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition shadow-sm">
@@ -311,7 +307,7 @@
  
         // ── Header ──
         document.getElementById('lihatHeaderNama').textContent  = 'Detail — ' + d.nama_obat;
-        document.getElementById('lihatModalSubtitle').textContent = 'ID: ' + d.formatted_id + ' | UC-02-03 (READ)';
+        document.getElementById('lihatModalSubtitle').textContent = 'ID: ' + d.formatted_id;
  
         // ── Row 1: ID + Nama ──
         document.getElementById('lihatId').textContent   = d.formatted_id;
