@@ -12,7 +12,7 @@
                 <h2 class="text-2xl font-extrabold text-on-surface leading-tight"
                     x-text="'Rekam Medis — ' + detailRekamData.ear_tag_id + (detailRekamData.nama_domba ? ' (' + detailRekamData.nama_domba + ')' : '')"></h2>
                 <p class="text-xs text-on-surface-variant font-medium tracking-tight"
-                   x-text="'UC-05 (Read) | ID: RKM-' + detailRekamData.rekam_id + ' | Kamus Data: MEDICAL_RECORD + PEMAKAIAN_OBAT'"></p>
+                   x-text="'ID: RKM-' + detailRekamData.rekam_id"></p>
             </div>
             <button type="button" @click="showDetailRekam = false"
                     class="p-1 hover:bg-surface-container rounded-full transition-colors text-on-surface-variant">
@@ -126,7 +126,7 @@
 
                 {{-- Section 4: Obat Diberikan --}}
                 <div class="space-y-3">
-                    <label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">OBAT DIBERIKAN (KAMUS DATA: TABEL PEMAKAIAN_OBAT)</label>
+                    <label class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">OBAT DIBERIKAN</label>
                     <template x-if="detailRekamData.pemakaian && detailRekamData.pemakaian.length > 0">
                         <div class="border border-outline-variant rounded-lg overflow-hidden">
                             <table class="w-full text-left border-collapse">

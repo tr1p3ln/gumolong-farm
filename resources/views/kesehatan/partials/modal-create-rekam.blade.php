@@ -10,7 +10,6 @@
         <header class="flex items-start justify-between px-6 py-5 border-b border-surface-container bg-white shrink-0">
             <div>
                 <h2 class="text-xl font-bold text-on-surface">Tambah Rekam Medis</h2>
-                <p class="text-xs text-outline mt-1">UC-05-02 | Kamus Data: tabel MEDICAL_RECORD</p>
             </div>
             <button type="button" @click="showCreateRekam = false"
                     class="text-outline hover:text-on-surface transition-colors">
@@ -25,7 +24,7 @@
                 {{-- SECTION 1: Pilih Domba --}}
                 <section class="flex flex-col gap-3">
                     <div class="flex flex-col gap-1.5">
-                        <label class="text-[11px] font-bold text-on-surface uppercase tracking-wider">
+                        <label class="text-xs font-semibold text-on-surface">
                             Pilih Domba <span class="text-error">*</span>
                         </label>
                         <div class="relative" x-show="!selectedDomba">
@@ -94,7 +93,7 @@
                 {{-- SECTION 2: Tanggal Sakit + Status --}}
                 <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="flex flex-col gap-1.5">
-                        <label class="text-[11px] font-bold text-on-surface uppercase tracking-wider">
+                        <label class="text-xs font-semibold text-on-surface">
                             Tanggal Sakit <span class="text-error">*</span>
                         </label>
                         <div class="relative">
@@ -102,62 +101,56 @@
                                    class="w-full pl-3 pr-10 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm"/>
                             <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">calendar_today</span>
                         </div>
-                        <p class="text-[10px] text-outline italic">Kamus Data: kolom tgl_sakit tabel MEDICAL_RECORD</p>
                     </div>
                     <div class="flex flex-col gap-1.5">
-                        <label class="text-[11px] font-bold text-on-surface uppercase tracking-wider">Status</label>
+                        <label class="text-xs font-semibold text-on-surface">Status</label>
                         <select name="status"
                                 class="w-full px-3 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm">
                             <option value="sakit">Sakit</option>
                             <option value="dalam_perawatan">Dalam Perawatan</option>
                             <option value="sembuh">Sembuh</option>
                         </select>
-                        <p class="text-[10px] text-outline italic">Kamus Data: ENUM status tabel MEDICAL_RECORD</p>
                     </div>
                 </section>
 
                 {{-- SECTION 3: Gejala --}}
                 <section class="flex flex-col gap-1.5">
-                    <label class="text-[11px] font-bold text-on-surface uppercase tracking-wider">
+                    <label class="text-xs font-semibold text-on-surface">
                         Gejala <span class="text-error">*</span>
                     </label>
                     <textarea name="gejala" rows="4" required
                               placeholder="Masukkan detail gejala fisik yang terlihat..."
                               class="w-full px-3 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm resize-none"></textarea>
-                    <p class="text-[10px] text-outline italic">Kamus Data: kolom gejala TEXT NOT NULL</p>
                 </section>
 
                 {{-- SECTION 4: Diagnosa --}}
                 <section class="flex flex-col gap-1.5">
-                    <label class="text-[11px] font-bold text-on-surface uppercase tracking-wider">
-                        Diagnosa <span class="text-[11px] text-outline font-normal normal-case">(opsional)</span>
+                    <label class="text-xs font-semibold text-on-surface">
+                        Diagnosa <span class="text-xs text-outline font-normal normal-case">(opsional)</span>
                     </label>
                     <textarea name="diagnosa" rows="4"
                               placeholder="Hasil pemeriksaan medis..."
                               class="w-full px-3 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm resize-none"></textarea>
-                    <p class="text-[10px] text-outline italic">Kamus Data: kolom diagnosa TEXT NULL</p>
                 </section>
 
                 {{-- SECTION 5: Tanggal Sembuh --}}
                 <section class="flex flex-col gap-1.5">
                     <div class="flex items-center gap-2">
-                        <label class="text-[11px] font-bold text-on-surface uppercase tracking-wider">Tanggal Sembuh</label>
-                        <span class="text-[11px] text-outline">(opsional — isi jika sudah sembuh)</span>
+                        <label class="text-xs font-semibold text-on-surface">Tanggal Sembuh</label>
+                        <span class="text-xs text-outline">(opsional — isi jika sudah sembuh)</span>
                     </div>
                     <div class="relative">
                         <input type="date" name="tanggal_sembuh"
                                class="w-full pl-3 pr-10 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm"/>
                         <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">calendar_today</span>
                     </div>
-                    <p class="text-[10px] text-outline italic">Kamus Data: kolom tanggal_sembuh NULL tabel MEDICAL_RECORD</p>
                 </section>
 
                 {{-- SECTION 6: Status Karantina --}}
                 <section class="p-4 bg-[#FAFAF7] border border-outline-variant rounded-lg flex flex-col gap-5">
                     <div class="flex flex-col gap-2">
                         <div class="flex items-center gap-2">
-                            <span class="text-[11px] font-bold text-on-surface uppercase tracking-wider">Status Karantina</span>
-                            <span class="text-[10px] text-outline font-normal">(FR-5.3 — Kamus Data: status_karantina BOOLEAN)</span>
+                            <span class="text-xs font-semibold text-on-surface">Status Karantina</span>
                         </div>
                         <div class="flex gap-6 mt-1">
                             <label class="flex items-center gap-2 cursor-pointer">
@@ -176,8 +169,7 @@
                     </div>
                     <div x-show="tandaiKarantina === 'ya'" class="flex flex-col gap-1.5">
                         <div class="flex items-center gap-2">
-                            <label class="text-[11px] font-bold text-on-surface uppercase tracking-wider">Kandang Isolasi</label>
-                            <span class="text-[10px] text-outline italic">(FK → tabel KANDANG, tipe=isolasi)</span>
+                            <label class="text-xs font-semibold text-on-surface">Kandang Isolasi</label>
                         </div>
                         <select name="kandang_karantina_id"
                                 class="w-full px-3 py-2.5 bg-white border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all text-sm">
@@ -193,8 +185,8 @@
                 <section class="flex flex-col gap-3">
                     <div class="flex flex-col gap-1">
                         <div class="flex items-center gap-2">
-                            <label class="text-[11px] font-bold text-on-surface uppercase tracking-wider">Obat Diberikan</label>
-                            <span class="text-[11px] text-outline">(opsional — Kamus Data: tabel PEMAKAIAN_OBAT)</span>
+                            <label class="text-xs font-semibold text-on-surface">Obat Diberikan</label>
+                            <span class="text-xs text-outline">(opsional)</span>
                         </div>
                     </div>
                     <div class="flex flex-col gap-3">
@@ -225,19 +217,17 @@
                         <span class="material-symbols-outlined text-lg">add</span>
                         Tambah Baris Obat
                     </button>
-                    <p class="text-[10px] text-outline italic">Setiap obat akan dicatat ke tabel PEMAKAIAN_OBAT</p>
                 </section>
 
                 {{-- SECTION 8: Dicatat Oleh --}}
                 <section class="flex flex-col gap-1.5">
                     <div class="flex items-center gap-2">
-                        <label class="text-[11px] font-bold text-on-surface uppercase tracking-wider">Dicatat Oleh</label>
-                        <span class="text-[11px] text-outline">(auto dari session)</span>
+                        <label class="text-xs font-semibold text-on-surface">Dicatat Oleh</label>
+                        <span class="text-xs text-outline">(auto dari session)</span>
                     </div>
                     <input type="text" readonly
                            value="{{ auth()->user()->nama ?? auth()->user()->name ?? 'User' }}"
                            class="w-full px-3 py-2.5 bg-surface-container border border-outline-variant rounded-lg text-sm text-outline cursor-not-allowed"/>
-                    <p class="text-[10px] text-outline italic">Kamus Data: kolom user_id FK → tabel USER</p>
                 </section>
 
             </main>

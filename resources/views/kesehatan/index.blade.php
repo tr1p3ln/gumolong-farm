@@ -26,7 +26,6 @@
     <header class="px-8 pt-8 pb-6 flex justify-between items-start">
         <div>
             <h1 class="text-3xl font-extrabold text-on-surface mb-1">Kesehatan Ternak</h1>
-            <p class="text-sm text-outline font-medium">Tabel: MEDICAL_RECORD, VAKSINASI · FR-5.1, FR-5.2</p>
         </div>
         <div class="flex gap-3">
             <button @click="showCreateVaksinasi = true"
@@ -46,51 +45,56 @@
     <section class="px-8 grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
 
         {{-- Sedang Sakit --}}
-        <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/30 flex flex-col justify-between">
-            <div>
-                <span class="material-symbols-outlined text-primary mb-2 block" style="font-variation-settings:'FILL' 0">sick</span>
-                <h3 class="text-xs font-bold text-outline uppercase tracking-widest">Sedang Sakit</h3>
+        @php $sakitBadge = $kpiSakit > 0 ? ['label' => 'PERLU PERHATIAN', 'class' => 'bg-error-container text-on-error-container'] : ['label' => 'NIHIL', 'class' => 'bg-secondary-container text-on-secondary-container']; @endphp
+        <div class="bg-white p-5 rounded-xl border border-outline-variant/30 shadow-sm flex flex-col gap-1">
+            <div class="flex items-start justify-between">
+                <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Sedang Sakit</p>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ $sakitBadge['class'] }}">{{ $sakitBadge['label'] }}</span>
             </div>
-            <div class="mt-4">
-                <p class="text-3xl font-black text-on-surface">{{ $kpiSakit }} <span class="text-sm font-medium text-outline">ekor</span></p>
-                <p class="text-[10px] text-outline mt-1">MEDICAL_RECORD.status = 'sakit' / 'dalam_perawatan'</p>
-            </div>
+            <p class="text-3xl font-black text-on-surface leading-none mt-2">{{ $kpiSakit }} <span class="text-sm font-medium text-outline">ekor</span></p>
+            <p class="text-xs text-on-surface-variant mt-1">domba sakit / dalam perawatan</p>
         </div>
 
         {{-- Karantina Aktif --}}
-        <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/30 flex flex-col justify-between">
-            <div>
-                <span class="material-symbols-outlined text-primary mb-2 block" style="font-variation-settings:'FILL' 0">health_and_safety</span>
-                <h3 class="text-xs font-bold text-outline uppercase tracking-widest">Karantina Aktif</h3>
+        @php
+            $karantinaBadge = $kpiKarantina > 0 ? ['label' => 'AKTIF', 'class' => 'bg-amber-100 text-amber-700'] : ['label' => 'NIHIL', 'class' => 'bg-secondary-container text-on-secondary-container'];
+            $karantinaPC = $kapasitasIsolasi > 0 ? min(100, round($kpiKarantina / $kapasitasIsolasi * 100)) : 0;
+        @endphp
+        <div class="bg-white p-5 rounded-xl border border-outline-variant/30 shadow-sm flex flex-col gap-1">
+            <div class="flex items-start justify-between">
+                <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Karantina Aktif</p>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ $karantinaBadge['class'] }}">{{ $karantinaBadge['label'] }}</span>
             </div>
-            <div class="mt-4">
-                <p class="text-3xl font-black text-primary">{{ $kpiKarantina }} <span class="text-sm font-medium text-outline">ekor</span></p>
-                <p class="text-[10px] text-outline mt-1">DOMBA.status = 'karantina'</p>
+            <p class="text-3xl font-black text-on-surface leading-none mt-2">{{ $kpiKarantina }} <span class="text-sm font-medium text-outline">ekor</span></p>
+            <div class="flex justify-between items-center text-[10px] text-outline uppercase tracking-wider mt-2">
+                <span>Kapasitas isolasi</span>
+                <span>{{ $karantinaPC }}%</span>
+            </div>
+            <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                <div class="h-1.5 rounded-full transition-all {{ $kpiKarantina > 0 ? 'bg-amber-400' : 'bg-primary' }}"
+                     style="width: {{ $karantinaPC }}%"></div>
             </div>
         </div>
 
         {{-- Sembuh Bulan Ini --}}
-        <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/30 flex flex-col justify-between">
-            <div>
-                <span class="material-symbols-outlined text-primary mb-2 block" style="font-variation-settings:'FILL' 0">check_circle</span>
-                <h3 class="text-xs font-bold text-outline uppercase tracking-widest">Sembuh Bulan Ini</h3>
+        <div class="bg-white p-5 rounded-xl border border-outline-variant/30 shadow-sm flex flex-col gap-1">
+            <div class="flex items-start justify-between">
+                <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Sembuh Bulan Ini</p>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container">{{ now()->isoFormat('MMM YYYY') }}</span>
             </div>
-            <div class="mt-4">
-                <p class="text-3xl font-black text-on-surface">{{ $kpiSembuh }} <span class="text-sm font-medium text-outline">ekor</span></p>
-                <p class="text-[10px] text-outline mt-1">MONTH(tanggal_sembuh) = {{ now()->isoFormat('MMMM YYYY') }}</p>
-            </div>
+            <p class="text-3xl font-black text-on-surface leading-none mt-2">{{ $kpiSembuh }} <span class="text-sm font-medium text-outline">ekor</span></p>
+            <p class="text-xs text-on-surface-variant mt-1">pulih bulan ini</p>
         </div>
 
         {{-- Vaksinasi Minggu Ini --}}
-        <div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/30 flex flex-col justify-between">
-            <div>
-                <span class="material-symbols-outlined text-primary mb-2 block" style="font-variation-settings:'FILL' 0">vaccines</span>
-                <h3 class="text-xs font-bold text-outline uppercase tracking-widest">Vaksinasi Minggu Ini</h3>
+        @php $vaksinBadge = $kpiVaksinMingguIni > 0 ? ['label' => 'ADA JADWAL', 'class' => 'bg-primary-container text-on-primary-container'] : ['label' => 'NIHIL', 'class' => 'bg-surface-container text-outline']; @endphp
+        <div class="bg-white p-5 rounded-xl border border-outline-variant/30 shadow-sm flex flex-col gap-1">
+            <div class="flex items-start justify-between">
+                <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Vaksinasi Minggu Ini</p>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ $vaksinBadge['class'] }}">{{ $vaksinBadge['label'] }}</span>
             </div>
-            <div class="mt-4">
-                <p class="text-3xl font-black text-on-surface">{{ $kpiVaksinMingguIni }} <span class="text-sm font-medium text-outline">ekor</span></p>
-                <p class="text-[10px] text-outline mt-1">VAKSINASI.tanggal_vaksinasi = week {{ now()->weekOfYear }}</p>
-            </div>
+            <p class="text-3xl font-black text-on-surface leading-none mt-2">{{ $kpiVaksinMingguIni }} <span class="text-sm font-medium text-outline">ekor</span></p>
+            <p class="text-xs text-on-surface-variant mt-1">divaksin minggu ini</p>
         </div>
 
     </section>
@@ -269,8 +273,8 @@
         <div class="bg-surface-container-high/50 p-4 rounded-lg flex items-start gap-4 border-l-4 border-secondary">
             <span class="material-symbols-outlined text-secondary flex-shrink-0">info</span>
             <p class="text-sm text-on-surface-variant font-medium">
-                Halaman ini menampilkan domba yang saat ini berstatus <strong>Karantina</strong> (DOMBA.status = 'karantina'),
-                beserta riwayat penyakit terkait dari tabel <strong>MEDICAL_RECORD</strong>.
+                Halaman ini menampilkan domba yang saat ini berstatus <strong>Karantina</strong>,
+                beserta riwayat penyakit terkait.
             </p>
         </div>
 
@@ -366,7 +370,6 @@
         </div>
 
         <div class="flex justify-between items-center text-[10px] text-outline font-bold uppercase tracking-widest mt-4">
-            <p>Data dari tabel DOMBA & MEDICAL_RECORD · FR-5.1</p>
             <div class="flex items-center gap-4">
                 <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary"></span> Status: aktif</span>
                 <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-error"></span> Sakit/Karantina</span>

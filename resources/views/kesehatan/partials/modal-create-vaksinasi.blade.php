@@ -8,8 +8,7 @@
 
         <header class="px-8 py-6 bg-white border-b border-surface-container flex justify-between items-start flex-shrink-0">
             <div class="space-y-1">
-                <h2 class="text-2xl font-bold text-on-surface">Catat Vaksinasi</h2>
-                <p class="text-xs font-mono text-outline uppercase tracking-wider">tabel VAKSINASI · FR-5.2</p>
+                <h2 class="text-xl font-bold text-on-surface">Catat Vaksinasi</h2>
             </div>
             <button type="button" @click="showCreateVaksinasi = false"
                     class="text-outline hover:text-on-surface transition-colors p-1 rounded-lg hover:bg-surface-container-low">
@@ -23,7 +22,7 @@
 
                 {{-- Domba --}}
                 <section class="space-y-3">
-                    <label class="block text-sm font-semibold text-on-surface">
+                    <label class="block text-xs font-semibold text-on-surface">
                         Domba <span class="text-error ml-1">*</span>
                     </label>
                     <div class="relative" x-show="!selectedDombaVk">
@@ -71,7 +70,7 @@
 
                 {{-- Vaksin --}}
                 <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-on-surface">Vaksin / Obat <span class="text-error">*</span></label>
+                    <label class="block text-xs font-semibold text-on-surface">Vaksin / Obat <span class="text-error">*</span></label>
                     <select name="obat_id" required
                             class="w-full px-4 py-2.5 border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none bg-white text-sm">
                         <option value="">— Pilih Vaksin —</option>
@@ -79,18 +78,17 @@
                         <option value="{{ $v->obat_id }}">{{ $v->nama_obat }}</option>
                         @endforeach
                     </select>
-                    <p class="text-[10px] font-mono text-outline uppercase">FK → tabel OBAT_VAKSIN, tipe=vaksin</p>
                 </div>
 
                 {{-- Tanggal --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-on-surface">Tanggal Vaksinasi <span class="text-error">*</span></label>
+                        <label class="block text-xs font-semibold text-on-surface">Tanggal Vaksinasi <span class="text-error">*</span></label>
                         <input type="date" name="tanggal_vaksinasi" required
                                class="w-full px-4 py-2.5 border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-sm bg-white"/>
                     </div>
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-on-surface">Jadwal Berikutnya <span class="text-xs font-normal text-outline">(opsional)</span></label>
+                        <label class="block text-xs font-semibold text-on-surface">Jadwal Berikutnya <span class="text-xs font-normal text-outline">(opsional)</span></label>
                         <input type="date" name="tanggal_berikutnya"
                                class="w-full px-4 py-2.5 border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-sm bg-white"/>
                     </div>
@@ -98,7 +96,7 @@
 
                 {{-- Catatan --}}
                 <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-on-surface">Catatan <span class="text-xs font-normal text-outline">(opsional)</span></label>
+                    <label class="block text-xs font-semibold text-on-surface">Catatan <span class="text-xs font-normal text-outline">(opsional)</span></label>
                     <textarea name="catatan" rows="2" placeholder="Catatan tambahan..."
                               class="w-full px-4 py-2.5 border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-sm bg-white resize-none"></textarea>
                 </div>
