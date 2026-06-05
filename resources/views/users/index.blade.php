@@ -187,14 +187,14 @@
                                     <i class="bi bi-key-fill"></i>
                                 </button>
 
-                                {{-- Hapus — hanya super_admin --}}
+                                {{-- Hapus — hanya super_admin
                                 @if(auth()->user()->isSuperAdmin() && $user->user_id !== auth()->id())
                                 <button class="btn-icon btn-icon--delete"
                                         title="Hapus"
                                         onclick="openDeleteModal({{ $user->user_id }}, '{{ $user->nama }}')">
                                     <i class="bi bi-trash-fill"></i>
                                 </button>
-                                @endif
+                                @endif --}}
                             </div>
                         </td>
                     </tr>

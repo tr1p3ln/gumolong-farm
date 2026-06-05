@@ -15,6 +15,7 @@ use App\Http\Controllers\TemplateTugasController;
 use App\Http\Controllers\KandangController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TrackingPertumbuhanController;
 use App\Http\Controllers\Mobile\MobilePKController;
 use App\Http\Controllers\Mobile\MobileKKController;
 use Illuminate\Support\Facades\Route;
@@ -108,7 +109,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('obat-vaksin',      ObatVaksinController::class);
 
         // ── Monitoring ───────────────────────────────────────────────────────
-        Route::resource('pertumbuhan',      PertumbuhanController::class);
+        Route::resource('pertumbuhan',      TrackingPertumbuhanController::class);
         Route::resource('kesehatan',        KesehatanController::class);
         Route::resource('pakan-individual', PakanIndividualController::class);
 
@@ -159,6 +160,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('keluar', [StokPakanController::class, 'catatKeluar'])
                 ->name('keluar');
         });
+
+        // ── Tracking Pertumbuhan ──────────────────────────────────────────────────────
+        Route::prefix('tracking-pertumbuhan')->name('tracking-pertumbuhan.')->group(function () {
+        
+            // Halaman utama – daftar domba + statistik
+            Route::get('/', [TrackingPertumbuhanController::class, 'index'])
+                ->name('index');
+        
+            // Detail domba + riwayat penimbangan
+            Route::get('/{earTagId}', [TrackingPertumbuhanController::class, 'show'])
+                ->name('show');
+        
+            // Simpan penimbangan baru untuk domba tertentu
+            Route::post('/{earTagId}/penimbangan', [TrackingPertumbuhanController::class, 'storePenimbangan'])
+                ->name('penimbangan.store');
+        });
+
 
         // ── Account Management: Super Admin & Admin only ─────────────────────
         Route::middleware('role:super_admin,admin')->group(function () {
