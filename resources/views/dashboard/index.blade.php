@@ -191,7 +191,7 @@
             <canvas id="chartDistribusi"></canvas>
         </div>
         <div class="mt-4 grid grid-cols-2 gap-1.5">
-            @foreach(['anak' => 'bg-amber-400', 'betina' => 'bg-[#607F5B]', 'induk' => 'bg-[#2E7D32]', 'pejantan' => 'bg-blue-400'] as $kat => $color)
+            @foreach(['cempe' => 'bg-amber-400', 'dara' => 'bg-[#607F5B]', 'indukan' => 'bg-[#2E7D32]', 'pejantan' => 'bg-blue-400'] as $kat => $color)
                 <div class="flex items-center gap-1.5 text-[11px] text-gray-500">
                     <span class="w-2 h-2 rounded-full {{ $color }} flex-shrink-0"></span>
                     <span class="capitalize">{{ $kat }}</span>
@@ -393,7 +393,7 @@
     new Chart(document.getElementById('chartDistribusi'), {
         type: 'doughnut',
         data: {
-            labels: ['Anak', 'Betina', 'Induk', 'Pejantan'],
+            labels: ['Cempe', 'Dara', 'Indukan', 'Pejantan'],
             datasets: [{
                 data: @json($kategoriData),
                 backgroundColor: [AMBER, EARTHY, GREEN, '#60A5FA'],

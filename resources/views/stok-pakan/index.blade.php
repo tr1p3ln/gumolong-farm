@@ -23,7 +23,7 @@
                     &#43; Catat Pakan Masuk
                 </button>
                 <button class="btn-primary" onclick="openModal('modal-keluar')">
-                    &#9654; Catat Pakan Keluar
+                    &#8722; Catat Pakan Keluar
                 </button>
             </div>
         </div>
@@ -306,7 +306,7 @@
 {{-- ======================== MODAL: CATAT KELUAR (PEMBERIAN PAKAN) ======================== --}}
 <div class="modal-backdrop" id="modal-keluar">
     <div class="modal-box">
-        <h3>&#9654; Catat Pakan Keluar</h3>
+        <h3>&#8722; Catat Pakan Keluar</h3>
         <p>Catat pemberian pakan ke domba — stok akan otomatis berkurang</p>
         <form method="POST" action="{{ route('stok-pakan.keluar') }}">
             @csrf
