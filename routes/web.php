@@ -104,8 +104,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         // ── Inventaris ───────────────────────────────────────────────────────
+        Route::get('/obat-vaksin/search-rekam',     [ObatVaksinController::class, 'searchRekam'])->name('obat-vaksin.searchRekam');
+        Route::post('/obat-vaksin/pemakaian',       [ObatVaksinController::class, 'storePemakaian'])->name('obat-vaksin.storePemakaian');
         Route::resource('stok-pakan',       StokPakanController::class);
         Route::resource('obat-vaksin',      ObatVaksinController::class);
+        
 
         // ── Monitoring ───────────────────────────────────────────────────────
         Route::resource('pertumbuhan',      PertumbuhanController::class);
