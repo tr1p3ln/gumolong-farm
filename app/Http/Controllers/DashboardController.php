@@ -15,15 +15,17 @@ class DashboardController extends Controller
         $pejantan   = Domba::where('status', 'aktif')->where('jenis_kelamin', 'jantan')->count();
         $betina     = Domba::where('status', 'aktif')->where('jenis_kelamin', 'betina')->count();
 
-        $byKategori = Domba::where('status', 'aktif')
+        $byKategoriRaw = Domba::where('status', 'aktif')
             ->selectRaw('kategori, count(*) as total')
             ->groupBy('kategori')
-            ->pluck('total', 'kategori');
-
-        $kategoriLabels = ['anak', 'betina', 'induk', 'pejantan'];
-        $kategoriData   = collect($kategoriLabels)
-            ->map(fn ($k) => (int) ($byKategori[$k] ?? 0))
+            ->pluck('total', 'kategori')
             ->toArray();
+
+        // cast semua value ke int (PostgreSQL count() bisa return string)
+        $byKategori = array_map('intval', $byKategoriRaw);
+
+        $kategoriLabels = ['cempe', 'dara', 'indukan', 'pejantan'];
+        $kategoriData   = array_map(fn ($k) => $byKategori[$k] ?? 0, $kategoriLabels);
 
         // ── Mortality this month ──────────────────────────────────────
         $mortalitasBulanIni = Domba::where('status', 'mati')
@@ -114,6 +116,7 @@ class DashboardController extends Controller
             'totalAktif',
             'pejantan',
             'betina',
+            'byKategori',
             'mortalitasBulanIni',
             'kandangList',
             'totalKapasitas',
