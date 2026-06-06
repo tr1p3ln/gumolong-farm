@@ -105,16 +105,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         // ── Inventaris ───────────────────────────────────────────────────────
+        Route::get('/obat-vaksin/search-rekam',     [ObatVaksinController::class, 'searchRekam'])->name('obat-vaksin.searchRekam');
+        Route::post('/obat-vaksin/pemakaian',       [ObatVaksinController::class, 'storePemakaian'])->name('obat-vaksin.storePemakaian');
         Route::resource('stok-pakan',       StokPakanController::class);
         Route::resource('obat-vaksin',      ObatVaksinController::class);
+        
 
         // ── Monitoring ───────────────────────────────────────────────────────
         Route::resource('pertumbuhan',      TrackingPertumbuhanController::class);
-        Route::resource('kesehatan',        KesehatanController::class);
+        Route::post('/kesehatan/vaksinasi',                                      [KesehatanController::class, 'storeVaksinasi'])->name('kesehatan.vaksinasi.store');
+        Route::put('/kesehatan/vaksinasi/{id}',                                  [KesehatanController::class, 'updateVaksinasi'])->name('kesehatan.vaksinasi.update');
+        Route::delete('/kesehatan/vaksinasi/{id}',                               [KesehatanController::class, 'destroyVaksinasi'])->name('kesehatan.vaksinasi.destroy');
+        Route::patch('/kesehatan/karantina/{earTagId}/pindah',                   [KesehatanController::class, 'pindahKandang'])->name('kesehatan.karantina.pindah');
+        Route::delete('/kesehatan/{rekamId}/obat/{pakaiId}',                     [KesehatanController::class, 'destroyPemakaianObat'])->name('kesehatan.obat.destroy');
+        Route::resource('kesehatan',        KesehatanController::class)->except(['create', 'edit', 'show']);
         Route::resource('pakan-individual', PakanIndividualController::class);
 
         // ── Reproduksi ───────────────────────────────────────────────────────
-        Route::resource('reproduksi',       ReproduksiController::class);
+        Route::post('/reproduksi/{id}/konfirmasi',                    [ReproduksiController::class, 'konfirmasi'])->name('reproduksi.konfirmasi');
+        Route::post('/reproduksi/{kawin_id}/kelahiran',               [ReproduksiController::class, 'storeKelahiran'])->name('reproduksi.kelahiran.store');
+        Route::put('/reproduksi/{kawin_id}/kelahiran/{lahir_id}',     [ReproduksiController::class, 'updateKelahiran'])->name('reproduksi.kelahiran.update');
+        Route::delete('/reproduksi/{kawin_id}/kelahiran/{lahir_id}',  [ReproduksiController::class, 'destroyKelahiran'])->name('reproduksi.kelahiran.destroy');
+        Route::resource('reproduksi',       ReproduksiController::class)->except(['create', 'edit', 'show']);
 
         // ── Silsilah: Super Admin, Admin, Kepala Kandang (Pengurus = No Access) ─
         Route::get('/silsilah',                        [SilsilahController::class, 'index'])->name('silsilah.index');

@@ -21,10 +21,6 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
-<<<<<<< HEAD
-# Windows Zone.Identifier
-*:Zone.Identifier
-=======
 
 # ── Next.js (if used for frontend experiments) ──────────────
 /.next/
@@ -56,4 +52,3 @@ $RECYCLE.BIN/
 .phpstorm.meta.php
 _ide_helper.php
 _ide_helper_models.php
->>>>>>> feature/management-kandang

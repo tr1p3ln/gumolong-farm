@@ -116,20 +116,66 @@
 
     {{-- ═══ SUMMARY CARDS ═══ --}}
     <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 mb-6">
-        @foreach ([
-            ['label' => 'Total',     'value' => $summary['total'],     'bg' => 'bg-gray-100',   'text' => 'text-gray-700'],
-            ['label' => 'Aktif',     'value' => $summary['aktif'],     'bg' => 'bg-green-100',  'text' => 'text-primary'],
-            ['label' => 'Karantina', 'value' => $summary['karantina'], 'bg' => 'bg-yellow-100', 'text' => 'text-yellow-700'],
-            ['label' => 'Terjual',   'value' => $summary['terjual'],   'bg' => 'bg-blue-100',   'text' => 'text-blue-700'],
-            ['label' => 'Mati',      'value' => $summary['mati'],      'bg' => 'bg-red-100',    'text' => 'text-red-700'],
-        ] as $card)
-            <div class="rounded-lg p-4 {{ $card['bg'] }}">
-                <p class="text-2xl font-bold {{ $card['text'] }}">{{ $card['value'] }}</p>
-                <p class="text-xs font-semibold mt-0.5 uppercase tracking-wider {{ $card['text'] }} opacity-70">
-                    {{ $card['label'] }}
-                </p>
+
+        {{-- Total --}}
+        <div class="bg-white rounded-xl border border-outline-variant/30 p-5 shadow-sm flex flex-col gap-1">
+            <div class="flex items-start justify-between">
+                <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Total</p>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-surface-container text-outline">SEMUA</span>
             </div>
-        @endforeach
+            <p class="text-3xl font-black text-on-surface leading-none mt-2">{{ $summary['total'] }}</p>
+            <p class="text-xs text-on-surface-variant mt-1">ekor terdaftar</p>
+        </div>
+
+        {{-- Aktif --}}
+        @php $aktifPct = $summary['total'] > 0 ? round($summary['aktif'] / $summary['total'] * 100) : 0; @endphp
+        <div class="bg-white rounded-xl border border-outline-variant/30 p-5 shadow-sm flex flex-col gap-1">
+            <div class="flex items-start justify-between">
+                <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Aktif</p>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container">AKTIF</span>
+            </div>
+            <p class="text-3xl font-black text-on-surface leading-none mt-2">{{ $summary['aktif'] }}</p>
+            <div class="flex justify-between items-center text-[10px] text-outline uppercase tracking-wider mt-2">
+                <span>Dari total</span>
+                <span>{{ $aktifPct }}%</span>
+            </div>
+            <div class="w-full h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+                <div class="h-1.5 bg-primary rounded-full transition-all" style="width: {{ $aktifPct }}%"></div>
+            </div>
+        </div>
+
+        {{-- Karantina --}}
+        @php $karantinaBadge = $summary['karantina'] > 0 ? ['label' => 'AKTIF', 'class' => 'bg-amber-100 text-amber-700'] : ['label' => 'NIHIL', 'class' => 'bg-secondary-container text-on-secondary-container']; @endphp
+        <div class="bg-white rounded-xl border border-outline-variant/30 p-5 shadow-sm flex flex-col gap-1">
+            <div class="flex items-start justify-between">
+                <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Karantina</p>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ $karantinaBadge['class'] }}">{{ $karantinaBadge['label'] }}</span>
+            </div>
+            <p class="text-3xl font-black text-on-surface leading-none mt-2">{{ $summary['karantina'] }}</p>
+            <p class="text-xs text-on-surface-variant mt-1">dalam isolasi</p>
+        </div>
+
+        {{-- Terjual --}}
+        <div class="bg-white rounded-xl border border-outline-variant/30 p-5 shadow-sm flex flex-col gap-1">
+            <div class="flex items-start justify-between">
+                <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Terjual</p>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary-container text-on-primary-container">TERJUAL</span>
+            </div>
+            <p class="text-3xl font-black text-on-surface leading-none mt-2">{{ $summary['terjual'] }}</p>
+            <p class="text-xs text-on-surface-variant mt-1">ekor sudah dijual</p>
+        </div>
+
+        {{-- Mati --}}
+        @php $matiBadge = $summary['mati'] > 0 ? ['label' => 'TERCATAT', 'class' => 'bg-error-container text-on-error-container'] : ['label' => 'NIHIL', 'class' => 'bg-secondary-container text-on-secondary-container']; @endphp
+        <div class="bg-white rounded-xl border border-outline-variant/30 p-5 shadow-sm flex flex-col gap-1">
+            <div class="flex items-start justify-between">
+                <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Mati</p>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ $matiBadge['class'] }}">{{ $matiBadge['label'] }}</span>
+            </div>
+            <p class="text-3xl font-black text-on-surface leading-none mt-2">{{ $summary['mati'] }}</p>
+            <p class="text-xs text-on-surface-variant mt-1">ekor tercatat mati</p>
+        </div>
+
     </div>
 
     {{-- ═══ FILTER BAR ═══ --}}

@@ -75,7 +75,7 @@
             <span class="text-[10px] font-semibold uppercase tracking-wider text-[#607F5B] bg-[#607F5B]/10 px-2 py-1 rounded-full">Betina</span>
         </div>
         <p class="text-3xl font-bold text-[#1F2937]">{{ number_format($betina) }}</p>
-        <p class="text-xs text-gray-500 mt-1 font-medium">Betina (Ewe / Induk)</p>
+        <p class="text-xs text-gray-500 mt-1 font-medium">Betina (Induk)</p>
         <div class="mt-3 pt-3 border-t border-gray-100">
             <p class="text-[11px] text-gray-400">
                 {{ $totalAktif > 0 ? round(($betina / $totalAktif) * 100) : 0 }}% dari total populasi
@@ -100,7 +100,7 @@
         <p class="text-3xl font-bold {{ $mortalitasBulanIni > 0 ? 'text-[#B14B6F]' : 'text-[#1F2937]' }}">
             {{ $mortalitasBulanIni }}
         </p>
-        <p class="text-xs text-gray-500 mt-1 font-medium">Mortalitas Bulan Ini</p>
+        <p class="text-xs text-gray-500 mt-1 font-medium">Kematian Bulan Ini</p>
         <div class="mt-3 pt-3 border-t border-gray-100">
             <p class="text-[11px] text-gray-400">{{ now()->locale('id')->isoFormat('MMMM YYYY') }}</p>
         </div>
@@ -131,7 +131,7 @@
     <div class="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
         <div class="flex items-center justify-between mb-5">
             <div>
-                <h3 class="text-sm font-semibold text-[#1F2937]">Tingkat Mortalitas</h3>
+                <h3 class="text-sm font-semibold text-[#1F2937]">Tingkat Kematian</h3>
                 <p class="text-xs text-gray-400 mt-0.5">6 bulan terakhir (ekor)</p>
             </div>
             <span class="w-2.5 h-2.5 rounded-full bg-[#B14B6F]"></span>
@@ -191,7 +191,7 @@
             <canvas id="chartDistribusi"></canvas>
         </div>
         <div class="mt-4 grid grid-cols-2 gap-1.5">
-            @foreach(['anak' => 'bg-amber-400', 'betina' => 'bg-[#607F5B]', 'induk' => 'bg-[#2E7D32]', 'pejantan' => 'bg-blue-400'] as $kat => $color)
+            @foreach(['cempe' => 'bg-amber-400', 'dara' => 'bg-[#607F5B]', 'indukan' => 'bg-[#2E7D32]', 'pejantan' => 'bg-blue-400'] as $kat => $color)
                 <div class="flex items-center gap-1.5 text-[11px] text-gray-500">
                     <span class="w-2 h-2 rounded-full {{ $color }} flex-shrink-0"></span>
                     <span class="capitalize">{{ $kat }}</span>
@@ -393,7 +393,7 @@
     new Chart(document.getElementById('chartDistribusi'), {
         type: 'doughnut',
         data: {
-            labels: ['Anak', 'Betina', 'Induk', 'Pejantan'],
+            labels: ['Cempe', 'Dara', 'Indukan', 'Pejantan'],
             datasets: [{
                 data: @json($kategoriData),
                 backgroundColor: [AMBER, EARTHY, GREEN, '#60A5FA'],
