@@ -476,3 +476,66 @@
     .filter-form     { flex-direction: column; align-items: stretch; }
     .filter-form__search { min-width: unset; }
 }
+.modal-backdrop {
+    display: none;
+}
+
+.modal-backdrop.show {
+    display: flex;
+}
+
+.btn-icon i {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bi {
+    line-height: 1;
+}
+
+.summary-card__icon i {
+    font-size: 22px;
+}
+
+.btn-icon i {
+    font-size: 15px;
+}
+
+.filter-form__search-icon i {
+    font-size: 14px;
+}
+
+.btn-primary i,
+.btn-reset i {
+    margin-right: 6px;
+}
+
+.bi {
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.btn-primary i,
+.btn-outline i,
+.btn-filter i,
+.btn-icon i {
+    margin-right: 6px;
+}
+
+.sp-alert-icon i {
+    font-size: 20px;
+}
+
+.toast-icon i {
+    font-size: 18px;
+}
+
+h3 i {
+    margin-right: 8px;
+}
