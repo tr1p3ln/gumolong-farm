@@ -15,12 +15,8 @@
 
         {{-- Brand --}}
         <div class="mb-6 text-center">
-            <div class="inline-block border border-dashed border-gray-300 rounded-md px-4 py-2">
-                <span class="text-xs uppercase tracking-widest text-gray-500 font-semibold">
-                    LOGO · GUMOLONG FARM
-                </span>
-            </div>
-            <p class="mt-3 text-sm text-gray-500">Sistem Manajemen Peternakan Domba</p>
+            <img src="{{ asset('logo.png') }}" alt="Gumolong Farm" class="h-24 w-auto mx-auto object-contain">
+            <p class="mt-2 text-sm text-gray-500">Sistem Manajemen Peternakan Domba</p>
         </div>
 
         {{-- Card --}}

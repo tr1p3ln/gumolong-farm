@@ -84,6 +84,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Dashboard (Kepala Kandang → Limited view, handled in blade)
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard/export-pdf', [DashboardController::class, 'exportPdf'])->name('dashboard.export-pdf')->middleware('role:super_admin,admin');
 
         // ── Data Domba ───────────────────────────────────────────────────────
         // READ: all web roles
