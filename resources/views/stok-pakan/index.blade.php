@@ -76,6 +76,7 @@
                 <span class="stok-card-jenis">{{ strtoupper(str_replace('_', ' ', $stok->jenis)) }}</span>
                 <span class="stok-badge badge-{{ $status }}">{{ strtoupper($status) }}</span>
             </div>
+            <div class="stok-card-nama">{{ $stok->nama_pakan }}</div>
             <div class="stok-jumlah">
                 {{ number_format($stok->jumlah_stok, 0, ',', '.') }}
                 <span>{{ $stok->satuan }}</span>
@@ -422,18 +423,33 @@ Terapkan Filter</button>
 
     // ---- CSV Export ----
     function exportCSV() {
-        const rows = [['Tanggal', 'Jenis Pakan', 'Nama Spesifik', 'Ear Tag', 'Jumlah', 'Sisa Stok', 'User', 'Keterangan']];
-        document.querySelectorAll('.log-table tbody tr').forEach(tr => {
-            const cells = tr.querySelectorAll('td');
-            if (cells.length > 1) {
-                rows.push([...cells].map(td => '"' + td.innerText.trim().replace(/"/g,'""') + '"'));
-            }
-        });
-        const csv = rows.map(r => r.join(',')).join('\n');
-        const a   = document.createElement('a');
-        a.href     = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-        a.download = 'log-pemberian-pakan.csv';
-        a.click();
+    const headers = ['Tanggal', 'Waktu', 'Jenis Pakan', 'Nama Spesifik', 'Ear Tag', 'Jumlah', 'Sisa Stok', 'User', 'Keterangan'];
+    const rows = [headers];
+
+    document.querySelectorAll('.log-table tbody tr').forEach(tr => {
+        const cells = tr.querySelectorAll('td');
+        if (cells.length <= 1) return;
+
+        // Kolom 0: tanggal & waktu (ada 2 div di dalamnya)
+        const tanggal   = cells[0].querySelector('.tanggal')?.innerText.trim() ?? '';
+        const waktu     = cells[0].querySelector('.waktu')?.innerText.trim() ?? '';
+        const jenis     = cells[1].innerText.trim();
+        const nama      = cells[2].innerText.trim();
+        const earTag    = cells[3].innerText.trim().replace(/🐑/g, '').trim();
+        const jumlah    = cells[4].innerText.trim();
+        const sisaStok  = cells[5].innerText.trim();
+        const user      = cells[6].innerText.trim();
+        const ket       = cells[7].innerText.trim();
+
+        rows.push([tanggal, waktu, jenis, nama, earTag, jumlah, sisaStok, user, ket]
+            .map(v => '"' + v.replace(/"/g, '""') + '"'));
+    });
+
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const a   = document.createElement('a');
+    a.href     = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+    a.download = 'log-mutasi-pakan.csv';
+    a.click();
     }
 </script>
 @endpush
