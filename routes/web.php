@@ -115,7 +115,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/kesehatan/karantina/{earTagId}/pindah',                   [KesehatanController::class, 'pindahKandang'])->name('kesehatan.karantina.pindah');
         Route::delete('/kesehatan/{rekamId}/obat/{pakaiId}',                     [KesehatanController::class, 'destroyPemakaianObat'])->name('kesehatan.obat.destroy');
         Route::resource('kesehatan',        KesehatanController::class)->except(['create', 'edit', 'show']);
-        Route::resource('pakan-individual', PakanIndividualController::class);
+        Route::get('/pakan-individual',          [PakanIndividualController::class, 'index'])->name('pakan-individual.index');
+        Route::post('/pakan-individual',         [PakanIndividualController::class, 'store'])->name('pakan-individual.store');
+        Route::get('/pakan-individual/{earTag}', [PakanIndividualController::class, 'show'])->name('pakan-individual.show');
+        Route::get('/pakan-individual/search-domba', [PakanIndividualController::class, 'searchDomba'])->name('pakan-individual.search-domba');
+        Route::get('/pakan-individual/{earTag}/stats', [PakanIndividualController::class, 'stats'])->name('pakan-individual.stats');
+        Route::get('/pakan-individual/{earTagId}/stats', [PakanIndividualController::class, 'stats']);
 
         // ── Reproduksi ───────────────────────────────────────────────────────
         Route::post('/reproduksi/{id}/konfirmasi',                    [ReproduksiController::class, 'konfirmasi'])->name('reproduksi.konfirmasi');
