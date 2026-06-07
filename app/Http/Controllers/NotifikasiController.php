@@ -2,63 +2,78 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\NotifikasiService;
 use Illuminate\Http\Request;
 
 class NotifikasiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    private NotifikasiService $service;
+
+    public function __construct(NotifikasiService $service)
     {
-        return view('notifikasi.index');
+        $this->service = $service;
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Halaman daftar notifikasi dengan filter tipe.
      */
-    public function create()
+    public function index(Request $request)
     {
-        //
+        $userId  = auth()->id();
+        $tipe    = $request->get('tipe'); // null = semua
+
+        $notifikasi  = $this->service->getForUser($userId, $tipe, 15);
+        $counts      = $this->service->countPerTipe($userId);
+        $unreadCount = $this->service->unreadCount($userId);
+
+        return view('notifikasi.index', compact(
+            'notifikasi',
+            'counts',
+            'unreadCount',
+            'tipe',
+        ));
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Tandai satu notifikasi sebagai dibaca (AJAX).
      */
-    public function store(Request $request)
+    public function markAsRead(int $id)
     {
-        //
+        $this->service->markAsRead($id, auth()->id());
+
+        return response()->json(['success' => true]);
     }
 
     /**
-     * Display the specified resource.
+     * Tandai semua notifikasi sebagai dibaca (AJAX).
      */
-    public function show(string $id)
+    public function markAllRead()
     {
-        //
+        $this->service->markAllAsRead(auth()->id());
+
+        return response()->json(['success' => true]);
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Endpoint polling badge lonceng — dipanggil setiap X detik dari navbar.
      */
-    public function edit(string $id)
+    public function unreadCount()
     {
-        //
+        return response()->json([
+            'count' => $this->service->unreadCount(auth()->id()),
+        ]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Hapus satu notifikasi.
      */
-    public function update(Request $request, string $id)
+    public function destroy(int $id)
     {
-        //
-    }
+        \Illuminate\Support\Facades\DB::table('notifikasi')
+            ->where('notifikasi_id', $id)
+            ->where('user_id', auth()->id())
+            ->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return response()->json(['success' => true]);
     }
 }

@@ -162,6 +162,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // ── Notifikasi ───────────────────────────────────────────────────────
         Route::resource('notifikasi', NotifikasiController::class);
+        Route::prefix('notifikasi')->name('notifikasi.')->group(function () {
+        Route::get('/',                          [NotifikasiController::class, 'index'])       ->name('index');
+        Route::post('/{id}/read',               [NotifikasiController::class, 'markAsRead'])  ->name('read');
+        Route::post('/read-all',                [NotifikasiController::class, 'markAllRead']) ->name('read-all');
+        Route::get('/unread-count',             [NotifikasiController::class, 'unreadCount']) ->name('unread-count');
+        Route::delete('/{id}',                  [NotifikasiController::class, 'destroy'])     ->name('destroy');
+    });
 
         // ── Stok Pakan: pencatatan masuk/keluar manual (non-pemberian) ─────────
         Route::prefix('stok-pakan')->name('stok-pakan.')->group(function () {
