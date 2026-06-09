@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Schema;
 // {
 //     /**
 //      * Tabel: tugas_harian
-//      * Modul: A-11 Daily Task Monitor (FR-8.1, FR-8.2)
 //      */
 //     public function up(): void
 //     {
@@ -43,7 +42,6 @@ return new class extends Migration
 {
     /**
      * Tabel: tugas_harian
-     * Modul: A-11 Daily Task Monitor
      */
     public function up(): void
     {

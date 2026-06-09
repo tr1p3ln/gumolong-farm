@@ -8,7 +8,6 @@ return new class extends Migration
 {
     /**
      * Tabel: medical_record
-     * Modul: A-07 Kesehatan Ternak (FR-5.1)
      */
     public function up(): void
     {

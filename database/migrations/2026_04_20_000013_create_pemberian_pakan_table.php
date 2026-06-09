@@ -8,7 +8,6 @@ return new class extends Migration
 {
     /**
      * Tabel: pemberian_pakan
-     * Modul: A-08 Pakan Individual & FCR (FR-6.1)
      * ISSUE #1 FIX: pakan_id FK ditambahkan
      * ISSUE #5 FIX: kolom fcr DIHAPUS (dihitung real-time via JOIN)
      */

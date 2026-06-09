@@ -8,7 +8,6 @@ return new class extends Migration
 {
     /**
      * Tabel: user
-     * Modul: User Management (FR-1.2)
      */
     public function up(): void
     {

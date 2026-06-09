@@ -269,7 +269,7 @@
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden">
         <div class="px-8 py-6 border-b border-gray-200 flex justify-between items-start">
             <div>
-                <h2 class="text-xl font-bold text-gray-900">Cek Inbreeding (FR-7.3)</h2>
+                <h2 class="text-xl font-bold text-gray-900">Cek Inbreeding</h2>
                 <p class="text-xs text-gray-500 mt-1">Periksa hubungan kekerabatan antara induk dan pejantan</p>
             </div>
             <button @click="modalCekInbreeding = false; cekResult = null"
@@ -372,7 +372,7 @@
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl overflow-hidden max-h-[90vh] flex flex-col">
         <div class="px-8 py-6 border-b border-gray-200 flex justify-between items-start flex-shrink-0">
             <div>
-                <h2 class="text-xl font-bold text-gray-900">Rekomendasi Pejantan (FR-7.4)</h2>
+                <h2 class="text-xl font-bold text-gray-900">Rekomendasi Pejantan</h2>
                 <p class="text-xs text-gray-500 mt-1">Pejantan diurutkan dari COI terkecil (terbaik) ke terbesar</p>
             </div>
             <button @click="modalRekomendasiPejantan = false; rekResult = null"

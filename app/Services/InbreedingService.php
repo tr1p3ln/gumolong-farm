@@ -4,8 +4,7 @@ namespace App\Services;
 
 /**
  * Service untuk mengecek tingkat kekerabatan antara pejantan dan indukan
- * sebelum melakukan perkawinan, untuk mencegah inbreeding sesuai
- * FR-7.4 Silsilah Module.
+ * sebelum melakukan perkawinan, untuk mencegah inbreeding.
  */
 class InbreedingService
 {
