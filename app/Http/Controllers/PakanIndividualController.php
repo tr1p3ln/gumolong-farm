@@ -10,67 +10,76 @@ class PakanIndividualController extends Controller
 {
     public function index(Request $request)
     {
-        // ── Base query domba + berat terbaru + pakan ──────────────────
-    $query = DB::table('domba as d')
-    ->leftJoin(
-        DB::raw('(SELECT DISTINCT ON (ear_tag_id) ear_tag_id, berat_kg FROM penimbangan ORDER BY ear_tag_id, tanggal_timbang DESC) as p_latest'),
-        'd.ear_tag_id', '=', 'p_latest.ear_tag_id'
-    )
-    ->leftJoin(
-        DB::raw('(SELECT ear_tag_id, SUM(jumlah_gram) as pakan_hari_ini FROM pemberian_pakan WHERE tanggal_pemberian = CURRENT_DATE GROUP BY ear_tag_id) as pp_today'),
-        'd.ear_tag_id', '=', 'pp_today.ear_tag_id'
-    )
-    ->leftJoin(
-        DB::raw('(SELECT ear_tag_id, SUM(jumlah_gram) as total_pakan_30hr FROM pemberian_pakan WHERE tanggal_pemberian >= CURRENT_DATE - INTERVAL \'30 days\' GROUP BY ear_tag_id) as pp_30'),
-        'd.ear_tag_id', '=', 'pp_30.ear_tag_id'
-    )
-    ->leftJoin(
-        DB::raw('(SELECT DISTINCT ON (ear_tag_id) ear_tag_id, berat_kg FROM penimbangan ORDER BY ear_tag_id, tanggal_timbang ASC) as p_awal'),
-        'd.ear_tag_id', '=', 'p_awal.ear_tag_id'
-    )
-    ->select(
-        'd.ear_tag_id', 'd.nama', 'd.kategori', 'd.ras',
-        'p_latest.berat_kg',
-        'pp_today.pakan_hari_ini',
-        'pp_30.total_pakan_30hr',
-        DB::raw("
-            CASE
-                WHEN pp_30.total_pakan_30hr IS NOT NULL
-                AND pp_30.total_pakan_30hr > 0
-                AND p_latest.berat_kg IS NOT NULL
-                AND p_awal.berat_kg IS NOT NULL
-                AND (p_latest.berat_kg - p_awal.berat_kg) > 0
-                THEN ROUND(
-                    (pp_30.total_pakan_30hr / 1000.0) /
-                    (p_latest.berat_kg - p_awal.berat_kg),
-                2)
-                ELSE NULL
-            END as fcr
-        ")
-    )
-    ->where('d.status', 'aktif')
-    ->whereNull('d.deleted_at');
+       // ── Base query ────────────────────────────────────────────────
+    $baseQuery = DB::table('domba as d')
+        ->leftJoin(
+            DB::raw('(SELECT DISTINCT ON (ear_tag_id) ear_tag_id, berat_kg FROM penimbangan ORDER BY ear_tag_id, tanggal_timbang DESC) as p_latest'),
+            'd.ear_tag_id', '=', 'p_latest.ear_tag_id'
+        )
+        ->leftJoin(
+            DB::raw('(SELECT ear_tag_id, SUM(jumlah_gram) as pakan_hari_ini FROM pemberian_pakan WHERE tanggal_pemberian = CURRENT_DATE GROUP BY ear_tag_id) as pp_today'),
+            'd.ear_tag_id', '=', 'pp_today.ear_tag_id'
+        )
+        ->leftJoin(
+            DB::raw('(SELECT ear_tag_id, SUM(jumlah_gram) as total_pakan_30hr FROM pemberian_pakan WHERE tanggal_pemberian >= CURRENT_DATE - INTERVAL \'30 days\' GROUP BY ear_tag_id) as pp_30'),
+            'd.ear_tag_id', '=', 'pp_30.ear_tag_id'
+        )
+        ->leftJoin(
+            DB::raw('(SELECT DISTINCT ON (ear_tag_id) ear_tag_id, berat_kg FROM penimbangan ORDER BY ear_tag_id, tanggal_timbang ASC) as p_awal'),
+            'd.ear_tag_id', '=', 'p_awal.ear_tag_id'
+        )
+        ->select(
+            'd.ear_tag_id', 'd.nama', 'd.kategori', 'd.ras',
+            'p_latest.berat_kg',
+            'pp_today.pakan_hari_ini',
+            'pp_30.total_pakan_30hr',
+            DB::raw("
+                CASE
+                    WHEN pp_30.total_pakan_30hr IS NOT NULL
+                    AND pp_30.total_pakan_30hr > 0
+                    AND p_latest.berat_kg IS NOT NULL
+                    AND p_awal.berat_kg IS NOT NULL
+                    AND (p_latest.berat_kg - p_awal.berat_kg) > 0
+                    THEN ROUND(
+                        (pp_30.total_pakan_30hr / 1000.0) /
+                        (p_latest.berat_kg - p_awal.berat_kg),
+                    2)
+                    ELSE NULL
+                END as fcr
+            ")
+        )
+        ->where('d.status', 'aktif')
+        ->whereNull('d.deleted_at');
 
-        // ── Filter ────────────────────────────────────────────────────
-        if ($request->filled('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('d.ear_tag_id', 'ilike', "%{$request->search}%")
-                ->orWhere('d.nama', 'ilike', "%{$request->search}%");
-            });
-        }
-        if ($request->filled('kategori')) {
-            $query->where('d.kategori', $request->kategori);
-        }
-        if ($request->filled('status_fcr')) {
-            $query->havingRaw(match($request->status_fcr) {
-                'efisien' => 'fcr <= 6.0',
-                'normal'  => 'fcr > 6.0 AND fcr <= 8.0',
-                'boros'   => 'fcr > 8.0',
-                default   => '1=1',
-            });
-        }
+    // ── Filter search & kategori (di inner query) ─────────────────
+    if ($request->filled('search')) {
+        $baseQuery->where(function ($q) use ($request) {
+            $q->where('d.ear_tag_id', 'ilike', "%{$request->search}%")
+            ->orWhere('d.nama', 'ilike', "%{$request->search}%");
+        });
+    }
+    if ($request->filled('kategori')) {
+        $baseQuery->where('d.kategori', $request->kategori);
+    }
 
-        $dombaFcr = $query->orderBy('d.ear_tag_id')->paginate(10)->withQueryString();
+    // ── Wrap jadi subquery → baru filter FCR di luar ──────────────
+    $outerQuery = DB::table(DB::raw("({$baseQuery->toSql()}) as sub"))
+    ->addBinding($baseQuery->getBindings(), 'where')
+    ->select('*');
+
+    if ($request->filled('status_fcr')) {
+        $fcrCondition = match($request->status_fcr) {
+            'efisien' => 'fcr < 5.0',
+            'normal'  => 'fcr >= 5.0 AND fcr <= 7.0',
+            'boros'   => 'fcr > 7.0',
+            default   => null,
+        };
+        if ($fcrCondition) {
+            $outerQuery->whereRaw($fcrCondition);
+        }
+    }
+
+    $dombaFcr = $outerQuery->orderBy('ear_tag_id')->paginate(10)->withQueryString();
 
 // ── Metric cards ──────────────────────────────────────────────
 $allFcr = DB::table('domba as d')
