@@ -7,6 +7,7 @@
 @include('pakan-individual.partials.catat-pakan')
 
 
+
 {{-- ══ PAGE HEADER ══ --}}
 <div class="flex items-center justify-between mb-5">
     <div>
