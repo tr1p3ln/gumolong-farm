@@ -57,7 +57,8 @@
             ['label' => 'Obat & Vaksin', 'route' => 'obat-vaksin.index', 'active' => 'obat-vaksin.*', 'roles' => $ALL_WEB, 'icon' => 'obat'],
         ],
         'MONITORING' => [
-            ['label' => 'Pertumbuhan',   'route' => 'pertumbuhan.index',      'active' => 'pertumbuhan.*',      'roles' => $ALL_WEB, 'icon' => 'pertumbuhan'],
+            // Point the sidebar to the tracking-pertumbuhan routes (feature-rich tracking page)
+            ['label' => 'Pertumbuhan',   'route' => 'tracking-pertumbuhan.index',      'active' => 'tracking-pertumbuhan.*',      'roles' => $ALL_WEB, 'icon' => 'pertumbuhan'],
             ['label' => 'Kesehatan',     'route' => 'kesehatan.index',        'active' => 'kesehatan.*',        'roles' => $ALL_WEB, 'icon' => 'kesehatan'],
             ['label' => 'Pakan (FCR)',   'route' => 'pakan-individual.index', 'active' => 'pakan-individual.*', 'roles' => $ALL_WEB, 'icon' => 'fcr'],
         ],
