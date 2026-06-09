@@ -754,13 +754,14 @@
         try {
             const res  = await fetch(`/obat-vaksin/${id}`, { headers: { 'Accept': 'application/json' } });
             const data = await res.json();
-            document.getElementById('editModalSubtitle').textContent = data.formatted_id + ' | KAMUS DATA: TABEL OBAT_VAKSIN';
-            document.getElementById('formEditObat').action           = `/obat-vaksin/${id}`;
-            document.getElementById('edit_nama_obat').value          = data.nama_obat;
-            document.getElementById('edit_stok').value               = data.stok;
-            document.getElementById('edit_stok_minimum').value       = data.stok_minimum;
-            document.getElementById('edit_tanggal_expired').value    = data.tanggal_expired ?? '';
-            document.getElementById('edit_satuan').value             = data.satuan;
+            document.getElementById('editModalSubtitle').textContent         = data.formatted_id + ' | KAMUS DATA: TABEL OBAT_VAKSIN';
+            document.getElementById('formEditObat').action                   = `/obat-vaksin/${id}`;
+            document.getElementById('edit_nama_obat').value                  = data.nama_obat;
+            document.getElementById('edit_stok').value                       = data.stok;
+            document.getElementById('edit_stok_minimum').value               = data.stok_minimum;
+            document.getElementById('edit_tanggal_expired').value            = data.tanggal_expired ?? '';
+            document.getElementById('edit_interval_vaksinasi').value         = data.interval_vaksinasi ?? ''; // ← di sini
+            document.getElementById('edit_satuan').value                     = data.satuan;
             editPilihTipe(data.tipe);
             document.getElementById('editLoadingState').classList.add('hidden');
             document.getElementById('editFormWrapper').classList.remove('hidden');

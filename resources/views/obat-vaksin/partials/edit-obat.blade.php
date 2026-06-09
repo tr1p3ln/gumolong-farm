@@ -85,6 +85,22 @@
             class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary transition">
     </div>
 
+    {{-- ── INTERVAL VAKSINASI ── --}}
+<div>
+    <label class="block text-xs font-semibold text-gray-700 mb-1">
+        Interval Vaksinasi <span class="text-gray-400 font-normal">Opsional</span>
+    </label>
+    <div class="flex">
+        <input type="number" name="interval_vaksinasi" id="edit_interval_vaksinasi" form="formEditObat" min="1"
+            placeholder="Contoh: 6"
+            class="w-full border border-gray-300 rounded-l-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-300 transition">
+        <span class="inline-flex items-center px-3 border border-l-0 border-gray-300 rounded-r-lg bg-gray-50 text-xs text-gray-500 font-medium whitespace-nowrap">
+            Bulan
+        </span>
+    </div>
+    <p class="text-xs text-gray-400 mt-1">Khusus vaksin &amp; obat cacing.</p>
+</div>
+
 </div>
 
 {{-- Form tersembunyi — action di-set dinamis via JS --}}
