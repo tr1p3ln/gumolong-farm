@@ -10,7 +10,6 @@
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
             <div>
                 <h2 class="text-base font-bold text-gray-800">Catat Pemberian Pakan</h2>
-                <p class="text-[11px] text-gray-400 mt-0.5 font-mono">TABEL: PEMBERIAN_PAKAN</p>
             </div>
             <button type="button" onclick="closeCatatPakan()"
                 class="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 transition text-xl leading-none">&times;</button>

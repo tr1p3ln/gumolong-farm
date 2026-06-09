@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Stok Pakan')
+@section('page-title', 'Stok Pakan')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/stok-pakan.css') }}">
@@ -11,9 +11,7 @@
 
     {{-- ======================== BREADCRUMB & HEADER ======================== --}}
     <div class="sp-header">
-        <div class="breadcrumb">
-            <a href="{{ route('stok-pakan.index') }}">Inventaris</a> &rsaquo; Stok Pakan
-        </div>
+
         <div class="header-top">
             <div>
                 <h1>Stok Pakan</h1>

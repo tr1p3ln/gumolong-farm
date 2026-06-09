@@ -1,7 +1,7 @@
 {{-- resources/views/manajemen-user/index.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Manajemen User')
+@section('page-title', 'Manajemen User')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/users.css') }}">
@@ -12,9 +12,7 @@
 
     {{-- ======================== HEADER ======================== --}}
     <div class="mu-header">
-        <div class="breadcrumb">
-            <a href="{{ route('dashboard') }}">Dashboard</a> &rsaquo; Manajemen User
-        </div>
+
         <div class="mu-header__top">
             <div>
                 <h1>Manajemen User</h1>

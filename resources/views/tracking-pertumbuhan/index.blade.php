@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tracking Pertumbuhan')
+@section('page-title', 'Pertumbuhan')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/pertumbuhan.css') }}">

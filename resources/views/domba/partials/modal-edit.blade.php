@@ -104,9 +104,7 @@
                         : 'Edit Data Domba'">
                 </h1>
                 <p class="text-xs text-gray-500 font-medium mt-1"
-                   x-text="dombaData
-                       ? 'UC-MD.2 | Kamus Data: tabel DOMBA | ID: ' + (dombaData.e_ear_tag_id || '-')
-                       : 'Memuat data...'">
+                   x-text="dombaData ? (dombaData.e_ear_tag_id || '-') : 'Memuat data...'">
                 </p>
             </div>
             <button type="button" @click="modalEdit = false"

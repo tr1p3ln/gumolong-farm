@@ -361,7 +361,7 @@
                 <span class="text-lg flex-shrink-0 leading-none mt-0.5">ℹ️</span>
                 <p class="text-sm text-blue-800">
                     Tentukan <strong>kategori, status awal, dan penempatan kandang</strong> domba.
-                    Data berat awal digunakan sebagai titik referensi awal tracking pertumbuhan <em>(FR-4)</em>.
+                    Data berat awal digunakan sebagai titik referensi awal tracking pertumbuhan.
                 </p>
             </div>
 
@@ -382,9 +382,6 @@
                             <option value="indukan">Indukan</option>
                             <option value="pejantan">Pejantan</option>
                         </select>
-                        <p class="text-xs text-gray-400 mt-1">
-                            Kamus Data: ENUM kategori tabel DOMBA | Cempe = anak &lt; 6 bulan
-                        </p>
                         <p x-show="errors.kategori" x-text="errors.kategori?.[0]" class="text-xs text-accent mt-1"></p>
                     </div>
 
@@ -399,7 +396,6 @@
                             <option value="terjual">Terjual</option>
                             <option value="mati">Mati</option>
                         </select>
-                        <p class="text-xs text-gray-400 mt-1">Kamus Data: ENUM status tabel DOMBA</p>
                     </div>
 
                     <div>
@@ -449,9 +445,6 @@
                         <input type="number" x-model="form.berat_awal"
                                step="0.1" min="0" placeholder="0.0"
                                class="w-full border border-gray-300 rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition">
-                        <p class="text-xs text-gray-400 mt-1">
-                            Menjadi titik awal di modul Tracking Pertumbuhan (FR-4)
-                        </p>
                     </div>
 
                     <div>
@@ -460,9 +453,6 @@
                         </label>
                         <input type="date" x-model="form.tanggal_timbang_awal"
                                class="w-full border border-gray-300 rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition">
-                        <p class="text-xs text-gray-400 mt-1">
-                            Otomatis tercatat ke tabel PENIMBANGAN sebagai record pertama
-                        </p>
                     </div>
 
                     <div>
@@ -471,9 +461,6 @@
                         </label>
                         <textarea x-model="form.catatan" rows="4" placeholder="Sehat Lengkap"
                                   class="w-full border border-gray-300 rounded-md px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition resize-none"></textarea>
-                        <p class="text-xs text-gray-400 mt-1">
-                            Kamus Data: kolom catatan TEXT NULL tabel DOMBA
-                        </p>
                     </div>
                 </div>
             </div>
@@ -487,8 +474,8 @@
             <div class="flex items-start gap-3 bg-blue-50 border-l-4 border-primary rounded-r-md px-4 py-3">
                 <span class="text-lg flex-shrink-0 leading-none mt-0.5">ℹ️</span>
                 <p class="text-sm text-blue-800">
-                    Data <strong>silsilah</strong> digunakan untuk Pedigree Tracking dan deteksi inbreeding
-                    <em>(FR-7)</em>. Lewati bagian ini jika domba tidak diketahui asal-usulnya.
+                    Data <strong>silsilah</strong> digunakan untuk Pedigree Tracking dan deteksi inbreeding.
+                    Lewati bagian ini jika domba tidak diketahui asal-usulnya.
                 </p>
             </div>
 
@@ -582,7 +569,7 @@
                     <div class="flex items-start gap-2">
                         <span class="flex-shrink-0 mt-0.5">⚠️</span>
                         <div>
-                            <p class="text-sm font-bold text-accent">Deteksi Inbreeding (FR-7):</p>
+                            <p class="text-sm font-bold text-accent">Deteksi Inbreeding:</p>
                             <p class="text-xs text-rose-700 mt-0.5">
                                 Sistem akan otomatis memperingatkan jika induk betina dan pejantan
                                 memiliki garis keturunan yang sama.

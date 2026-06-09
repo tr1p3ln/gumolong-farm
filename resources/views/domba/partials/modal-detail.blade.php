@@ -68,9 +68,7 @@
                         : 'Detail Domba'">
                 </h2>
                 <p class="text-xs font-medium text-gray-500 mt-1 uppercase tracking-wider"
-                   x-text="dombaData
-                       ? 'UC-MD.3 | Kamus Data: tabel DOMBA + PENIMBANGAN + MEDICAL_RECORD | ' + (dombaData.e_ear_tag_id || '-')
-                       : 'Memuat...'">
+                   x-text="dombaData ? (dombaData.e_ear_tag_id || '-') : 'Memuat...'">
                 </p>
             </div>
             <button type="button" @click="modalDetail = false"

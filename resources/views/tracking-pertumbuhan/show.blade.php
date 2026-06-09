@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Detail Pertumbuhan Domba')
+@section('page-title', 'Detail Pertumbuhan')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/pertumbuhan.css') }}">

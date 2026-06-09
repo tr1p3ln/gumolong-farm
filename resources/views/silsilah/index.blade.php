@@ -60,8 +60,7 @@
     <div>
         <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Silsilah & Pedigree</h1>
         <p class="text-gray-500 text-sm mt-1">
-            Kelola pedigree domba dan deteksi inbreeding —
-            <span class="bg-gray-100 px-1.5 py-0.5 rounded text-xs font-mono">tabel DOMBA (self-ref)</span>
+            Kelola pedigree domba dan deteksi inbreeding
         </p>
     </div>
     <div class="flex gap-3">

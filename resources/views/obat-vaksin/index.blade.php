@@ -64,7 +64,6 @@
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
             <div>
                 <h2 class="text-base font-bold text-gray-800">Catat Penggunaan Obat / Vaksin</h2>
-                <p class="text-[11px] text-gray-400 mt-0.5 font-mono">UC-02-05 | KAMUS DATA: TABEL PEMAKAIAN_OBAT</p>
             </div>
             <button onclick="closeCatatPakaiModal()"
                 class="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 transition text-xl leading-none">&times;</button>
