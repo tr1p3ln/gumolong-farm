@@ -8,7 +8,6 @@ return new class extends Migration
 {
     /**
      * Tabel: penimbangan
-     * Modul: A-06 Tracking Pertumbuhan (FR-4.1, FR-4.2)
      */
     public function up(): void
     {

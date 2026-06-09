@@ -8,7 +8,6 @@ return new class extends Migration
 {
     /**
      * Tabel: pemberian_pakan
-     * Modul: A-08 Pakan Individual & FCR (FR-6.1)
      * ISSUE #1 FIX: pakan_id FK ditambahkan
      * ISSUE #5 FIX: kolom fcr DIHAPUS (dihitung real-time via JOIN)
      */
@@ -22,6 +21,9 @@ return new class extends Migration
             $table->date('tanggal_pemberian');
             $table->enum('sesi', ['pagi', 'sore']);
             $table->decimal('jumlah_gram', 8, 2);
+            $table->string('satuan')->nullable();          // tambahkan
+            $table->decimal('sisa_stok', 10, 2)->nullable(); // tambahkan
+            $table->string('keterangan')->nullable();      // tambahkan
             $table->timestamps();
 
             $table->foreign('pakan_id')

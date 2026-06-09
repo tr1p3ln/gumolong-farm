@@ -85,6 +85,7 @@ class UserController extends Controller
             abort(403, 'Hanya super admin yang dapat membuat akun super admin.');
         }
 
+        $validated['password'] = Hash::make($validated['password']);
         User::create($validated);
 
         return back()->with('success', "Akun {$validated['nama']} berhasil dibuat.");
@@ -116,6 +117,10 @@ class UserController extends Controller
 
         if (empty($validated['password'])) {
             unset($validated['password']);
+        }
+
+        if (isset($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
         }
 
         $user->update($validated);
@@ -155,7 +160,7 @@ class UserController extends Controller
     /* ------------------------------------------------------------------ */
     /*  TOGGLE STATUS (AJAX-friendly)                                       */
     /* ------------------------------------------------------------------ */
-    public function toggleStatus(User $user)
+    public function toggleStatus(Request $request, User $user)
     {
         // Cegah self-disable
         if ($user->user_id === Auth::id()) {
@@ -171,6 +176,17 @@ class UserController extends Controller
         $user->save();
 
         $label = $user->status === 'aktif' ? 'diaktifkan' : 'dinonaktifkan';
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'status'  => 'success',
+                'message' => "Akun {$user->nama} berhasil {$label}.",
+                'data'    => [
+                    'user_id' => $user->user_id,
+                    'status'  => $user->status,
+                ],
+            ]);
+        }
 
         return back()->with('success', "Akun {$user->nama} berhasil {$label}.");
     }

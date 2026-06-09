@@ -15,6 +15,7 @@ use App\Http\Controllers\TemplateTugasController;
 use App\Http\Controllers\KandangController;
 use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TrackingPertumbuhanController;
 use App\Http\Controllers\Mobile\MobilePKController;
 use App\Http\Controllers\Mobile\MobileKKController;
 use Illuminate\Support\Facades\Route;
@@ -84,6 +85,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Dashboard (Kepala Kandang → Limited view, handled in blade)
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard/export-pdf', [DashboardController::class, 'exportPdf'])->name('dashboard.export-pdf')->middleware('role:super_admin,admin');
 
         // ── Data Domba ───────────────────────────────────────────────────────
         // READ: all web roles
@@ -111,14 +113,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
 
         // ── Monitoring ───────────────────────────────────────────────────────
-        Route::resource('pertumbuhan',      PertumbuhanController::class);
+        Route::resource('pertumbuhan',      TrackingPertumbuhanController::class);
         Route::post('/kesehatan/vaksinasi',                                      [KesehatanController::class, 'storeVaksinasi'])->name('kesehatan.vaksinasi.store');
         Route::put('/kesehatan/vaksinasi/{id}',                                  [KesehatanController::class, 'updateVaksinasi'])->name('kesehatan.vaksinasi.update');
         Route::delete('/kesehatan/vaksinasi/{id}',                               [KesehatanController::class, 'destroyVaksinasi'])->name('kesehatan.vaksinasi.destroy');
         Route::patch('/kesehatan/karantina/{earTagId}/pindah',                   [KesehatanController::class, 'pindahKandang'])->name('kesehatan.karantina.pindah');
         Route::delete('/kesehatan/{rekamId}/obat/{pakaiId}',                     [KesehatanController::class, 'destroyPemakaianObat'])->name('kesehatan.obat.destroy');
         Route::resource('kesehatan',        KesehatanController::class)->except(['create', 'edit', 'show']);
-        Route::resource('pakan-individual', PakanIndividualController::class);
+        Route::get('/pakan-individual',          [PakanIndividualController::class, 'index'])->name('pakan-individual.index');
+        Route::post('/pakan-individual',         [PakanIndividualController::class, 'store'])->name('pakan-individual.store');
+        Route::get('/pakan-individual/{earTag}', [PakanIndividualController::class, 'show'])->name('pakan-individual.show');
+        Route::get('/pakan-individual/search-domba', [PakanIndividualController::class, 'searchDomba'])->name('pakan-individual.search-domba');
+        Route::get('/pakan-individual/{earTag}/stats', [PakanIndividualController::class, 'stats'])->name('pakan-individual.stats');
+        Route::get('/pakan-individual/{earTagId}/stats', [PakanIndividualController::class, 'stats']);
 
         // ── Reproduksi ───────────────────────────────────────────────────────
         Route::post('/reproduksi/{id}/konfirmasi',                    [ReproduksiController::class, 'konfirmasi'])->name('reproduksi.konfirmasi');
@@ -172,10 +179,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->name('keluar');
         });
 
+        // ── Tracking Pertumbuhan ──────────────────────────────────────────────────────
+        Route::prefix('tracking-pertumbuhan')->name('tracking-pertumbuhan.')->group(function () {
+        
+            // Halaman utama – daftar domba + statistik
+            Route::get('/', [TrackingPertumbuhanController::class, 'index'])
+                ->name('index');
+        
+            // Detail domba + riwayat penimbangan
+            Route::get('/{earTagId}', [TrackingPertumbuhanController::class, 'show'])
+                ->name('show');
+        
+            // Simpan penimbangan baru untuk domba tertentu
+            Route::post('/{earTagId}/penimbangan', [TrackingPertumbuhanController::class, 'storePenimbangan'])
+                ->name('penimbangan.store');
+        });
+
+
         // ── Account Management: Super Admin & Admin only ─────────────────────
         Route::middleware('role:super_admin,admin')->group(function () {
             Route::resource('users', UserController::class);
             Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
+            Route::patch('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
 
             // ── Manajemen Kandang ─────────────────────────────────────────────
             Route::get('/kandang',          [KandangController::class, 'index'])->name('kandang.index');

@@ -20,10 +20,12 @@
             </div>
             <div class="header-actions">
                 <button class="btn-outline" onclick="openModal('modal-masuk')">
-                    &#43; Catat Pakan Masuk
+                    <i class="bi bi-box-arrow-in-down"></i> 
+                    Catat Pakan Masuk
                 </button>
                 <button class="btn-primary" onclick="openModal('modal-keluar')">
-                    &#9654; Catat Pakan Keluar
+                    <i class="bi bi-box-arrow-up"></i>
+                    Catat Pakan Keluar
                 </button>
             </div>
         </div>
@@ -35,7 +37,7 @@
         @foreach($peringatan as $p)
         @php $infoPrediksi = collect($prediksi)->firstWhere('pakan_id', $p->pakan_id); @endphp
         <div class="sp-alert sp-alert-warning">
-            <div class="sp-alert-icon">&#9888;</div>
+            <div class="sp-alert-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
             <div class="sp-alert-body">
                 <strong>Peringatan: Stok {{ $p->nama_pakan }} Menipis</strong>
                 <span>Tersisa {{ number_format($p->jumlah_stok,0,',','.') }} {{ $p->satuan }}
@@ -51,7 +53,7 @@
 
         @foreach($kritis as $k)
         <div class="sp-alert sp-alert-danger">
-            <div class="sp-alert-icon">&#10007;</div>
+            <div class="sp-alert-icon"><i class="bi bi-x-octagon-fill"></i></div>
             <div class="sp-alert-body">
                 <strong>Kritis: Stok {{ $k->nama_pakan }} Habis</strong>
                 <span>Stok saat ini 0 {{ $k->satuan }}. Distribusi pakan harian terganggu.</span>
@@ -74,6 +76,7 @@
                 <span class="stok-card-jenis">{{ strtoupper(str_replace('_', ' ', $stok->jenis)) }}</span>
                 <span class="stok-badge badge-{{ $status }}">{{ strtoupper($status) }}</span>
             </div>
+            <div class="stok-card-nama">{{ $stok->nama_pakan }}</div>
             <div class="stok-jumlah">
                 {{ number_format($stok->jumlah_stok, 0, ',', '.') }}
                 <span>{{ $stok->satuan }}</span>
@@ -172,7 +175,8 @@
                         @endforeach
                     </select>
                 </div>
-                <button type="submit" class="btn-filter">&#9783; Terapkan Filter</button>
+                <button type="submit" class="btn-filter"><i class="bi bi-funnel-fill"></i>
+Terapkan Filter</button>
             </form>
         </div>
     </div>
@@ -185,8 +189,8 @@
                 <p>Data mutasi harian berdasarkan input operator</p>
             </div>
             <div class="log-actions">
-                <button class="btn-icon" title="Export CSV" onclick="exportCSV()">&#8659;</button>
-                <button class="btn-icon" title="Cetak" onclick="window.print()">&#128438;</button>
+                <button class="btn-icon" title="Export CSV" onclick="exportCSV()"><i class="bi bi-download"></i></button>
+                <button class="btn-icon" title="Cetak" onclick="window.print()"><i class="bi bi-printer"></i></button>
             </div>
         </div>
 
@@ -245,9 +249,9 @@
         @if($logPemberian->lastPage() > 1)
         <div class="sp-pagination">
             @if($logPemberian->onFirstPage())
-                <span>&#8249;</span>
+                <span><i class="bi bi-chevron-left"></i></span>
             @else
-                <a href="{{ $logPemberian->previousPageUrl() }}">&#8249;</a>
+                <a href="{{ $logPemberian->previousPageUrl() }}"><i class="bi bi-chevron-left"></i></a>
             @endif
 
             @foreach($logPemberian->getUrlRange(1, $logPemberian->lastPage()) as $page => $url)
@@ -259,9 +263,9 @@
             @endforeach
 
             @if($logPemberian->hasMorePages())
-                <a href="{{ $logPemberian->nextPageUrl() }}">&#8250;</a>
+                <a href="{{ $logPemberian->nextPageUrl() }}"><i class="bi bi-chevron-right"></i></a>
             @else
-                <span>&#8250;</span>
+                <span><i class="bi bi-chevron-right"></i></span>
             @endif
         </div>
         @endif
@@ -272,7 +276,10 @@
 {{-- ======================== MODAL: CATAT MASUK ======================== --}}
 <div class="modal-backdrop" id="modal-masuk">
     <div class="modal-box">
-        <h3>&#43; Catat Pakan Masuk</h3>
+        <h3>
+            <i class="bi bi-box-arrow-in-down"></i>
+            Catat Pakan Masuk
+        </h3>
         <p>Tambahkan stok pakan yang baru diterima dari supplier</p>
         <form method="POST" action="{{ route('stok-pakan.masuk') }}">
             @csrf
@@ -306,7 +313,10 @@
 {{-- ======================== MODAL: CATAT KELUAR (PEMBERIAN PAKAN) ======================== --}}
 <div class="modal-backdrop" id="modal-keluar">
     <div class="modal-box">
-        <h3>&#9654; Catat Pakan Keluar</h3>
+        <h3>
+            <i class="bi bi-box-arrow-up"></i>
+            Catat Pakan Keluar
+        </h3>
         <p>Catat pemberian pakan ke domba — stok akan otomatis berkurang</p>
         <form method="POST" action="{{ route('stok-pakan.keluar') }}">
             @csrf
@@ -357,14 +367,14 @@
 {{-- ======================== TOAST ======================== --}}
 @if(session('success'))
 <div class="toast show" id="toast-success">
-    <span class="toast-icon">&#10003;</span>
+    <span class="toast-icon"><i class="bi bi-check-circle-fill"></i></span>
     {{ session('success') }}
 </div>
 @endif
 
 @if($errors->any())
 <div class="toast show" id="toast-error" style="border-color:#F5C6C4;">
-    <span class="toast-icon" style="color:var(--gf-red);">&#10007;</span>
+    <span class="toast-icon" style="color:var(--gf-red);"><i class="bi bi-x-circle-fill"></i></span>
     {{ $errors->first() }}
 </div>
 @endif
@@ -413,18 +423,33 @@
 
     // ---- CSV Export ----
     function exportCSV() {
-        const rows = [['Tanggal', 'Jenis Pakan', 'Nama Spesifik', 'Ear Tag', 'Jumlah', 'Sisa Stok', 'User', 'Keterangan']];
-        document.querySelectorAll('.log-table tbody tr').forEach(tr => {
-            const cells = tr.querySelectorAll('td');
-            if (cells.length > 1) {
-                rows.push([...cells].map(td => '"' + td.innerText.trim().replace(/"/g,'""') + '"'));
-            }
-        });
-        const csv = rows.map(r => r.join(',')).join('\n');
-        const a   = document.createElement('a');
-        a.href     = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-        a.download = 'log-pemberian-pakan.csv';
-        a.click();
+    const headers = ['Tanggal', 'Waktu', 'Jenis Pakan', 'Nama Spesifik', 'Ear Tag', 'Jumlah', 'Sisa Stok', 'User', 'Keterangan'];
+    const rows = [headers];
+
+    document.querySelectorAll('.log-table tbody tr').forEach(tr => {
+        const cells = tr.querySelectorAll('td');
+        if (cells.length <= 1) return;
+
+        // Kolom 0: tanggal & waktu (ada 2 div di dalamnya)
+        const tanggal   = cells[0].querySelector('.tanggal')?.innerText.trim() ?? '';
+        const waktu     = cells[0].querySelector('.waktu')?.innerText.trim() ?? '';
+        const jenis     = cells[1].innerText.trim();
+        const nama      = cells[2].innerText.trim();
+        const earTag    = cells[3].innerText.trim().replace(/🐑/g, '').trim();
+        const jumlah    = cells[4].innerText.trim();
+        const sisaStok  = cells[5].innerText.trim();
+        const user      = cells[6].innerText.trim();
+        const ket       = cells[7].innerText.trim();
+
+        rows.push([tanggal, waktu, jenis, nama, earTag, jumlah, sisaStok, user, ket]
+            .map(v => '"' + v.replace(/"/g, '""') + '"'));
+    });
+
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const a   = document.createElement('a');
+    a.href     = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+    a.download = 'log-mutasi-pakan.csv';
+    a.click();
     }
 </script>
 @endpush

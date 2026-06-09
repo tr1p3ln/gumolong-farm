@@ -26,34 +26,33 @@
         </div>
     </div>
 
-    {{-- ======================== SUMMARY CARDS ======================== --}}
     <div class="mu-summary-grid">
         <div class="summary-card">
-            <div class="summary-card__icon summary-card__icon--total">&#9760;</div>
+            <div class="summary-card__icon summary-card__icon--total"><i class="bi bi-people-fill"></i></div>
             <div class="summary-card__body">
                 <span class="summary-card__label">Total User</span>
-                <span class="summary-card__value">{{ $summary['total'] }}</span>
+                <span class="summary-card__value" data-summary="total">{{ $summary['total'] }}</span>
             </div>
         </div>
         <div class="summary-card">
-            <div class="summary-card__icon summary-card__icon--aktif">&#10003;</div>
+            <div class="summary-card__icon summary-card__icon--aktif"><i class="bi bi-person-check-fill"></i></div>
             <div class="summary-card__body">
                 <span class="summary-card__label">Akun Aktif</span>
-                <span class="summary-card__value">{{ $summary['aktif'] }}</span>
+                <span class="summary-card__value" data-summary="aktif">{{ $summary['aktif'] }}</span>
             </div>
         </div>
         <div class="summary-card">
-            <div class="summary-card__icon summary-card__icon--nonaktif">&#8856;</div>
+            <div class="summary-card__icon summary-card__icon--nonaktif"><i class="bi bi-person-x-fill"></i></div>
             <div class="summary-card__body">
                 <span class="summary-card__label">Nonaktif</span>
-                <span class="summary-card__value">{{ $summary['nonaktif'] }}</span>
+                <span class="summary-card__value" data-summary="nonaktif">{{ $summary['nonaktif'] }}</span>
             </div>
         </div>
         <div class="summary-card">
-            <div class="summary-card__icon summary-card__icon--admin">&#9733;</div>
+            <div class="summary-card__icon summary-card__icon--admin"><i class="bi bi-shield-lock-fill"></i></div>
             <div class="summary-card__body">
                 <span class="summary-card__label">Admin & Super</span>
-                <span class="summary-card__value">{{ $summary['admin'] }}</span>
+                <span class="summary-card__value" data-summary="admin">{{ $summary['admin'] }}</span>
             </div>
         </div>
     </div>
@@ -62,7 +61,7 @@
     <div class="mu-card mu-filter-bar">
         <form method="GET" action="{{ route('users.index') }}" class="filter-form">
             <div class="filter-form__search">
-                <span class="filter-form__search-icon">&#128269;</span>
+                <span class="filter-form__search-icon"><i class="bi bi-search"></i></span>
                 <input type="text" name="search" class="form-input form-input--search"
                        placeholder="Cari nama, email, atau nomor HP..."
                        value="{{ request('search') }}">
@@ -82,7 +81,7 @@
             </select>
             <button type="submit" class="btn-filter">Terapkan</button>
             @if(request()->hasAny(['search','role','status']))
-            <a href="{{ route('users.index') }}" class="btn-reset">&#10005; Reset</a>
+            <a href="{{ route('users.index') }}" class="btn-reset"><i class="bi bi-arrow-counterclockwise"></i> Reset</a>
             @endif
         </form>
     </div>
@@ -169,38 +168,33 @@
                                             class="btn-icon btn-icon--{{ $user->status === 'aktif' ? 'disable' : 'enable' }}"
                                             title="{{ $user->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}"
                                             @if($user->user_id === auth()->id()) disabled @endif>
-                                        {{ $user->status === 'aktif' ? '⏸' : '▶' }}
+                                        <i class="bi {{ $user->status === 'aktif' ? 'bi-pause-fill' : 'bi-play-fill' }}"></i>
                                     </button>
                                 </form>
 
                                 {{-- Edit --}}
                                 <button class="btn-icon btn-icon--edit"
                                         title="Edit"
-                                        onclick="openEditModal({{ $user->user_id }}, {{ json_encode([
-                                            'nama'     => $user->nama,
-                                            'email'    => $user->email,
-                                            'role'     => $user->role,
-                                            'nomor_hp' => $user->nomor_hp,
-                                            'status'   => $user->status,
-                                        ]) }})">
-                                    &#9998;
+                                        data-user='@json($user)'
+                                        onclick="openEditModal({{ $user->user_id }}, JSON.parse(this.dataset.user))">
+                                    <i class="bi bi-pencil-square"></i>
                                 </button>
 
                                 {{-- Reset Password --}}
                                 <button class="btn-icon btn-icon--reset"
                                         title="Reset Password"
                                         onclick="openResetModal({{ $user->user_id }}, '{{ $user->nama }}')">
-                                    &#128273;
+                                    <i class="bi bi-key-fill"></i>
                                 </button>
 
-                                {{-- Hapus — hanya super_admin --}}
+                                {{-- Hapus — hanya super_admin
                                 @if(auth()->user()->isSuperAdmin() && $user->user_id !== auth()->id())
                                 <button class="btn-icon btn-icon--delete"
                                         title="Hapus"
                                         onclick="openDeleteModal({{ $user->user_id }}, '{{ $user->nama }}')">
-                                    &#128465;
+                                    <i class="bi bi-trash-fill"></i>
                                 </button>
-                                @endif
+                                @endif --}}
                             </div>
                         </td>
                     </tr>
@@ -219,9 +213,9 @@
         @if($users->lastPage() > 1)
         <div class="sp-pagination">
             @if($users->onFirstPage())
-                <span class="sp-pagination__disabled">&#8249;</span>
+                <span class="sp-pagination__disabled"><i class="bi bi-chevron-left"></i></span>
             @else
-                <a href="{{ $users->previousPageUrl() }}">&#8249;</a>
+                <a href="{{ $users->previousPageUrl() }}"><i class="bi bi-chevron-left"></i></a>
             @endif
 
             @foreach($users->getUrlRange(1, $users->lastPage()) as $page => $url)
@@ -233,9 +227,9 @@
             @endforeach
 
             @if($users->hasMorePages())
-                <a href="{{ $users->nextPageUrl() }}">&#8250;</a>
+                <a href="{{ $users->nextPageUrl() }}"><i class="bi bi-chevron-right"></i></a>
             @else
-                <span class="sp-pagination__disabled">&#8250;</span>
+                <span class="sp-pagination__disabled"><i class="bi bi-chevron-right"></i></span>
             @endif
         </div>
         @endif
@@ -247,8 +241,8 @@
 <div class="modal-backdrop" id="modal-tambah">
     <div class="modal-box">
         <div class="modal-box__header">
-            <h3>&#43; Tambah User Baru</h3>
-            <button class="modal-box__close" onclick="closeModal('modal-tambah')">&#10005;</button>
+            <h3><i class="bi bi-plus-lg"></i>Tambah User Baru</h3>
+            <button class="modal-box__close" onclick="closeModal('modal-tambah')"><i class="bi bi-x-lg"></i></button>
         </div>
         <p>Buat akun baru untuk pengguna sistem</p>
         <form method="POST" action="{{ route('users.store') }}">

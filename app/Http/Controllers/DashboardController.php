@@ -4,26 +4,53 @@ namespace App\Http\Controllers;
 
 use App\Models\Domba;
 use App\Models\Kandang;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        $data = $this->buildDashboardData();
+        return view('dashboard.index', $data);
+    }
+
+    public function exportPdf()
+    {
+        $data  = $this->buildDashboardData();
+        $theme = config('pdf_theme');
+
+        $pdf = Pdf::loadView('dashboard.pdf', array_merge($data, ['theme' => $theme]))
+            ->setPaper($theme['paper_size'], $theme['paper_orientation'])
+            ->setOptions([
+                'defaultFont'          => $theme['font_family'],
+                'isRemoteEnabled'      => false,
+                'isHtml5ParserEnabled' => true,
+            ]);
+
+        $filename = 'statistik-gumolong-farm-' . now()->format('Y-m-d') . '.pdf';
+
+        // stream() = inline disposition → browser PDF viewer, tidak diinterfer IDM
+        return $pdf->stream($filename);
+    }
+
+    private function buildDashboardData(): array
+    {
         // ── Population stats ─────────────────────────────────────────
         $totalAktif = Domba::where('status', 'aktif')->count();
         $pejantan   = Domba::where('status', 'aktif')->where('jenis_kelamin', 'jantan')->count();
         $betina     = Domba::where('status', 'aktif')->where('jenis_kelamin', 'betina')->count();
 
-        $byKategori = Domba::where('status', 'aktif')
+        $byKategoriRaw = Domba::where('status', 'aktif')
             ->selectRaw('kategori, count(*) as total')
             ->groupBy('kategori')
-            ->pluck('total', 'kategori');
-
-        $kategoriLabels = ['anak', 'betina', 'induk', 'pejantan'];
-        $kategoriData   = collect($kategoriLabels)
-            ->map(fn ($k) => (int) ($byKategori[$k] ?? 0))
+            ->pluck('total', 'kategori')
             ->toArray();
+
+        $byKategori = array_map('intval', $byKategoriRaw);
+
+        $kategoriLabels = ['cempe', 'dara', 'indukan', 'pejantan'];
+        $kategoriData   = array_map(fn ($k) => $byKategori[$k] ?? 0, $kategoriLabels);
 
         // ── Mortality this month ──────────────────────────────────────
         $mortalitasBulanIni = Domba::where('status', 'mati')
@@ -32,9 +59,9 @@ class DashboardController extends Controller
             ->count();
 
         // ── Kandang occupancy ─────────────────────────────────────────
-        $kandangList     = Kandang::all();
-        $totalKapasitas  = $kandangList->sum('kapasitas');
-        $persenOkupansi  = $totalKapasitas > 0
+        $kandangList    = Kandang::all();
+        $totalKapasitas = $kandangList->sum('kapasitas');
+        $persenOkupansi = $totalKapasitas > 0
             ? min(100, round(($totalAktif / $totalKapasitas) * 100))
             : 0;
 
@@ -69,7 +96,6 @@ class DashboardController extends Controller
             ->toArray();
 
         // ── Reproduction (births) per month ───────────────────────────
-        // kelahiran.jml_anak_hidup = live offspring count per birth event
         $reproduksiRaw = DB::table('kelahiran')
             ->selectRaw("TO_CHAR(DATE_TRUNC('month', tanggal_kelahiran), 'YYYY-MM') as bulan,
                          SUM(jml_anak_hidup) as total")
@@ -82,7 +108,6 @@ class DashboardController extends Controller
             ->toArray();
 
         // ── Feed consumption per month (kg) ───────────────────────────
-        // pemberian_pakan.jumlah_gram stored in grams → convert to kg for display
         $pakanRaw = DB::table('pemberian_pakan')
             ->selectRaw("TO_CHAR(DATE_TRUNC('month', tanggal_pemberian), 'YYYY-MM') as bulan,
                          ROUND((SUM(jumlah_gram) / 1000)::numeric, 1) as total")
@@ -94,13 +119,12 @@ class DashboardController extends Controller
             ->map(fn ($m) => (float) ($pakanRaw->get($m->format('Y-m')) ?? 0))
             ->toArray();
 
-        // ── FCR summary (weight gained vs feed consumed, current month) ─
+        // ── FCR summary ───────────────────────────────────────────────
         $beratBulanIni = (float) DB::table('penimbangan')
             ->whereMonth('tanggal_timbang', now()->month)
             ->whereYear('tanggal_timbang', now()->year)
             ->avg('berat_kg') ?? 0;
 
-        // jumlah_gram → kg
         $pakanBulanIni = (float) (DB::table('pemberian_pakan')
             ->whereMonth('tanggal_pemberian', now()->month)
             ->whereYear('tanggal_pemberian', now()->year)
@@ -110,23 +134,26 @@ class DashboardController extends Controller
             ? round($pakanBulanIni / ($beratBulanIni * max($totalAktif, 1)), 2)
             : null;
 
-        return view('dashboard.index', compact(
-            'totalAktif',
-            'pejantan',
-            'betina',
-            'mortalitasBulanIni',
-            'kandangList',
-            'totalKapasitas',
-            'persenOkupansi',
-            'monthLabels',
-            'kategoriLabels',
-            'kategoriData',
-            'pertumbuhanData',
-            'mortalitasData',
-            'reproduksiData',
-            'pakanData',
-            'fcrValue',
-            'pakanBulanIni',
-        ));
+        // ── Kandang detail untuk PDF ──────────────────────────────────
+        $kandangDetail = $kandangList->map(function ($kandang) {
+            $isi = Domba::where('status', 'aktif')->where('kandang_id', $kandang->kandang_id)->count();
+            $pct = $kandang->kapasitas > 0 ? min(100, round(($isi / $kandang->kapasitas) * 100)) : 0;
+            return [
+                'nama'      => $kandang->nama_kandang,
+                'tipe'      => $kandang->tipe,
+                'kapasitas' => $kandang->kapasitas,
+                'isi'       => $isi,
+                'pct'       => $pct,
+            ];
+        })->toArray();
+
+        return compact(
+            'totalAktif', 'pejantan', 'betina', 'byKategori',
+            'mortalitasBulanIni', 'kandangList', 'kandangDetail',
+            'totalKapasitas', 'persenOkupansi',
+            'monthLabels', 'kategoriLabels', 'kategoriData',
+            'pertumbuhanData', 'mortalitasData', 'reproduksiData', 'pakanData',
+            'fcrValue', 'pakanBulanIni',
+        );
     }
 }

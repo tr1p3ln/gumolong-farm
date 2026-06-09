@@ -342,7 +342,7 @@ class KesehatanController extends Controller
     {
         $request->validate([
             'tanggal_vaksinasi'  => 'required|date',
-            'tanggal_berikutnya' => 'nullable|date|after:tanggal_vaksinasi',
+            'tanggal_berikutnya' => 'nullable|date|after_or_equal:tanggal_vaksinasi',
             'catatan'            => 'nullable|string|max:500',
         ]);
 
