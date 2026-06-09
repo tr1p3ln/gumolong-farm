@@ -8,7 +8,7 @@
 
         <div class="flex items-start justify-between flex-shrink-0 px-6 py-5 border-b border-gray-100">
             <div>
-                <h2 class="text-xl font-bold text-on-surface">Edit Vaksinasi</h2>
+                <h2 class="text-xl font-bold text-on-surface">Edit Jadwal Vaksinasi</h2>
                 <p class="text-[10px] font-mono text-outline uppercase tracking-wider mt-0.5"
                     x-text="'ID: VK-' + editVaksinasiData.vaksin_id + ' · ' + editVaksinasiData.ear_tag_id"></p>
             </div>
@@ -22,9 +22,10 @@
             class="flex-1 overflow-y-auto">
             @csrf
             @method('PUT')
+
             <div class="p-6 space-y-5">
 
-                {{-- Info --}}
+                {{-- Info: Domba & Vaksin (read-only) --}}
                 <div class="p-3.5 bg-surface-container-low border border-outline-variant rounded-xl">
                     <p class="text-[10px] font-bold text-outline uppercase mb-1">Domba & Vaksin</p>
                     <p class="text-sm font-bold text-primary" x-text="editVaksinasiData.ear_tag_id"></p>
@@ -33,6 +34,7 @@
                 </div>
                 <p class="text-xs italic text-center text-gray-400">Domba dan vaksin tidak dapat diubah.</p>
 
+                {{-- Tanggal Vaksinasi --}}
                 <div class="space-y-1.5">
                     <label class="text-xs font-semibold text-on-surface">Tanggal Vaksinasi <span
                             class="text-error">*</span></label>
@@ -40,12 +42,14 @@
                         class="w-full px-3.5 py-2.5 border border-outline-variant rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                 </div>
 
+                {{-- Jadwal Berikutnya --}}
                 <div class="space-y-1.5">
                     <label class="text-xs font-semibold text-on-surface">Jadwal Berikutnya</label>
                     <input type="date" name="tanggal_berikutnya" :value="editVaksinasiData.tanggal_berikutnya"
                         class="w-full px-3.5 py-2.5 border border-outline-variant rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                 </div>
 
+                {{-- Catatan --}}
                 <div class="space-y-1.5">
                     <label class="text-xs font-semibold text-on-surface">Catatan</label>
                     <textarea name="catatan" rows="2"
@@ -66,6 +70,7 @@
                     <span class="text-base material-symbols-outlined">delete</span> Hapus
                 </button>
             </form>
+
             <div class="flex gap-3">
                 <button type="button" @click="showEditVaksinasi = false"
                     class="px-5 py-2.5 border border-outline-variant text-on-surface-variant font-semibold text-sm rounded-lg hover:bg-surface-container transition-colors">
@@ -77,5 +82,6 @@
                 </button>
             </div>
         </div>
+
     </div>
 </div>

@@ -1,5 +1,5 @@
 {{-- ═══════════════════════════════════════════════════
-    Modal Detail / Profil Domba — UC-MD.3 (Read Only)
+    Modal Detail / Profil Domba (Read Only)
     4 tab: Pertumbuhan | Kesehatan | Pakan | Silsilah
     Mounted via @include di domba/index.blade.php
     Memerlukan parent x-data: { modalDetail, modalEdit, selectedId, editDomba() }
@@ -69,7 +69,7 @@
                 </h2>
                 <p class="text-xs font-medium text-gray-500 mt-1 uppercase tracking-wider"
                    x-text="dombaData
-                       ? 'UC-MD.3 | Kamus Data: tabel DOMBA + PENIMBANGAN + MEDICAL_RECORD | ' + (dombaData.e_ear_tag_id || '-')
+                       ? 'ID: ' + (dombaData.e_ear_tag_id || '-')
                        : 'Memuat...'">
                 </p>
             </div>

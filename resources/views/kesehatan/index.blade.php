@@ -480,16 +480,7 @@
                         </td>
                         <td class="px-5 py-4">
                             <button type="button"
-                                    @click="openEditVaksinasi({
-                                        vaksin_id: {{ $v->vaksin_id }},
-                                        ear_tag_id: '{{ $v->ear_tag_id }}',
-                                        nama_domba: @json($v->nama_domba),
-                                        obat_id: {{ $v->obat_id }},
-                                        nama_obat: @json($v->nama_obat),
-                                        tanggal_vaksinasi: '{{ $v->tanggal_vaksinasi }}',
-                                        tanggal_berikutnya: @json($v->tanggal_berikutnya),
-                                        catatan: @json($v->catatan)
-                                    })"
+                                    @click="openEditVaksinasi({{ $v->vaksin_id }})"
                                     class="text-[10px] font-bold uppercase tracking-tight px-3 py-1.5 border border-primary text-primary rounded hover:bg-primary hover:text-white transition-all">
                                 Edit
                             </button>
@@ -542,6 +533,22 @@ const karantinaDataMap = {
 @endforeach
 };
 
+// Vaksinasi row data map: vaksin_id → record object
+const vaksinasiDataMap = {
+@foreach($vaksinasiList as $v)
+    {{ $v->vaksin_id }}: {
+        vaksin_id:           {{ $v->vaksin_id }},
+        ear_tag_id:          @json($v->ear_tag_id),
+        nama_domba:          @json($v->nama_domba),
+        obat_id:             {{ $v->obat_id }},
+        nama_obat:           @json($v->nama_obat),
+        tanggal_vaksinasi:   @json($v->tanggal_vaksinasi),
+        tanggal_berikutnya:  @json($v->tanggal_berikutnya),
+        catatan:             @json($v->catatan),
+    },
+@endforeach
+};
+
 // Rekam medis row data map: rekam_id → record object
 const rekamDataMap = {
 @foreach($rekamList as $r)
@@ -587,8 +594,11 @@ function kesehatanApp() {
         detailRekamData:  {},
 
         // Other edit data
-        editVaksinasiData: {},
-        pindahData:       {},
+        editVaksinasiData:    {},
+        editVaksinTanggal:    '',
+        editVaksinBerikutnya: '',
+        editVaksinCatatan:    '',
+        pindahData:           {},
 
         // Create rekam form state
         selectedDomba:    null,
@@ -668,9 +678,14 @@ function kesehatanApp() {
             this.showDetailRekam = true;
         },
 
-        openEditVaksinasi(data) {
-            this.editVaksinasiData = data;
-            this.showEditVaksinasi = true;
+        openEditVaksinasi(vaksinId) {
+            const data = vaksinasiDataMap[vaksinId];
+            if (!data) return;
+            this.editVaksinasiData    = data;
+            this.editVaksinTanggal    = data.tanggal_vaksinasi ? data.tanggal_vaksinasi.substring(0, 10) : '';
+            this.editVaksinBerikutnya = data.tanggal_berikutnya ? data.tanggal_berikutnya.substring(0, 10) : '';
+            this.editVaksinCatatan    = data.catatan ?? '';
+            this.showEditVaksinasi    = true;
         },
 
         openPindahKandang(earTagId, durasiHari) {

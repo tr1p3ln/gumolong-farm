@@ -8,7 +8,6 @@ return new class extends Migration
 {
     /**
      * Tabel: perkawinan
-     * Modul: A-09 Reproduksi (FR-7.1, FR-7.2)
      * ISSUE #2 FIX:
      * - ENUM status diupdate ke 5 nilai
      * - Tambah 4 kolom konfirmasi kebuntingan
