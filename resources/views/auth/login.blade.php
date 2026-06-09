@@ -51,10 +51,7 @@
 
                 {{-- Header: Logo + Brand --}}
                 <div class="flex flex-col items-center text-center mb-8">
-                    <div class="w-[60px] h-[60px] border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center mb-4 rounded">
-                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Logo</span>
-                    </div>
-                    <h2 class="text-xl font-bold tracking-tight text-[#1F2937]">GUMOLONG FARM</h2>
+                    <img src="{{ asset('logo.png') }}" alt="Gumolong Farm" class="h-24 w-auto object-contain mb-1">
                     <p class="text-sm text-gray-400 font-normal">Sistem Informasi Manajemen Peternakan</p>
                 </div>
 
