@@ -9,8 +9,7 @@
         {{-- Header --}}
         <header class="px-8 py-6 bg-white border-b border-surface-container flex justify-between items-start flex-shrink-0">
             <div class="space-y-1">
-                <h2 class="text-2xl font-bold text-on-surface">Catat Perkawinan</h2>
-                <p class="text-xs font-mono text-outline uppercase tracking-wider">UC-07-01 · tabel PERKAWINAN · FR-7.1</p>
+                <h2 class="text-xl font-bold text-on-surface">Catat Perkawinan</h2>
             </div>
             <button type="button" @click="showCreatePerkawinan = false"
                     class="text-outline hover:text-on-surface transition-colors p-1 rounded-lg hover:bg-surface-container-low">
@@ -25,9 +24,8 @@
 
                 {{-- ── Section 1: Pejantan ────────────────────────────────────── --}}
                 <section class="space-y-3">
-                    <label class="block text-sm font-semibold text-on-surface">
+                    <label class="block text-xs font-semibold text-on-surface">
                         Pejantan
-                        <span class="text-xs font-normal text-outline">(FK → tabel DOMBA, kategori=pejantan, wajib)</span>
                         <span class="text-error ml-1">*</span>
                     </label>
 
@@ -85,9 +83,8 @@
 
                 {{-- ── Section 2: Indukan ──────────────────────────────────────── --}}
                 <section class="space-y-3">
-                    <label class="block text-sm font-semibold text-on-surface">
+                    <label class="block text-xs font-semibold text-on-surface">
                         Indukan
-                        <span class="text-xs font-normal text-outline">(FK → tabel DOMBA, kategori=indukan, dapat memilih lebih dari satu)</span>
                         <span class="text-error ml-1">*</span>
                     </label>
 
@@ -154,16 +151,15 @@
                 {{-- ── Section 3: Tanggal & Metode ────────────────────────────── --}}
                 <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-on-surface">
+                        <label class="block text-xs font-semibold text-on-surface">
                             Tanggal Kawin <span class="text-error">*</span>
                         </label>
                         <input type="date" name="tanggal_perkawinan"
                                x-model="tanggalKawin" @change="calcHPL()" required
                                class="w-full px-4 py-2.5 border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none text-sm bg-white"/>
-                        <p class="text-[10px] font-mono text-outline uppercase">Kamus Data: kolom tanggal_perkawinan DATE</p>
                     </div>
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-on-surface">
+                        <label class="block text-xs font-semibold text-on-surface">
                             Metode <span class="text-error">*</span>
                         </label>
                         <select name="metode" required
@@ -171,13 +167,12 @@
                             <option value="alami">Alami</option>
                             <option value="inseminasi_buatan">Inseminasi Buatan (IB)</option>
                         </select>
-                        <p class="text-[10px] font-mono text-outline uppercase">Kamus Data: ENUM metode = alami, inseminasi_buatan</p>
                     </div>
                 </section>
 
                 {{-- ── Section 4: Estimasi HPL ─────────────────────────────────── --}}
                 <section class="p-6 bg-surface-container-lowest border-2 border-primary/10 rounded-2xl relative overflow-hidden">
-                    <p class="text-[10px] font-bold text-primary uppercase tracking-widest mb-4">Estimasi HPL — FR-7.2 (dihitung otomatis)</p>
+                    <p class="text-[10px] font-bold text-primary uppercase tracking-widest mb-4">Estimasi HPL</p>
                     <div class="grid grid-cols-3 gap-6 items-center">
                         <div>
                             <p class="text-xs text-outline mb-1">Tgl Kawin</p>
@@ -216,14 +211,13 @@
                 {{-- ── Section 6: Status & Metadata ──────────────────────────────── --}}
                 <section class="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-surface-container pt-6">
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-on-surface">Status Awal</label>
+                        <label class="block text-xs font-semibold text-on-surface">Status Awal</label>
                         <select class="w-full px-4 py-2.5 border border-outline-variant rounded-lg bg-surface-container-low text-outline cursor-not-allowed text-sm" disabled>
                             <option selected>Menunggu Konfirmasi</option>
                         </select>
-                        <p class="text-[10px] font-mono text-outline uppercase">ENUM status = menunggu_konfirmasi (otomatis)</p>
                     </div>
                     <div class="space-y-2">
-                        <label class="block text-sm font-semibold text-on-surface">Dicatat Oleh</label>
+                        <label class="block text-xs font-semibold text-on-surface">Dicatat Oleh</label>
                         <input type="text" readonly
                                value="{{ auth()->user()->nama ?? auth()->user()->name ?? 'User' }}"
                                class="w-full px-4 py-2.5 border border-outline-variant rounded-lg bg-surface-container-low text-outline cursor-not-allowed text-sm font-medium"/>

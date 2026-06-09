@@ -17,7 +17,6 @@
         <div class="header-top">
             <div>
                 <h1>Stok Pakan</h1>
-                <p>Kelola Data: tabel PAKAN_STOK — ENUM: rumput, konsentrat, silase, ampas_tahu</p>
             </div>
             <div class="header-actions">
                 <button class="btn-outline" onclick="openModal('modal-masuk')">
