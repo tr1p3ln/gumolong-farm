@@ -95,7 +95,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware('role:super_admin,admin,kepala_kandang');
 
             Route::get('/',           [DombaController::class, 'index'])->name('domba.index');
+            Route::get('/{earTagId}/export-pdf', [DombaController::class, 'exportPdf'])
+                ->name('domba.export-pdf');
             Route::get('/{earTagId}', [DombaController::class, 'show'])->name('domba.show');
+
+
 
             // WRITE: Super Admin, Admin, Kepala Kandang only (Pengurus = View Only)
             Route::middleware('role:super_admin,admin,kepala_kandang')->group(function () {
@@ -110,7 +114,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/obat-vaksin/pemakaian',       [ObatVaksinController::class, 'storePemakaian'])->name('obat-vaksin.storePemakaian');
         Route::resource('stok-pakan',       StokPakanController::class);
         Route::resource('obat-vaksin',      ObatVaksinController::class);
-        
+
 
         // ── Monitoring ───────────────────────────────────────────────────────
         Route::resource('pertumbuhan',      TrackingPertumbuhanController::class);
@@ -181,15 +185,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // ── Tracking Pertumbuhan ──────────────────────────────────────────────────────
         Route::prefix('tracking-pertumbuhan')->name('tracking-pertumbuhan.')->group(function () {
-        
+
             // Halaman utama – daftar domba + statistik
             Route::get('/', [TrackingPertumbuhanController::class, 'index'])
                 ->name('index');
-        
+
             // Detail domba + riwayat penimbangan
             Route::get('/{earTagId}', [TrackingPertumbuhanController::class, 'show'])
                 ->name('show');
-        
+
             // Simpan penimbangan baru untuk domba tertentu
             Route::post('/{earTagId}/penimbangan', [TrackingPertumbuhanController::class, 'storePenimbangan'])
                 ->name('penimbangan.store');

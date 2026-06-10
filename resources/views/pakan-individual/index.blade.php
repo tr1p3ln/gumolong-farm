@@ -26,8 +26,8 @@
 
 {{-- Flash --}}
 @if(session('success'))
-    <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-3 mb-4 text-sm text-green-800">
-        <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+    <div class="flex items-center gap-2 px-4 py-3 mb-4 text-sm text-green-800 border border-green-200 rounded-lg bg-green-50">
+        <svg class="flex-shrink-0 w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
         </svg>
         {{ session('success') }}
@@ -38,14 +38,14 @@
 <div class="grid grid-cols-3 gap-4 mb-5">
 
     {{-- Rata-rata FCR --}}
-    <div class="bg-gray-50 rounded-lg p-4">
+    <div class="p-4 rounded-lg bg-gray-50">
         <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400 mb-2">Rata-rata FCR Farm</p>
         <div class="flex items-baseline gap-2">
             <span class="text-3xl font-bold text-gray-800">{{ number_format($avgFcr, 2) }}</span>
             <span class="text-xs font-semibold text-blue-600">Farm Avg</span>
         </div>
         <div
-        class="h-full rounded-full bg-blue-500 transition-all"
+        class="h-full transition-all bg-blue-500 rounded-full"
         @style([
             'width: '.min(100, (($avgFcr ?? 0) / 12) * 100).'%',
         ])
@@ -54,7 +54,7 @@
     </div>
 
     {{-- FCR Terbaik --}}
-    <div class="bg-white border border-gray-200 rounded-lg p-4">
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
         <div class="flex items-center justify-between mb-2">
             <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400">FCR Terbaik</p>
             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-100 text-green-700">Efisien</span>
@@ -73,17 +73,17 @@
             <button
                 data-domba='@json(["ear_tag_id" => $fcrTerbaik->ear_tag_id, "nama" => $fcrTerbaik->nama, "kategori" => $fcrTerbaik->kategori])'
                 onclick="openDetailPakanFromBtn(this)"
-                class="text-xs text-gray-500 hover:text-primary transition">
+                class="text-xs text-gray-500 transition hover:text-primary">
                 Lihat Detail →
             </button>
         </div>
         @else
-        <p class="text-sm text-gray-400 italic">Belum ada data</p>
+        <p class="text-sm italic text-gray-400">Belum ada data</p>
         @endif
     </div>
 
     {{-- FCR Terburuk --}}
-    <div class="bg-white border border-gray-200 rounded-lg p-4">
+    <div class="p-4 bg-white border border-gray-200 rounded-lg">
         <div class="flex items-center justify-between mb-2">
             <p class="text-[10px] font-semibold uppercase tracking-widest text-gray-400">FCR Terburuk</p>
             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-100 text-red-700">Boros</span>
@@ -102,12 +102,12 @@
             @php $terburukJson = json_encode(['ear_tag_id' => $fcrTerburuk->ear_tag_id, 'nama' => $fcrTerburuk->nama, 'kategori' => $fcrTerburuk->kategori]); @endphp
             <button data-domba='@json(["ear_tag_id" => $fcrTerburuk->ear_tag_id, "nama" => $fcrTerburuk->nama, "kategori" => $fcrTerburuk->kategori])'
                 onclick="openDetailPakanFromBtn(this)"
-                class="text-xs text-gray-500 hover:text-primary transition">
+                class="text-xs text-gray-500 transition hover:text-primary">
                 Lihat Detail →
             </button>
         </div>
         @else
-        <p class="text-sm text-gray-400 italic">Belum ada data</p>
+        <p class="text-sm italic text-gray-400">Belum ada data</p>
         @endif
     </div>
 
@@ -117,18 +117,18 @@
 <div class="grid gap-4" style="grid-template-columns: 1fr 280px; align-items: start;">
 
     {{-- TABEL --}}
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div class="overflow-hidden bg-white rounded-lg shadow-sm">
 
         {{-- Filter --}}
         <div class="px-5 py-4 border-b border-gray-100">
-            <form method="GET" action="{{ route('pakan-individual.index') }}" class="flex flex-wrap gap-3 items-center">
+            <form method="GET" action="{{ route('pakan-individual.index') }}" class="flex flex-wrap items-center gap-3">
                 <div class="flex-1 min-w-[200px] relative">
-                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="absolute w-4 h-4 text-gray-400 -translate-y-1/2 left-3 top-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/>
                     </svg>
                     <input type="text" name="search" value="{{ request('search') }}"
                         placeholder="Cari ear tag atau nama..."
-                        class="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-400">
+                        class="w-full py-2 pr-4 text-sm placeholder-gray-400 border border-gray-300 rounded-md pl-9 focus:outline-none focus:ring-2 focus:ring-primary">
                 </div>
                 <select name="kategori" class="border border-gray-300 rounded-md px-3 py-2 text-sm bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary min-w-[150px]">
                     <option value="">Semua Kategori</option>
@@ -143,33 +143,33 @@
                     <option value="boros"   @selected(request('status_fcr')==='boros')>Boros</option>
                 </select>
                 <input type="date" name="tanggal" value="{{ request('tanggal') }}"
-                    class="border border-gray-300 rounded-md px-3 py-2 text-sm bg-white text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary">
+                    class="px-3 py-2 text-sm text-gray-600 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
                 <button type="submit"
-                    class="px-4 py-2 bg-primary hover:opacity-90 text-white text-sm font-semibold rounded-md transition">
+                    class="px-4 py-2 text-sm font-semibold text-white transition rounded-md bg-primary hover:opacity-90">
                     Cari
                 </button>
                 @if(request()->hasAny(['search','kategori','status_fcr','tanggal']))
                     <a href="{{ route('pakan-individual.index') }}"
-                        class="px-4 py-2 border border-gray-300 text-gray-600 text-sm rounded-md hover:bg-gray-50 transition">Reset</a>
+                        class="px-4 py-2 text-sm text-gray-600 transition border border-gray-300 rounded-md hover:bg-gray-50">Reset</a>
                 @endif
             </form>
         </div>
 
         {{-- Table --}}
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <table class="min-w-full text-sm divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Ear Tag</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Kategori</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Ras</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Berat (kg)</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Pakan Hari Ini</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Total 30hr (kg)</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">FCR</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Rekomendasi</th>
-                        <th class="px-4 py-3 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
+                        <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">Ear Tag</th>
+                        <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">Nama</th>
+                        <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">Kategori</th>
+                        <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">Ras</th>
+                        <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">Berat (kg)</th>
+                        <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">Pakan Hari Ini</th>
+                        <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">Total 30hr (kg)</th>
+                        <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">FCR</th>
+                        <th class="px-4 py-3 text-xs font-semibold tracking-wider text-left text-gray-500 uppercase">Rekomendasi</th>
+                        <th class="px-4 py-3 text-xs font-semibold tracking-wider text-center text-gray-500 uppercase">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-100">
@@ -182,7 +182,7 @@
                             $row->fcr <= 9.0      => ['label' => 'Kurang Efisien', 'class' => 'bg-yellow-100 text-yellow-700','row' => ''],
                             default               => ['label' => 'Perlu Evaluasi', 'class' => 'bg-red-100 text-red-700',      'row' => 'bg-red-50/40'],
                         };
-                    
+
                         $rekomendasiLabel = match(true) {
                             $row->fcr === null => '—',
                             $row->fcr < 5.0    => 'Pertahankan',
@@ -190,7 +190,7 @@
                             $row->fcr <= 9.0   => 'Kurangi Pakan',
                             default            => 'Review Pakan',
                         };
-                    
+
                         $rekomendasiClass = match(true) {
                             $row->fcr === null => 'text-gray-400',
                             $row->fcr < 5.0    => 'text-gray-500',
@@ -262,7 +262,7 @@
                                 <svg class="w-10 h-10 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                                 </svg>
-                                <p class="text-gray-400 text-sm">Belum ada data pemberian pakan.</p>
+                                <p class="text-sm text-gray-400">Belum ada data pemberian pakan.</p>
                             </div>
                         </td>
                     </tr>
@@ -290,9 +290,9 @@
     <div style="display:flex;flex-direction:column;gap:12px;">
 
         {{-- Rekomendasi Pakan --}}
-        <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <div class="px-4 py-3 border-b border-gray-100 flex items-center gap-2">
-                <svg class="w-4 h-4 text-primary flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="overflow-hidden bg-white border border-gray-200 rounded-lg">
+            <div class="flex items-center gap-2 px-4 py-3 border-b border-gray-100">
+                <svg class="flex-shrink-0 w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                 </svg>
                 <span class="text-xs font-semibold text-gray-700">Rekomendasi Pakan</span>
@@ -300,12 +300,12 @@
 
             {{-- Domba Selector --}}
             <div class="px-4 py-3 border-b border-gray-100">
-                <div class="flex items-center gap-2 bg-green-50 rounded-md px-3 py-2">
-                    <div class="w-5 h-5 rounded bg-primary flex items-center justify-center flex-shrink-0">
+                <div class="flex items-center gap-2 px-3 py-2 rounded-md bg-green-50">
+                    <div class="flex items-center justify-center flex-shrink-0 w-5 h-5 rounded bg-primary">
                         <span class="text-white text-[9px] font-bold">B</span>
                     </div>
                     <select id="rekomenDombaSelect"
-                        class="flex-1 bg-transparent text-xs font-semibold text-green-800 border-none outline-none cursor-pointer"
+                        class="flex-1 text-xs font-semibold text-green-800 bg-transparent border-none outline-none cursor-pointer"
                         onchange="loadRekomendasi(this.value)">
                         @foreach($dombaList as $d)
                             <option value="{{ $d->ear_tag_id }}">{{ $d->ear_tag_id }} {{ $d->nama }}</option>
@@ -318,12 +318,12 @@
             <div id="rekomendasiContent" class="px-4 py-3 space-y-3">
                 @foreach($rekomendasiPakan as $item)
                 <div>
-                    <div class="flex justify-between items-center mb-1">
+                    <div class="flex items-center justify-between mb-1">
                         <span class="text-xs text-gray-600">{{ ucfirst($item->jenis) }}</span>
                         <span class="text-xs font-semibold text-gray-800">{{ number_format($item->total_gram) }}g</span>
                     </div>
                     <div
-                    class="h-full rounded-full transition-all"
+                    class="h-full transition-all rounded-full"
                     @style([
                         'width: '.$item->persen.'%',
                         'background: '.$item->warna,
@@ -333,7 +333,7 @@
                 </div>
                 @endforeach
 
-                <div class="border-t border-gray-100 pt-3 flex justify-between items-center">
+                <div class="flex items-center justify-between pt-3 border-t border-gray-100">
                     <span class="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Total Harian</span>
                     <span class="text-sm font-bold text-gray-800">{{ number_format($totalPakanHarian) }} g/hari</span>
                 </div>
@@ -341,7 +341,7 @@
         </div>
 
         {{-- Keterangan Status FCR --}}
-        <div class="bg-white border border-gray-200 rounded-lg p-4">
+        <div class="p-4 bg-white border border-gray-200 rounded-lg">
             <div class="flex items-center gap-2 mb-3">
                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -349,30 +349,30 @@
                 <span class="text-xs font-semibold text-gray-700">Keterangan Status FCR</span>
             </div>
             <div class="space-y-2">
-            <div class="flex justify-between items-center text-xs">
+            <div class="flex items-center justify-between text-xs">
                 <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+                    <span class="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
                     <span class="text-gray-700">Sangat Efisien</span>
                 </div>
                 <span class="font-mono text-gray-500">&lt; 5.0</span>
             </div>
-            <div class="flex justify-between items-center text-xs">
+            <div class="flex items-center justify-between text-xs">
                 <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-blue-500 inline-block"></span>
+                    <span class="inline-block w-2 h-2 bg-blue-500 rounded-full"></span>
                     <span class="text-gray-700">Normal</span>
                 </div>
                 <span class="font-mono text-gray-500">5.0 – 7.0</span>
             </div>
-            <div class="flex justify-between items-center text-xs">
+            <div class="flex items-center justify-between text-xs">
                 <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-yellow-500 inline-block"></span>
+                    <span class="inline-block w-2 h-2 bg-yellow-500 rounded-full"></span>
                     <span class="text-gray-700">Kurang Efisien</span>
                 </div>
                 <span class="font-mono text-gray-500">7.0 – 9.0</span>
             </div>
-            <div class="flex justify-between items-center text-xs">
+            <div class="flex items-center justify-between text-xs">
                 <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span>
+                    <span class="inline-block w-2 h-2 bg-red-500 rounded-full"></span>
                     <span class="text-gray-700">Perlu Evaluasi</span>
                 </div>
                 <span class="font-mono text-gray-500">&gt; 9.0</span>
@@ -395,7 +395,7 @@ function loadRekomendasi(earTagId) {
         .then(data => {
             if (!data.rekomendasi || !data.rekomendasi.length) {
                 document.getElementById('rekomendasiContent').innerHTML =
-                    '<p class="text-xs text-gray-400 italic py-2">Belum ada data pakan.</p>';
+                    '<p class="py-2 text-xs italic text-gray-400">Belum ada data pakan.</p>';
                 return;
             }
 
@@ -409,12 +409,12 @@ function loadRekomendasi(earTagId) {
                 const warna = warnaMap[item.jenis] ?? '#aaaaaa';
                 html += `
                 <div>
-                    <div class="flex justify-between items-center mb-1">
+                    <div class="flex items-center justify-between mb-1">
                         <span class="text-xs text-gray-600">${item.jenis.charAt(0).toUpperCase() + item.jenis.slice(1)}</span>
                         <span class="text-xs font-semibold text-gray-800">${Number(item.total_gram).toLocaleString('id-ID')}g</span>
                     </div>
                     <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                        <div class="h-full rounded-full transition-all" style="width:${item.persen}%;background:${warna}"></div>
+                        <div class="h-full transition-all rounded-full" style="width:${item.persen}%;background:${warna}"></div>
                     </div>
                     <div class="text-right text-[10px] text-gray-400 mt-0.5">${item.persen}%</div>
                 </div>`;
@@ -422,7 +422,7 @@ function loadRekomendasi(earTagId) {
 
             const total = data.total_ideal_gram ?? 0;
             html += `
-            <div class="border-t border-gray-100 pt-3 flex justify-between items-center">
+            <div class="flex items-center justify-between pt-3 border-t border-gray-100">
                 <span class="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Total Harian</span>
                 <span class="text-sm font-bold text-gray-800">${Number(total).toLocaleString('id-ID')} g/hari</span>
             </div>`;

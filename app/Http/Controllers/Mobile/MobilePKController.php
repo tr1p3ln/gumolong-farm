@@ -7,13 +7,15 @@ use App\Models\Domba;
 use App\Models\TugasHarian;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class MobilePKController extends Controller
 {
     public function dashboard()
     {
         $tanggal = today()->toDateString();
-        $userId  = auth()->id();
+        // $userId  = auth()->id();
+        $userId  = Auth::id();
 
         $tugas = TugasHarian::whereDate('tanggal', $tanggal)
             ->where(fn($q) => $q->where('user_id', $userId)->orWhereNull('user_id'))
@@ -42,7 +44,8 @@ class MobilePKController extends Controller
     public function tugas()
     {
         $tanggal = today()->toDateString();
-        $userId  = auth()->id();
+        // $userId  = auth()->id();
+        $userId  = Auth::id();
 
         $tugas = TugasHarian::with(['kandang'])
             ->whereDate('tanggal', $tanggal)
@@ -172,7 +175,8 @@ class MobilePKController extends Controller
 
         DB::table('kelahiran')->insert([
             'kawin_id'          => $kawinId,
-            'user_id'           => auth()->id(),
+            // 'user_id'           => auth()->id(),
+            'user_id'           => Auth::id(),
             'tanggal_kelahiran' => $validated['tanggal_kelahiran'],
             'jml_anak_hidup'    => $validated['jml_anak_hidup'],
             'jml_anak_mati'     => $validated['jml_anak_mati'],

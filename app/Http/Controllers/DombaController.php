@@ -128,21 +128,114 @@ class DombaController extends Controller
         ], 201);
     }
 
-    public function show(string $earTagId): JsonResponse
+    /**
+     * Helper Method: Mengambil SEMUA relasi domba (Pertumbuhan, Medis, Vaksin, Pakan)
+     * Digunakan oleh show() untuk Modal dan exportPdf() untuk Cetak PDF
+     */
+    private function getDombaCompleteData(string $earTagId)
     {
+        // 1. Fetch data domba dan relasi dasar
         $domba = Domba::with([
             'kandang',
             'induk',
             'ayah',
             'penimbangan' => function ($q) {
-                $q->orderByDesc('tanggal_timbang')->limit(5);
-            },
+                $q->orderByDesc('tanggal_timbang');
+            }
         ])->findOrFail($earTagId);
+
+        // 2. Fetch Rekam Medis
+        $medicalRecords = DB::table('medical_record')
+            ->where('ear_tag_id', $earTagId)
+            ->orderByDesc('tanggal_sakit')
+            ->get();
+
+        $rekamIds = $medicalRecords->pluck('rekam_id')->toArray();
+
+        // 3. Fetch Pemakaian Obat
+        $pemakaianObat = [];
+        if (!empty($rekamIds)) {
+            $pemakaianObat = DB::table('pemakaian_obat as po')
+                ->join('obat_vaksin as ov', 'po.obat_id', '=', 'ov.obat_id')
+                ->whereIn('po.rekam_id', $rekamIds)
+                ->select('po.*', 'ov.nama_obat', 'ov.satuan')
+                ->get()
+                ->groupBy('rekam_id');
+        }
+
+        $medicalRecords->transform(function ($item) use ($pemakaianObat) {
+            $item->pemakaian_obat = isset($pemakaianObat[$item->rekam_id])
+                ? $pemakaianObat[$item->rekam_id]
+                : [];
+            return $item;
+        });
+
+        $domba->medical_record = $medicalRecords;
+
+        // 4. Fetch Vaksinasi
+        $vaksinasi = DB::table('vaksinasi as v')
+            ->join('obat_vaksin as ov', 'v.obat_id', '=', 'ov.obat_id')
+            ->where('v.ear_tag_id', $earTagId)
+            ->orderByDesc('v.tanggal_vaksinasi')
+            ->select('v.*', 'ov.nama_obat', 'ov.satuan')
+            ->get();
+
+        $domba->vaksinasi = $vaksinasi;
+
+        // 5. Fetch Pemberian Pakan (Log & Total 30 Hari)
+        $pemberianPakan = DB::table('pemberian_pakan as pp')
+            ->join('pakan_stok as ps', 'pp.pakan_id', '=', 'ps.pakan_id')
+            ->where('pp.ear_tag_id', $earTagId)
+            ->select('pp.*', 'ps.nama_pakan', 'ps.jenis')
+            ->orderByDesc('pp.tanggal_pemberian')
+            ->orderByDesc('pp.created_at')
+            ->limit(30)
+            ->get();
+
+        $domba->pemberian_pakan = $pemberianPakan;
+
+        $totalPakan30Hari = DB::table('pemberian_pakan')
+            ->where('ear_tag_id', $earTagId)
+            ->where('tanggal_pemberian', '>=', now()->subDays(30)->toDateString())
+            ->sum('jumlah_gram');
+
+        // Convert gram ke KG
+        $domba->total_pakan_30_hari = $totalPakan30Hari / 1000;
+
+        return $domba;
+    }
+
+    public function show(string $earTagId): JsonResponse
+    {
+        // Gunakan fungsi helper, lalu return menjadi format JSON untuk Alpine Modal
+        $domba = $this->getDombaCompleteData($earTagId);
 
         return response()->json([
             'success' => true,
             'data'    => $domba,
         ]);
+    }
+
+    public function exportPdf(string $earTagId)
+    {
+        // Gunakan fungsi helper, lalu pass data ke tampilan PDF Profil
+        $domba = $this->getDombaCompleteData($earTagId);
+        $theme = config('pdf_theme');
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('domba.pdf-profil', [
+            'domba' => $domba,
+            'theme' => $theme
+        ])
+        ->setPaper($theme['paper_size'], $theme['paper_orientation'])
+        ->setOptions([
+            'defaultFont'          => $theme['font_family'],
+            'isRemoteEnabled'      => false,
+            'isHtml5ParserEnabled' => true,
+        ]);
+
+        $filename = 'Profil-Domba-' . $domba->ear_tag_id . '-' . now()->format('Ymd') . '.pdf';
+
+        return $pdf->stream($filename);
     }
 
     public function update(Request $request, string $earTagId): JsonResponse
@@ -162,7 +255,6 @@ class DombaController extends Controller
             'ayah_id'       => ['nullable', 'exists:domba,ear_tag_id'],
         ]);
 
-        // ear_tag_id & jenis_kelamin di-lock — tidak akan ikut ter-update
         $domba->update($validated);
 
         return response()->json([
@@ -183,7 +275,7 @@ class DombaController extends Controller
         }
 
         $domba = Domba::findOrFail($earTagId);
-        $domba->delete(); // SoftDeletes — set deleted_at, data tetap tersimpan
+        $domba->delete();
 
         return response()->json([
             'success' => true,
