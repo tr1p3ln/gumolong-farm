@@ -174,6 +174,10 @@ $jadwalVaksinasi = DB::table('pemakaian_obat as p')
     {
         $obat = ObatVaksin::findOrFail($id);
         $info = "{$obat->nama_obat} ({$obat->formatted_id})";
+
+        DB::table('vaksinasi')->where('obat_id', $id)->delete();
+        DB::table('pemakaian_obat')->where('obat_id', $id)->delete();
+
         $obat->delete();
 
         return redirect()->route('obat-vaksin.index')
