@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Services\NotifikasiService;
 
 class ReproduksiController extends Controller
 {
@@ -89,6 +90,23 @@ class ReproduksiController extends Controller
                 else                               $row->alert = 'terpantau';
                 return $row;
             });
+            // ── Notifikasi HPL Mendekati (kritis / warning) ────────────────────
+            $kebuntinganList
+                ->filter(fn($row) => in_array($row->alert, ['kritis', 'warning']))
+                ->each(function ($row) {
+                    $sudahAda = DB::table('notifikasi')
+                        ->where('tipe', 'hpl')
+                        ->where('ear_tag_id', $row->indukan_id)
+                        ->whereDate('tanggal_notifikasi', today())
+                        ->exists();
+
+                    if (!$sudahAda) {
+                        $indukan   = DB::table('domba')->where('ear_tag_id', $row->indukan_id)->first();
+                        $namaDomba = $indukan->nama ?? $row->indukan_id;
+
+                        (new NotifikasiService())->hpl($row->indukan_id, $namaDomba, $row->hari_tersisa);
+                    }
+                });
 
         // ── Tab 3: Kelahiran ───────────────────────────────────
         $lhrQuery = DB::table('kelahiran as k')

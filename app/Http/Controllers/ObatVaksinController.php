@@ -81,7 +81,30 @@ $jadwalVaksinasi = DB::table('pemakaian_obat as p')
     })
     ->sortBy('hari_lagi')
     ->values();
+     // ── Notifikasi Jadwal Vaksinasi (mendekati / jatuh tempo) ──────────
+    $jadwalVaksinasi
+        ->filter(fn($row) => in_array($row->status_jadwal, ['jatuh_tempo', 'mendekati']))
+        ->groupBy(fn($row) => $row->nama_obat . '_' . $row->tanggal_berikutnya)
+        ->each(function ($group) {
+            $first = $group->first();
+            $pesan = $group->count() . " domba dijadwalkan vaksinasi {$first->nama_obat} pada {$first->tanggal_berikutnya}.";
 
+            $sudahAda = DB::table('notifikasi')
+                ->where('tipe', 'vaksin')
+                ->where('pesan', $pesan)
+                ->whereDate('tanggal_notifikasi', today())
+                ->exists();
+
+            if (!$sudahAda) {
+                (new NotifikasiService())->vaksin(
+                    $first->nama_obat,
+                    $group->count(),
+                    $first->tanggal_berikutnya
+                );
+            }
+        });
+
+    return view('obat-vaksin.index', compact('obatVaksin', 'riwayatPemakaian', 'jadwalVaksinasi'));
     return view('obat-vaksin.index', compact('obatVaksin', 'riwayatPemakaian', 'jadwalVaksinasi'));
 
     return view('obat-vaksin.index', compact('obatVaksin', 'riwayatPemakaian'));
