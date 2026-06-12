@@ -23,6 +23,23 @@ class UserController extends Controller
         });
     }
 
+    /**
+     * Cek apakah aktor (yang login) boleh melakukan aksi terhadap target user.
+     * - super_admin : boleh aksi ke siapa saja (kecuali self-disable/self-delete)
+     * - admin       : boleh aksi ke non-super_admin saja
+     */
+    private function canActOn(User $target): bool
+    {
+        $actor = Auth::user();
+
+        if ($actor->isSuperAdmin()) {
+            return true;
+        }
+
+        // admin tidak boleh menyentuh akun super_admin
+        return ! $target->isSuperAdmin();
+    }
+
     /* ------------------------------------------------------------------ */
     /*  INDEX                                                               */
     /* ------------------------------------------------------------------ */
@@ -30,7 +47,6 @@ class UserController extends Controller
     {
         $query = User::query();
 
-        // Filter pencarian
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('nama', 'like', "%{$search}%")
@@ -39,19 +55,16 @@ class UserController extends Controller
             });
         }
 
-        // Filter role
         if ($role = $request->input('role')) {
             $query->where('role', $role);
         }
 
-        // Filter status
         if ($status = $request->input('status')) {
             $query->where('status', $status);
         }
 
         $users = $query->latest('user_id')->paginate(10)->withQueryString();
 
-        // Summary cards
         $summary = [
             'total'    => User::count(),
             'aktif'    => User::where('status', 'aktif')->count(),
@@ -80,7 +93,6 @@ class UserController extends Controller
             'status'    => ['required', Rule::in(['aktif', 'nonaktif'])],
         ]);
 
-        // Hanya super_admin yang bisa membuat super_admin lain
         if ($validated['role'] === 'super_admin' && ! Auth::user()->isSuperAdmin()) {
             abort(403, 'Hanya super admin yang dapat membuat akun super admin.');
         }
@@ -96,6 +108,11 @@ class UserController extends Controller
     /* ------------------------------------------------------------------ */
     public function update(Request $request, User $user)
     {
+        // Pastikan aktor boleh mengedit target
+        if (! $this->canActOn($user)) {
+            abort(403, 'Anda tidak memiliki izin untuk mengubah akun ini.');
+        }
+
         $validated = $request->validate([
             'nama'     => ['required', 'string', 'max:100'],
             'email'    => ['required', 'email', Rule::unique('user', 'email')->ignore($user->user_id, 'user_id')],
@@ -105,21 +122,19 @@ class UserController extends Controller
             'password' => ['nullable', Password::min(8)->mixedCase()->numbers()],
         ]);
 
-        // Jangan izinkan mengubah role super_admin kecuali oleh super_admin
-        if ($user->isSuperAdmin() && ! Auth::user()->isSuperAdmin()) {
-            abort(403, 'Tidak dapat mengubah akun super admin.');
+        // Admin tidak boleh meng-assign role super_admin
+        if ($validated['role'] === 'super_admin' && ! Auth::user()->isSuperAdmin()) {
+            abort(403, 'Hanya super admin yang dapat menetapkan role super admin.');
         }
 
-        // Cegah super_admin men-disable dirinya sendiri
+        // Cegah siapa pun menonaktifkan akunnya sendiri lewat form edit
         if ($user->user_id === Auth::id() && $validated['status'] === 'nonaktif') {
             return back()->withErrors(['status' => 'Anda tidak dapat menonaktifkan akun Anda sendiri.']);
         }
 
         if (empty($validated['password'])) {
             unset($validated['password']);
-        }
-
-        if (isset($validated['password'])) {
+        } else {
             $validated['password'] = Hash::make($validated['password']);
         }
 
@@ -129,7 +144,7 @@ class UserController extends Controller
     }
 
     /* ------------------------------------------------------------------ */
-    /*  CREATE                                                              */
+    /*  CREATE / SHOW / EDIT (view helpers)                                 */
     /* ------------------------------------------------------------------ */
     public function create()
     {
@@ -138,17 +153,11 @@ class UserController extends Controller
         ]);
     }
 
-    /* ------------------------------------------------------------------ */
-    /*  SHOW                                                                */
-    /* ------------------------------------------------------------------ */
     public function show(User $user)
     {
         return view('users.show', compact('user'));
     }
 
-    /* ------------------------------------------------------------------ */
-    /*  EDIT                                                                */
-    /* ------------------------------------------------------------------ */
     public function edit(User $user)
     {
         return view('users.edit', [
@@ -158,7 +167,7 @@ class UserController extends Controller
     }
 
     /* ------------------------------------------------------------------ */
-    /*  TOGGLE STATUS (AJAX-friendly)                                       */
+    /*  TOGGLE STATUS                                                       */
     /* ------------------------------------------------------------------ */
     public function toggleStatus(Request $request, User $user)
     {
@@ -167,9 +176,9 @@ class UserController extends Controller
             return back()->withErrors(['toggle' => 'Anda tidak dapat menonaktifkan akun sendiri.']);
         }
 
-        // Cegah non-super_admin mengubah status super_admin
-        if ($user->isSuperAdmin() && ! Auth::user()->isSuperAdmin()) {
-            abort(403);
+        // Admin tidak boleh mengubah status akun super_admin
+        if (! $this->canActOn($user)) {
+            abort(403, 'Anda tidak memiliki izin untuk mengubah status akun ini.');
         }
 
         $user->status = $user->status === 'aktif' ? 'nonaktif' : 'aktif';
@@ -196,12 +205,10 @@ class UserController extends Controller
     /* ------------------------------------------------------------------ */
     public function destroy(User $user)
     {
-        // Hanya super_admin yang bisa hapus
         if (! Auth::user()->isSuperAdmin()) {
             abort(403, 'Hanya super admin yang dapat menghapus akun.');
         }
 
-        // Cegah hapus diri sendiri
         if ($user->user_id === Auth::id()) {
             return back()->withErrors(['delete' => 'Anda tidak dapat menghapus akun Anda sendiri.']);
         }
@@ -222,13 +229,14 @@ class UserController extends Controller
     /* ------------------------------------------------------------------ */
     public function resetPassword(Request $request, User $user)
     {
+        // Admin tidak boleh mereset password akun super_admin
+        if (! $this->canActOn($user)) {
+            abort(403, 'Anda tidak memiliki izin untuk mereset password akun ini.');
+        }
+
         $request->validate([
             'password' => ['required', Password::min(8)->mixedCase()->numbers(), 'confirmed'],
         ]);
-
-        if ($user->isSuperAdmin() && ! Auth::user()->isSuperAdmin()) {
-            abort(403);
-        }
 
         $user->update(['password' => Hash::make($request->password)]);
 

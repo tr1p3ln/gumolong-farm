@@ -109,6 +109,17 @@
                 </thead>
                 <tbody>
                     @forelse($users as $user)
+
+                    {{--
+                        Tentukan apakah aktor yang login boleh melakukan aksi terhadap baris ini.
+                        - super_admin : boleh aksi ke semua user
+                        - admin       : boleh aksi ke user non-super_admin saja
+                    --}}
+                    @php
+                        $isSelf       = $user->user_id === auth()->id();
+                        $canAct       = auth()->user()->isSuperAdmin() || ! $user->isSuperAdmin();
+                    @endphp
+
                     <tr class="{{ $user->status === 'nonaktif' ? 'mu-table__row--disabled' : '' }}">
 
                         {{-- Pengguna --}}
@@ -159,42 +170,65 @@
                         {{-- Aksi --}}
                         <td>
                             <div class="action-group">
+
                                 {{-- Toggle status --}}
+                                {{-- Ditampilkan jika: aktor boleh aksi pada target DAN bukan diri sendiri --}}
+                                @if($canAct && ! $isSelf)
                                 <form method="POST"
                                       action="{{ route('users.toggle-status', $user->user_id) }}">
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit"
                                             class="btn-icon btn-icon--{{ $user->status === 'aktif' ? 'disable' : 'enable' }}"
-                                            title="{{ $user->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}"
-                                            @if($user->user_id === auth()->id()) disabled @endif>
+                                            title="{{ $user->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}">
                                         <i class="bi {{ $user->status === 'aktif' ? 'bi-pause-fill' : 'bi-play-fill' }}"></i>
                                     </button>
                                 </form>
+                                @else
+                                {{-- Placeholder kosong agar layout tidak bergeser --}}
+                                <span class="btn-icon btn-icon--disabled" title="Tidak tersedia">
+                                    <i class="bi bi-dash"></i>
+                                </span>
+                                @endif
 
                                 {{-- Edit --}}
+                                {{-- Ditampilkan jika aktor boleh aksi pada target --}}
+                                @if($canAct)
                                 <button class="btn-icon btn-icon--edit"
                                         title="Edit"
                                         data-user='@json($user)'
                                         onclick="openEditModal({{ $user->user_id }}, JSON.parse(this.dataset.user))">
                                     <i class="bi bi-pencil-square"></i>
                                 </button>
+                                @else
+                                <span class="btn-icon btn-icon--disabled" title="Tidak tersedia">
+                                    <i class="bi bi-dash"></i>
+                                </span>
+                                @endif
 
                                 {{-- Reset Password --}}
+                                {{-- Ditampilkan jika aktor boleh aksi pada target --}}
+                                @if($canAct)
                                 <button class="btn-icon btn-icon--reset"
                                         title="Reset Password"
                                         onclick="openResetModal({{ $user->user_id }}, '{{ $user->nama }}')">
                                     <i class="bi bi-key-fill"></i>
                                 </button>
+                                @else
+                                <span class="btn-icon btn-icon--disabled" title="Tidak tersedia">
+                                    <i class="bi bi-dash"></i>
+                                </span>
+                                @endif
 
-                                {{-- Hapus — hanya super_admin
-                                @if(auth()->user()->isSuperAdmin() && $user->user_id !== auth()->id())
+                                {{-- Hapus — hanya super_admin --}}
+                                @if(auth()->user()->isSuperAdmin() && ! $isSelf)
                                 <button class="btn-icon btn-icon--delete"
                                         title="Hapus"
                                         onclick="openDeleteModal({{ $user->user_id }}, '{{ $user->nama }}')">
                                     <i class="bi bi-trash-fill"></i>
                                 </button>
-                                @endif --}}
+                                @endif
+
                             </div>
                         </td>
                     </tr>
@@ -268,7 +302,7 @@
                     <select name="role" class="form-select" required>
                         <option value="">-- Pilih Role --</option>
                         @foreach($roleOptions as $r)
-                            @if($r === 'super_admin' && !auth()->user()->isSuperAdmin())
+                            @if($r === 'super_admin' && ! auth()->user()->isSuperAdmin())
                                 @continue
                             @endif
                             <option value="{{ $r }}">{{ ucfirst(str_replace('_',' ',$r)) }}</option>
@@ -325,7 +359,7 @@
                     <label>Role <span class="required">*</span></label>
                     <select name="role" id="edit-role" class="form-select" required>
                         @foreach($roleOptions as $r)
-                            @if($r === 'super_admin' && !auth()->user()->isSuperAdmin())
+                            @if($r === 'super_admin' && ! auth()->user()->isSuperAdmin())
                                 @continue
                             @endif
                             <option value="{{ $r }}">{{ ucfirst(str_replace('_',' ',$r)) }}</option>
