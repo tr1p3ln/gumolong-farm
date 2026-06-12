@@ -7,6 +7,7 @@ use App\Models\MedicalRecord;
 use App\Models\PemakaianObat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\NotifikasiService;
 
 class ObatVaksinController extends Controller
 {
@@ -80,7 +81,30 @@ $jadwalVaksinasi = DB::table('pemakaian_obat as p')
     })
     ->sortBy('hari_lagi')
     ->values();
+     // ── Notifikasi Jadwal Vaksinasi (mendekati / jatuh tempo) ──────────
+    $jadwalVaksinasi
+        ->filter(fn($row) => in_array($row->status_jadwal, ['jatuh_tempo', 'mendekati']))
+        ->groupBy(fn($row) => $row->nama_obat . '_' . $row->tanggal_berikutnya)
+        ->each(function ($group) {
+            $first = $group->first();
+            $pesan = $group->count() . " domba dijadwalkan vaksinasi {$first->nama_obat} pada {$first->tanggal_berikutnya}.";
 
+            $sudahAda = DB::table('notifikasi')
+                ->where('tipe', 'vaksin')
+                ->where('pesan', $pesan)
+                ->whereDate('tanggal_notifikasi', today())
+                ->exists();
+
+            if (!$sudahAda) {
+                (new NotifikasiService())->vaksin(
+                    $first->nama_obat,
+                    $group->count(),
+                    $first->tanggal_berikutnya
+                );
+            }
+        });
+
+    return view('obat-vaksin.index', compact('obatVaksin', 'riwayatPemakaian', 'jadwalVaksinasi'));
     return view('obat-vaksin.index', compact('obatVaksin', 'riwayatPemakaian', 'jadwalVaksinasi'));
 
     return view('obat-vaksin.index', compact('obatVaksin', 'riwayatPemakaian'));
@@ -111,6 +135,8 @@ $jadwalVaksinasi = DB::table('pemakaian_obat as p')
             'interval_vaksinasi' => $request->interval_vaksinasi ?: null,
             'keterangan'         => $request->keterangan ?: null,
         ]);
+        // ── Cek expired ──
+        $this->cekDanKirimNotifExpired($obat);
 
         return redirect()->route('obat-vaksin.index')
                         ->with('success', "{$obat->nama_obat} ({$obat->formatted_id}) berhasil ditambahkan.");
@@ -165,7 +191,8 @@ $jadwalVaksinasi = DB::table('pemakaian_obat as p')
             'interval_vaksinasi' => $request->interval_vaksinasi ?: null,
             'keterangan'         => $request->keterangan ?: null,
         ]);
-
+        // ── Cek expired ──
+        $this->cekDanKirimNotifExpired($obat);
         return redirect()->route('obat-vaksin.index')
                         ->with('success', "{$obat->nama_obat} ({$obat->formatted_id}) berhasil diperbarui.");
     }
@@ -255,26 +282,60 @@ $jadwalVaksinasi = DB::table('pemakaian_obat as p')
         }
 
         DB::transaction(function () use ($request, $obat, $rekam) {
-            DB::table('pemakaian_obat')->insert([
-                'rekam_id'          => $request->rekam_id,
-                'obat_id'           => $request->obat_id,
-                'jumlah'            => $request->jumlah_dosis,
-                'cara_pemberian'    => $request->cara_pemberian,
-                'catatan'           => $request->catatan,
-                'tanggal_pakai'     => $request->tanggal_pemberian,
-                'created_at'        => now(),
-                'updated_at'        => now(),
-            ]);
+        DB::table('pemakaian_obat')->insert([
+            'rekam_id'       => $request->rekam_id,
+            'obat_id'        => $request->obat_id,
+            'jumlah'         => $request->jumlah_dosis,
+            'cara_pemberian' => $request->cara_pemberian,
+            'catatan'        => $request->catatan,
+            'tanggal_pakai'  => $request->tanggal_pemberian,
+            'created_at'     => now(),
+            'updated_at'     => now(),
+        ]);
 
-            // Kurangi stok
-            $obat->decrement('stok', $request->jumlah_dosis);
-        });
+        // Kurangi stok
+        $obat->decrement('stok', $request->jumlah_dosis);
+
+        // ── Notifikasi pemberian obat/vaksin ──────────────────────
+        $notifService = new NotifikasiService();
+        $tipe  = $obat->tipe === 'vaksin' ? 'vaksin' : 'vaksin';
+        $pesan = ucfirst($obat->tipe) . " {$obat->nama_obat} diberikan kepada domba {$rekam->ear_tag_id} "
+            . "sebanyak {$request->jumlah_dosis} {$obat->satuan}.";
+        $notifService->send(auth()->id(), $tipe, $pesan, $rekam->ear_tag_id);
+
+        // ── Notifikasi stok tipis jika stok setelah pengurangan <= minimum ──
+        $stokBaru = $obat->stok - $request->jumlah_dosis;
+        if ($stokBaru <= $obat->stok_minimum) {
+            $notifService->stokTipis(
+                $obat->nama_obat,
+                $stokBaru,
+                $obat->satuan,
+                $obat->stok_minimum
+            );
+        }
+    });
 
         return redirect()->route('obat-vaksin.index')
             ->with('success', "Pemakaian {$obat->nama_obat} ({$obat->formatted_id}) berhasil dicatat. Stok berkurang {$request->jumlah_dosis} {$obat->satuan}.");
             
     }
-    
+    private function cekDanKirimNotifExpired(ObatVaksin $obat): void
+    {
+        if (!$obat->tanggal_expired) return;
+
+        $hariLagi = (int) now()->diffInDays($obat->tanggal_expired, false);
+
+        if ($hariLagi <= 0) {
+            $pesan = "{$obat->nama_obat} sudah kedaluwarsa sejak "
+                . \Carbon\Carbon::parse($obat->tanggal_expired)->format('d M Y')
+                . ". Segera keluarkan dari stok.";
+            (new NotifikasiService())->broadcast('expired', $pesan);
+
+        } elseif ($hariLagi <= 30) {
+            (new NotifikasiService())->expired($obat->nama_obat, $hariLagi);
+        }
+    }
+
     public function create() {}
     public function edit(string $id) {}
 }

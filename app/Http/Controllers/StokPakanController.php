@@ -7,6 +7,7 @@ use App\Models\PemberianPakan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\NotifikasiService;
 
 class StokPakanController extends Controller
 {
@@ -90,6 +91,16 @@ class StokPakanController extends Controller
             $pakan->jumlah_stok   -= $request->jumlah;
             $pakan->tanggal_update = now();
             $pakan->save();
+            // ── Notifikasi stok menipis ───────────────────────────────
+            if ($pakan->jumlah_stok <= ($pakan->stok_minimum ?? 0)) {
+                (new \App\Services\NotifikasiService())->stokTipis(
+                    $pakan->nama_pakan,
+                    $pakan->jumlah_stok,
+                    $pakan->satuan,
+                    $pakan->stok_minimum ?? 0
+                );
+            }
+
 
             PemberianPakan::create([
                 'pakan_id'          => $pakan->pakan_id,
