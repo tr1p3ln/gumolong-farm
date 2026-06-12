@@ -21,8 +21,8 @@ class SilsilahController extends Controller
             });
         }
 
-        if ($request->filled('jenis_kelamin')) {
-            $query->where('jenis_kelamin', $request->jenis_kelamin);
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->kategori);
         }
 
         $dombas = $query->paginate(15)->withQueryString();

@@ -42,8 +42,10 @@ class StokPakanController extends Controller
         // --- Jenis pakan untuk dropdown filter ---
         $jenisOptions = PakanStok::select('jenis')->distinct()->pluck('jenis');
 
+        $dombaList = \App\Models\Domba::orderBy('ear_tag_id')->get();
+
         return view('stok-pakan.index', compact(
-            'stokList', 'prediksi', 'logPemberian', 'peringatan', 'kritis', 'jenisOptions'
+            'stokList', 'prediksi', 'logPemberian', 'peringatan', 'kritis', 'jenisOptions', 'dombaList'
         ));
     }
 

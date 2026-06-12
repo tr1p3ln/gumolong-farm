@@ -8,7 +8,6 @@ return new class extends Migration
 {
     /**
      * Tabel: pakan_stok
-     * Modul: A-04 Stok Pakan (FR-2.1, FR-2.2)
      */
     public function up(): void
     {

@@ -8,7 +8,6 @@ return new class extends Migration
 {
     /**
      * Tabel: kelahiran
-     * Modul: A-09 Reproduksi (FR-7.2)
      */
     public function up(): void
     {

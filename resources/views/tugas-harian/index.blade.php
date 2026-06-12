@@ -658,7 +658,6 @@
         <div class="px-8 py-6 border-b border-gray-200 flex justify-between items-start">
             <div>
                 <h2 class="text-xl font-bold text-gray-900">Tambah Tugas Harian</h2>
-                <p class="text-xs text-gray-500 mt-1">UC-DT.1 | Kamus Data: tabel TUGAS_HARIAN</p>
             </div>
             <button @click="modalTambah = false" class="text-gray-400 hover:text-gray-600">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

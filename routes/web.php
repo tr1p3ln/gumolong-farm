@@ -85,6 +85,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Dashboard (Kepala Kandang → Limited view, handled in blade)
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard/export-pdf', [DashboardController::class, 'exportPdf'])->name('dashboard.export-pdf')->middleware('role:super_admin,admin');
 
         // ── Data Domba ───────────────────────────────────────────────────────
         // READ: all web roles
@@ -94,7 +95,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware('role:super_admin,admin,kepala_kandang');
 
             Route::get('/',           [DombaController::class, 'index'])->name('domba.index');
+            Route::get('/{earTagId}/export-pdf', [DombaController::class, 'exportPdf'])
+                ->name('domba.export-pdf');
             Route::get('/{earTagId}', [DombaController::class, 'show'])->name('domba.show');
+
+
 
             // WRITE: Super Admin, Admin, Kepala Kandang only (Pengurus = View Only)
             Route::middleware('role:super_admin,admin,kepala_kandang')->group(function () {
@@ -109,7 +114,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/obat-vaksin/pemakaian',       [ObatVaksinController::class, 'storePemakaian'])->name('obat-vaksin.storePemakaian');
         Route::resource('stok-pakan',       StokPakanController::class);
         Route::resource('obat-vaksin',      ObatVaksinController::class);
-        
+
 
         // ── Monitoring ───────────────────────────────────────────────────────
         Route::resource('pertumbuhan',      TrackingPertumbuhanController::class);
@@ -119,7 +124,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/kesehatan/karantina/{earTagId}/pindah',                   [KesehatanController::class, 'pindahKandang'])->name('kesehatan.karantina.pindah');
         Route::delete('/kesehatan/{rekamId}/obat/{pakaiId}',                     [KesehatanController::class, 'destroyPemakaianObat'])->name('kesehatan.obat.destroy');
         Route::resource('kesehatan',        KesehatanController::class)->except(['create', 'edit', 'show']);
-        Route::resource('pakan-individual', PakanIndividualController::class);
+        Route::get('/pakan-individual',          [PakanIndividualController::class, 'index'])->name('pakan-individual.index');
+        Route::post('/pakan-individual',         [PakanIndividualController::class, 'store'])->name('pakan-individual.store');
+        Route::get('/pakan-individual/{earTag}', [PakanIndividualController::class, 'show'])->name('pakan-individual.show');
+        Route::get('/pakan-individual/search-domba', [PakanIndividualController::class, 'searchDomba'])->name('pakan-individual.search-domba');
+        Route::get('/pakan-individual/{earTag}/stats', [PakanIndividualController::class, 'stats'])->name('pakan-individual.stats');
+        Route::get('/pakan-individual/{earTagId}/stats', [PakanIndividualController::class, 'stats']);
 
         // ── Reproduksi ───────────────────────────────────────────────────────
         Route::post('/reproduksi/{id}/konfirmasi',                    [ReproduksiController::class, 'konfirmasi'])->name('reproduksi.konfirmasi');
@@ -182,15 +192,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // ── Tracking Pertumbuhan ──────────────────────────────────────────────────────
         Route::prefix('tracking-pertumbuhan')->name('tracking-pertumbuhan.')->group(function () {
-        
+
             // Halaman utama – daftar domba + statistik
             Route::get('/', [TrackingPertumbuhanController::class, 'index'])
                 ->name('index');
-        
+
             // Detail domba + riwayat penimbangan
             Route::get('/{earTagId}', [TrackingPertumbuhanController::class, 'show'])
                 ->name('show');
-        
+
             // Simpan penimbangan baru untuk domba tertentu
             Route::post('/{earTagId}/penimbangan', [TrackingPertumbuhanController::class, 'storePenimbangan'])
                 ->name('penimbangan.store');

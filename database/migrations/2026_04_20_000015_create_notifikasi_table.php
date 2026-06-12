@@ -8,7 +8,6 @@ return new class extends Migration
 {
     /**
      * Tabel: notifikasi
-     * Modul: A-12 Notifikasi (NFR-02)
      */
     public function up(): void
     {

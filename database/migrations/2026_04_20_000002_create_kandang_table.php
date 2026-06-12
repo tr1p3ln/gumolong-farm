@@ -8,7 +8,6 @@ return new class extends Migration
 {
     /**
      * Tabel: kandang
-     * Modul: Master Data Kandang
      */
     public function up(): void
     {

@@ -8,51 +8,51 @@
     @if(session('success'))
     <div class="mx-8 mt-6 flex items-center gap-3 px-5 py-3.5 bg-primary/10 border border-primary/20 rounded-xl text-sm text-primary font-semibold"
         x-data="{ show: true }" x-show="show">
-        <span class="material-symbols-outlined text-lg">check_circle</span>
+        <span class="text-lg material-symbols-outlined">check_circle</span>
         {{ session('success') }}
-        <button @click="show = false" class="ml-auto text-primary/50 hover:text-primary"><span class="material-symbols-outlined text-base">close</span></button>
+        <button @click="show = false" class="ml-auto text-primary/50 hover:text-primary"><span class="text-base material-symbols-outlined">close</span></button>
     </div>
     @endif
     @if(session('error'))
     <div class="mx-8 mt-6 flex items-center gap-3 px-5 py-3.5 bg-error/10 border border-error/20 rounded-xl text-sm text-error font-semibold"
         x-data="{ show: true }" x-show="show">
-        <span class="material-symbols-outlined text-lg">error</span>
+        <span class="text-lg material-symbols-outlined">error</span>
         {{ session('error') }}
-        <button @click="show = false" class="ml-auto text-error/50 hover:text-error"><span class="material-symbols-outlined text-base">close</span></button>
+        <button @click="show = false" class="ml-auto text-error/50 hover:text-error"><span class="text-base material-symbols-outlined">close</span></button>
     </div>
     @endif
 
     {{-- ── Header ──────────────────────────────────────────────── --}}
-    <header class="px-8 pt-8 pb-6 flex justify-between items-start">
+    <header class="flex items-start justify-between px-8 pt-8 pb-6">
         <div>
-            <h1 class="text-3xl font-extrabold text-on-surface mb-1">Kesehatan Ternak</h1>
+            <h1 class="mb-1 text-3xl font-extrabold text-on-surface">Kesehatan Ternak</h1>
         </div>
         <div class="flex gap-3">
             <button @click="showCreateVaksinasi = true"
                     class="flex items-center gap-2 px-5 py-2.5 border border-primary text-primary font-bold text-sm rounded-lg hover:bg-primary/5 transition-all">
-                <span class="material-symbols-outlined text-lg">vaccines</span>
+                <span class="text-lg material-symbols-outlined">vaccines</span>
                 Catat Vaksinasi
             </button>
             <button @click="showCreateRekam = true"
                     class="flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-bold text-sm rounded-lg shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95">
-                <span class="material-symbols-outlined text-lg">add</span>
+                <span class="text-lg material-symbols-outlined">add</span>
                 Tambah Rekam Medis
             </button>
         </div>
     </header>
 
     {{-- ── KPI Cards ───────────────────────────────────────────── --}}
-    <section class="px-8 grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
+    <section class="grid grid-cols-2 gap-5 px-8 mb-8 md:grid-cols-4">
 
         {{-- Sedang Sakit --}}
         @php $sakitBadge = $kpiSakit > 0 ? ['label' => 'PERLU PERHATIAN', 'class' => 'bg-error-container text-on-error-container'] : ['label' => 'NIHIL', 'class' => 'bg-secondary-container text-on-secondary-container']; @endphp
-        <div class="bg-white p-5 rounded-xl border border-outline-variant/30 shadow-sm flex flex-col gap-1">
+        <div class="flex flex-col gap-1 p-5 bg-white border shadow-sm rounded-xl border-outline-variant/30">
             <div class="flex items-start justify-between">
                 <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Sedang Sakit</p>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ $sakitBadge['class'] }}">{{ $sakitBadge['label'] }}</span>
             </div>
-            <p class="text-3xl font-black text-on-surface leading-none mt-2">{{ $kpiSakit }} <span class="text-sm font-medium text-outline">ekor</span></p>
-            <p class="text-xs text-on-surface-variant mt-1">domba sakit / dalam perawatan</p>
+            <p class="mt-2 text-3xl font-black leading-none text-on-surface">{{ $kpiSakit }} <span class="text-sm font-medium text-outline">ekor</span></p>
+            <p class="mt-1 text-xs text-on-surface-variant">domba sakit / dalam perawatan</p>
         </div>
 
         {{-- Karantina Aktif --}}
@@ -60,12 +60,12 @@
             $karantinaBadge = $kpiKarantina > 0 ? ['label' => 'AKTIF', 'class' => 'bg-amber-100 text-amber-700'] : ['label' => 'NIHIL', 'class' => 'bg-secondary-container text-on-secondary-container'];
             $karantinaPC = $kapasitasIsolasi > 0 ? min(100, round($kpiKarantina / $kapasitasIsolasi * 100)) : 0;
         @endphp
-        <div class="bg-white p-5 rounded-xl border border-outline-variant/30 shadow-sm flex flex-col gap-1">
+        <div class="flex flex-col gap-1 p-5 bg-white border shadow-sm rounded-xl border-outline-variant/30">
             <div class="flex items-start justify-between">
                 <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Karantina Aktif</p>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ $karantinaBadge['class'] }}">{{ $karantinaBadge['label'] }}</span>
             </div>
-            <p class="text-3xl font-black text-on-surface leading-none mt-2">{{ $kpiKarantina }} <span class="text-sm font-medium text-outline">ekor</span></p>
+            <p class="mt-2 text-3xl font-black leading-none text-on-surface">{{ $kpiKarantina }} <span class="text-sm font-medium text-outline">ekor</span></p>
             <div class="flex justify-between items-center text-[10px] text-outline uppercase tracking-wider mt-2">
                 <span>Kapasitas isolasi</span>
                 <span>{{ $karantinaPC }}%</span>
@@ -77,30 +77,30 @@
         </div>
 
         {{-- Sembuh Bulan Ini --}}
-        <div class="bg-white p-5 rounded-xl border border-outline-variant/30 shadow-sm flex flex-col gap-1">
+        <div class="flex flex-col gap-1 p-5 bg-white border shadow-sm rounded-xl border-outline-variant/30">
             <div class="flex items-start justify-between">
                 <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Sembuh Bulan Ini</p>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container">{{ now()->isoFormat('MMM YYYY') }}</span>
             </div>
-            <p class="text-3xl font-black text-on-surface leading-none mt-2">{{ $kpiSembuh }} <span class="text-sm font-medium text-outline">ekor</span></p>
-            <p class="text-xs text-on-surface-variant mt-1">pulih bulan ini</p>
+            <p class="mt-2 text-3xl font-black leading-none text-on-surface">{{ $kpiSembuh }} <span class="text-sm font-medium text-outline">ekor</span></p>
+            <p class="mt-1 text-xs text-on-surface-variant">pulih bulan ini</p>
         </div>
 
         {{-- Vaksinasi Minggu Ini --}}
         @php $vaksinBadge = $kpiVaksinMingguIni > 0 ? ['label' => 'ADA JADWAL', 'class' => 'bg-primary-container text-on-primary-container'] : ['label' => 'NIHIL', 'class' => 'bg-surface-container text-outline']; @endphp
-        <div class="bg-white p-5 rounded-xl border border-outline-variant/30 shadow-sm flex flex-col gap-1">
+        <div class="flex flex-col gap-1 p-5 bg-white border shadow-sm rounded-xl border-outline-variant/30">
             <div class="flex items-start justify-between">
                 <p class="text-[11px] font-semibold text-outline uppercase tracking-wider">Vaksinasi Minggu Ini</p>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ $vaksinBadge['class'] }}">{{ $vaksinBadge['label'] }}</span>
             </div>
-            <p class="text-3xl font-black text-on-surface leading-none mt-2">{{ $kpiVaksinMingguIni }} <span class="text-sm font-medium text-outline">ekor</span></p>
-            <p class="text-xs text-on-surface-variant mt-1">divaksin minggu ini</p>
+            <p class="mt-2 text-3xl font-black leading-none text-on-surface">{{ $kpiVaksinMingguIni }} <span class="text-sm font-medium text-outline">ekor</span></p>
+            <p class="mt-1 text-xs text-on-surface-variant">divaksin minggu ini</p>
         </div>
 
     </section>
 
     {{-- ── Tab Navigation ──────────────────────────────────────── --}}
-    <section class="px-8 border-b border-outline-variant/30 mb-0">
+    <section class="px-8 mb-0 border-b border-outline-variant/30">
         <div class="flex gap-8">
             <button @click="tab = 'rekam-medis'"
                     :class="tab === 'rekam-medis' ? 'text-primary font-bold border-b-4 border-primary' : 'text-outline font-semibold hover:text-on-surface'"
@@ -109,7 +109,7 @@
             </button>
             <button @click="tab = 'karantina'"
                     :class="tab === 'karantina' ? 'text-primary font-bold border-b-4 border-primary' : 'text-outline font-semibold hover:text-on-surface'"
-                    class="pb-4 text-sm transition-colors flex items-center gap-2">
+                    class="flex items-center gap-2 pb-4 text-sm transition-colors">
                 Karantina
                 @if($kpiKarantina > 0)
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-error text-white">{{ $kpiKarantina }}</span>
@@ -117,7 +117,7 @@
             </button>
             <button @click="tab = 'vaksinasi'"
                     :class="tab === 'vaksinasi' ? 'text-primary font-bold border-b-4 border-primary' : 'text-outline font-semibold hover:text-on-surface'"
-                    class="pb-4 text-sm transition-colors flex items-center gap-2">
+                    class="flex items-center gap-2 pb-4 text-sm transition-colors">
                 Vaksinasi
                 @if($jadwalVaksinasi->count() > 0)
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500 text-white">{{ $jadwalVaksinasi->count() }}</span>
@@ -132,21 +132,21 @@
     <section x-show="tab === 'rekam-medis'" class="px-8 py-8 space-y-6">
 
         {{-- Filter bar --}}
-        <form method="GET" action="{{ route('kesehatan.index') }}" class="flex flex-wrap gap-3 items-end">
+        <form method="GET" action="{{ route('kesehatan.index') }}" class="flex flex-wrap items-end gap-3">
             <input type="hidden" name="tab" value="rekam-medis">
             <div class="flex-1 min-w-[200px]">
                 <label class="block text-xs font-semibold text-outline mb-1.5 uppercase tracking-wider">Cari Domba / Gejala</label>
                 <div class="relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg pointer-events-none">search</span>
+                    <span class="absolute text-lg -translate-y-1/2 pointer-events-none material-symbols-outlined left-3 top-1/2 text-outline">search</span>
                     <input type="text" name="rm_search" value="{{ request('rm_search') }}"
                            placeholder="Ear tag, nama, atau gejala..."
-                           class="w-full pl-9 pr-4 py-2 border border-outline-variant rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none"/>
+                           class="w-full py-2 pr-4 text-sm bg-white border rounded-lg outline-none pl-9 border-outline-variant focus:ring-2 focus:ring-primary focus:border-transparent"/>
                 </div>
             </div>
             <div>
                 <label class="block text-xs font-semibold text-outline mb-1.5 uppercase tracking-wider">Status</label>
                 <select name="rm_status"
-                        class="px-3 py-2 border border-outline-variant rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary outline-none">
+                        class="px-3 py-2 text-sm bg-white border rounded-lg outline-none border-outline-variant focus:ring-2 focus:ring-primary">
                     <option value="">Semua Status</option>
                     <option value="sakit"           @selected(request('rm_status') === 'sakit')>Sakit</option>
                     <option value="dalam_perawatan" @selected(request('rm_status') === 'dalam_perawatan')>Dalam Perawatan</option>
@@ -155,21 +155,21 @@
                 </select>
             </div>
             <button type="submit"
-                    class="px-5 py-2 bg-primary text-white font-bold text-sm rounded-lg hover:bg-primary/90 transition-all">
+                    class="px-5 py-2 text-sm font-bold text-white transition-all rounded-lg bg-primary hover:bg-primary/90">
                 Filter
             </button>
             @if(request()->hasAny(['rm_search','rm_status']))
             <a href="{{ route('kesehatan.index', ['tab' => 'rekam-medis']) }}"
-               class="px-4 py-2 border border-outline-variant text-outline text-sm font-semibold rounded-lg hover:bg-surface-container transition-all">
+               class="px-4 py-2 text-sm font-semibold transition-all border rounded-lg border-outline-variant text-outline hover:bg-surface-container">
                 Reset
             </a>
             @endif
         </form>
 
         {{-- Table --}}
-        <div class="rounded-xl border border-outline-variant/30 overflow-hidden shadow-sm">
+        <div class="overflow-hidden border shadow-sm rounded-xl border-outline-variant/30">
             <table class="w-full text-left border-collapse">
-                <thead class="bg-surface-container-low border-b border-outline-variant/30">
+                <thead class="border-b bg-surface-container-low border-outline-variant/30">
                     <tr>
                         <th class="px-5 py-4 text-[10px] font-black text-outline uppercase tracking-widest">Ear Tag</th>
                         <th class="px-5 py-4 text-[10px] font-black text-outline uppercase tracking-widest">Domba</th>
@@ -181,10 +181,10 @@
                         <th class="px-5 py-4 text-[10px] font-black text-outline uppercase tracking-widest">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-outline-variant/20 bg-white">
+                <tbody class="bg-white divide-y divide-outline-variant/20">
                     @forelse($rekamList as $r)
-                    <tr class="hover:bg-surface-container-lowest transition-colors">
-                        <td class="px-5 py-4 font-bold text-primary text-sm">{{ $r->ear_tag_id }}</td>
+                    <tr class="transition-colors hover:bg-surface-container-lowest">
+                        <td class="px-5 py-4 text-sm font-bold text-primary">{{ $r->ear_tag_id }}</td>
                         <td class="px-5 py-4">
                             <p class="text-sm font-semibold text-on-surface">{{ $r->nama_domba ?? '—' }}</p>
                             <p class="text-xs text-outline">{{ $r->kategori }} · {{ $r->ras }}</p>
@@ -228,7 +228,7 @@
                                     @endforeach
                                 </div>
                             @else
-                                <span class="text-xs text-outline italic">—</span>
+                                <span class="text-xs italic text-outline">—</span>
                             @endif
                         </td>
                         <td class="px-5 py-4">
@@ -248,7 +248,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="px-5 py-12 text-center text-outline text-sm italic">
+                        <td colspan="8" class="px-5 py-12 text-sm italic text-center text-outline">
                             Belum ada data rekam medis.
                         </td>
                     </tr>
@@ -270,25 +270,25 @@
     <section x-show="tab === 'karantina'" class="px-8 py-8 space-y-6">
 
         {{-- Info banner --}}
-        <div class="bg-surface-container-high/50 p-4 rounded-lg flex items-start gap-4 border-l-4 border-secondary">
-            <span class="material-symbols-outlined text-secondary flex-shrink-0">info</span>
-            <p class="text-sm text-on-surface-variant font-medium">
+        <div class="flex items-start gap-4 p-4 border-l-4 rounded-lg bg-surface-container-high/50 border-secondary">
+            <span class="flex-shrink-0 material-symbols-outlined text-secondary">info</span>
+            <p class="text-sm font-medium text-on-surface-variant">
                 Halaman ini menampilkan domba yang saat ini berstatus <strong>Karantina</strong>,
                 beserta riwayat penyakit terkait.
             </p>
         </div>
 
         {{-- Stats bar --}}
-        <div class="flex border border-outline-variant/50 rounded-xl overflow-hidden">
-            <div class="flex-1 p-6 border-r border-outline-variant/50 flex flex-col items-center justify-center text-center">
+        <div class="flex overflow-hidden border border-outline-variant/50 rounded-xl">
+            <div class="flex flex-col items-center justify-center flex-1 p-6 text-center border-r border-outline-variant/50">
                 <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1">KARANTINA AKTIF</p>
                 <p class="text-xl font-black text-primary">{{ $kpiKarantina }} ekor</p>
             </div>
-            <div class="flex-1 p-6 border-r border-outline-variant/50 flex flex-col items-center justify-center text-center bg-surface-container-low">
+            <div class="flex flex-col items-center justify-center flex-1 p-6 text-center border-r border-outline-variant/50 bg-surface-container-low">
                 <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1">KAPASITAS KANDANG ISOLASI</p>
                 <p class="text-xl font-black text-on-surface">{{ $kpiKarantina }} / {{ $kapasitasIsolasi }}</p>
             </div>
-            <div class="flex-1 p-6 flex flex-col items-center justify-center text-center">
+            <div class="flex flex-col items-center justify-center flex-1 p-6 text-center">
                 <p class="text-[10px] font-bold text-outline uppercase tracking-widest mb-1">RATA-RATA DURASI</p>
                 <p class="text-xl font-black text-on-surface">
                     {{ $rataKarantina ? round($rataKarantina) . ' hari' : '—' }}
@@ -297,9 +297,9 @@
         </div>
 
         {{-- Table --}}
-        <div class="rounded-xl border border-outline-variant/30 overflow-hidden shadow-sm">
+        <div class="overflow-hidden border shadow-sm rounded-xl border-outline-variant/30">
             <table class="w-full text-left border-collapse">
-                <thead class="bg-surface-container-low border-b border-outline-variant/30">
+                <thead class="border-b bg-surface-container-low border-outline-variant/30">
                     <tr>
                         <th class="px-5 py-4 text-[10px] font-black text-outline uppercase tracking-widest">Ear Tag</th>
                         <th class="px-5 py-4 text-[10px] font-black text-outline uppercase tracking-widest">Nama Domba</th>
@@ -311,26 +311,26 @@
                         <th class="px-5 py-4 text-[10px] font-black text-outline uppercase tracking-widest">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-outline-variant/20 bg-white">
+                <tbody class="bg-white divide-y divide-outline-variant/20">
                     @forelse($karantinaList as $k)
-                    <tr class="hover:bg-surface-container-lowest transition-colors">
-                        <td class="px-5 py-4 font-bold text-primary text-sm">{{ $k->ear_tag_id }}</td>
-                        <td class="px-5 py-4 font-semibold text-sm text-on-surface">{{ $k->nama ?? '—' }}</td>
+                    <tr class="transition-colors hover:bg-surface-container-lowest">
+                        <td class="px-5 py-4 text-sm font-bold text-primary">{{ $k->ear_tag_id }}</td>
+                        <td class="px-5 py-4 text-sm font-semibold text-on-surface">{{ $k->nama ?? '—' }}</td>
                         <td class="px-5 py-4">
-                            <span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-xs font-bold">
+                            <span class="px-3 py-1 text-xs font-bold rounded-full bg-secondary-container text-on-secondary-container">
                                 {{ ucfirst($k->kategori) }}
                             </span>
                         </td>
                         <td class="px-5 py-4">
                             @if($k->alasan_karantina)
                             <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-error flex-shrink-0"></span>
+                                <span class="flex-shrink-0 w-2 h-2 rounded-full bg-error"></span>
                                 <p class="text-sm font-medium max-w-[200px] truncate" title="{{ $k->alasan_karantina }}">
                                     {{ $k->alasan_karantina }}
                                 </p>
                             </div>
                             @else
-                            <span class="text-xs text-outline italic">—</span>
+                            <span class="text-xs italic text-outline">—</span>
                             @endif
                         </td>
                         <td class="px-5 py-4 text-sm text-on-surface-variant">
@@ -340,7 +340,7 @@
                             @if($k->durasi_hari !== null)
                             <span class="text-sm font-bold text-tertiary">{{ $k->durasi_hari }} hari</span>
                             @else
-                            <span class="text-xs text-outline italic">—</span>
+                            <span class="text-xs italic text-outline">—</span>
                             @endif
                         </td>
                         <td class="px-5 py-4">
@@ -360,7 +360,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" class="px-5 py-12 text-center text-outline text-sm italic">
+                        <td colspan="8" class="px-5 py-12 text-sm italic text-center text-outline">
                             Tidak ada domba dalam karantina saat ini.
                         </td>
                     </tr>
@@ -385,9 +385,9 @@
 
         {{-- Upcoming jadwal banner --}}
         @if($jadwalVaksinasi->count() > 0)
-        <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+        <div class="p-4 border bg-amber-50 border-amber-200 rounded-xl">
             <div class="flex items-start gap-3 mb-3">
-                <span class="material-symbols-outlined text-amber-600 flex-shrink-0">schedule</span>
+                <span class="flex-shrink-0 material-symbols-outlined text-amber-600">schedule</span>
                 <p class="text-sm font-bold text-amber-900">{{ $jadwalVaksinasi->count() }} jadwal vaksinasi dalam 14 hari ke depan</p>
             </div>
             <div class="space-y-1.5 pl-8">
@@ -404,33 +404,33 @@
         @endif
 
         {{-- Filter --}}
-        <form method="GET" action="{{ route('kesehatan.index') }}" class="flex flex-wrap gap-3 items-end">
+        <form method="GET" action="{{ route('kesehatan.index') }}" class="flex flex-wrap items-end gap-3">
             <input type="hidden" name="tab" value="vaksinasi">
             <div class="flex-1 min-w-[200px]">
                 <label class="block text-xs font-semibold text-outline mb-1.5 uppercase tracking-wider">Cari Domba / Vaksin</label>
                 <div class="relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg pointer-events-none">search</span>
+                    <span class="absolute text-lg -translate-y-1/2 pointer-events-none material-symbols-outlined left-3 top-1/2 text-outline">search</span>
                     <input type="text" name="vk_search" value="{{ request('vk_search') }}"
                            placeholder="Ear tag, nama, atau nama vaksin..."
-                           class="w-full pl-9 pr-4 py-2 border border-outline-variant rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary focus:border-transparent outline-none"/>
+                           class="w-full py-2 pr-4 text-sm bg-white border rounded-lg outline-none pl-9 border-outline-variant focus:ring-2 focus:ring-primary focus:border-transparent"/>
                 </div>
             </div>
             <button type="submit"
-                    class="px-5 py-2 bg-primary text-white font-bold text-sm rounded-lg hover:bg-primary/90 transition-all">
+                    class="px-5 py-2 text-sm font-bold text-white transition-all rounded-lg bg-primary hover:bg-primary/90">
                 Filter
             </button>
             @if(request('vk_search'))
             <a href="{{ route('kesehatan.index', ['tab' => 'vaksinasi']) }}"
-               class="px-4 py-2 border border-outline-variant text-outline text-sm font-semibold rounded-lg hover:bg-surface-container transition-all">
+               class="px-4 py-2 text-sm font-semibold transition-all border rounded-lg border-outline-variant text-outline hover:bg-surface-container">
                 Reset
             </a>
             @endif
         </form>
 
         {{-- Table --}}
-        <div class="rounded-xl border border-outline-variant/30 overflow-hidden shadow-sm">
+        <div class="overflow-hidden border shadow-sm rounded-xl border-outline-variant/30">
             <table class="w-full text-left border-collapse">
-                <thead class="bg-surface-container-low border-b border-outline-variant/30">
+                <thead class="border-b bg-surface-container-low border-outline-variant/30">
                     <tr>
                         <th class="px-5 py-4 text-[10px] font-black text-outline uppercase tracking-widest">Ear Tag</th>
                         <th class="px-5 py-4 text-[10px] font-black text-outline uppercase tracking-widest">Domba</th>
@@ -441,10 +441,10 @@
                         <th class="px-5 py-4 text-[10px] font-black text-outline uppercase tracking-widest">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-outline-variant/20 bg-white">
+                <tbody class="bg-white divide-y divide-outline-variant/20">
                     @forelse($vaksinasiList as $v)
-                    <tr class="hover:bg-surface-container-lowest transition-colors">
-                        <td class="px-5 py-4 font-bold text-primary text-sm">{{ $v->ear_tag_id }}</td>
+                    <tr class="transition-colors hover:bg-surface-container-lowest">
+                        <td class="px-5 py-4 text-sm font-bold text-primary">{{ $v->ear_tag_id }}</td>
                         <td class="px-5 py-4">
                             <p class="text-sm font-semibold text-on-surface">{{ $v->nama_domba ?? '—' }}</p>
                             <p class="text-xs text-outline">{{ $v->kategori }} · {{ $v->ras }}</p>
@@ -470,7 +470,7 @@
                             </span>
                             @endif
                             @else
-                            <span class="text-xs text-outline italic">—</span>
+                            <span class="text-xs italic text-outline">—</span>
                             @endif
                         </td>
                         <td class="px-5 py-4">
@@ -480,16 +480,7 @@
                         </td>
                         <td class="px-5 py-4">
                             <button type="button"
-                                    @click="openEditVaksinasi({
-                                        vaksin_id: {{ $v->vaksin_id }},
-                                        ear_tag_id: '{{ $v->ear_tag_id }}',
-                                        nama_domba: @json($v->nama_domba),
-                                        obat_id: {{ $v->obat_id }},
-                                        nama_obat: @json($v->nama_obat),
-                                        tanggal_vaksinasi: '{{ $v->tanggal_vaksinasi }}',
-                                        tanggal_berikutnya: @json($v->tanggal_berikutnya),
-                                        catatan: @json($v->catatan)
-                                    })"
+                                    @click="openEditVaksinasi({{ $v->vaksin_id }})"
                                     class="text-[10px] font-bold uppercase tracking-tight px-3 py-1.5 border border-primary text-primary rounded hover:bg-primary hover:text-white transition-all">
                                 Edit
                             </button>
@@ -497,7 +488,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-5 py-12 text-center text-outline text-sm italic">
+                        <td colspan="7" class="px-5 py-12 text-sm italic text-center text-outline">
                             Belum ada data vaksinasi.
                         </td>
                     </tr>
@@ -538,6 +529,22 @@ const karantinaDataMap = {
         nama_kandang: @json($k->nama_kandang),
         tanggal_masuk: @json($k->tanggal_masuk),
         durasi_hari: {{ $k->durasi_hari ?? 0 }}
+    },
+@endforeach
+};
+
+// Vaksinasi row data map: vaksin_id → record object
+const vaksinasiDataMap = {
+@foreach($vaksinasiList as $v)
+    {{ $v->vaksin_id }}: {
+        vaksin_id:           {{ $v->vaksin_id }},
+        ear_tag_id:          @json($v->ear_tag_id),
+        nama_domba:          @json($v->nama_domba),
+        obat_id:             {{ $v->obat_id }},
+        nama_obat:           @json($v->nama_obat),
+        tanggal_vaksinasi:   @json($v->tanggal_vaksinasi),
+        tanggal_berikutnya:  @json($v->tanggal_berikutnya),
+        catatan:             @json($v->catatan),
     },
 @endforeach
 };
@@ -587,8 +594,11 @@ function kesehatanApp() {
         detailRekamData:  {},
 
         // Other edit data
-        editVaksinasiData: {},
-        pindahData:       {},
+        editVaksinasiData:    {},
+        editVaksinTanggal:    '',
+        editVaksinBerikutnya: '',
+        editVaksinCatatan:    '',
+        pindahData:           {},
 
         // Create rekam form state
         selectedDomba:    null,
@@ -668,9 +678,14 @@ function kesehatanApp() {
             this.showDetailRekam = true;
         },
 
-        openEditVaksinasi(data) {
-            this.editVaksinasiData = data;
-            this.showEditVaksinasi = true;
+        openEditVaksinasi(vaksinId) {
+            const data = vaksinasiDataMap[vaksinId];
+            if (!data) return;
+            this.editVaksinasiData    = data;
+            this.editVaksinTanggal    = data.tanggal_vaksinasi ? data.tanggal_vaksinasi.substring(0, 10) : '';
+            this.editVaksinBerikutnya = data.tanggal_berikutnya ? data.tanggal_berikutnya.substring(0, 10) : '';
+            this.editVaksinCatatan    = data.catatan ?? '';
+            this.showEditVaksinasi    = true;
         },
 
         openPindahKandang(earTagId, durasiHari) {

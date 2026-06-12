@@ -47,10 +47,8 @@ $navGroups = [
            transform transition-transform duration-200 ease-in-out lg:translate-x-0"
 >
     {{-- Logo --}}
-    <div class="flex items-center h-16 px-6 border-b border-gray-200 flex-shrink-0">
-        <span class="font-bold text-xl text-primary font-sans tracking-tight">
-            Gumolong Farm
-        </span>
+    <div class="flex items-center h-16 px-4 border-b border-gray-200 flex-shrink-0">
+        <img src="{{ asset('logo.png') }}" alt="Gumolong Farm" class="h-12 w-auto object-contain">
     </div>
 
     {{-- Nav --}}
