@@ -73,9 +73,11 @@
 
                 <select name="kategori" class="filter-select">
                     <option value="">Kategori</option>
-                    <option value="pedaging"  {{ request('kategori') === 'pedaging'  ? 'selected' : '' }}>Pedaging</option>
-                    <option value="perah"     {{ request('kategori') === 'perah'     ? 'selected' : '' }}>Perah</option>
-                    <option value="bibit"     {{ request('kategori') === 'bibit'     ? 'selected' : '' }}>Bibit</option>
+                    @foreach($kategoriList as $kat)
+                        <option value="{{ $kat }}" {{ request('kategori') === $kat ? 'selected' : '' }}>
+                            {{ ucfirst($kat) }}
+                        </option>
+                    @endforeach
                 </select>
 
                 <select name="status_adg" class="filter-select">

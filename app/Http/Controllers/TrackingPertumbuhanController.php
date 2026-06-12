@@ -11,11 +11,11 @@ class TrackingPertumbuhanController extends Controller
 {
     public function index(Request $request)
     {
-        $search    = $request->input('search');
-        $kategori  = $request->input('kategori');
-        $statusAdg = $request->input('status_adg');
+        $search     = $request->input('search');
+        $kategori   = $request->input('kategori');
+        $statusAdg  = $request->input('status_adg');
         $tglTimbang = $request->input('tgl_timbang');
-        $kandangId = $request->input('kandang_id');
+        $kandangId  = $request->input('kandang_id');
 
         $latestPenimbangan = DB::table('penimbangan as p1')
             ->select('p1.ear_tag_id', 'p1.berat_kg', 'p1.adg', 'p1.tanggal_timbang')
@@ -41,7 +41,6 @@ class TrackingPertumbuhanController extends Controller
             ->whereNull('domba.deleted_at');
 
         if ($search) {
-            // Use LIKE for cross-DB compatibility
             $query->where(function ($q) use ($search) {
                 $q->where('domba.ear_tag_id', 'like', "%{$search}%")
                   ->orWhere('domba.nama', 'like', "%{$search}%");
@@ -71,9 +70,16 @@ class TrackingPertumbuhanController extends Controller
 
         $dombaList = $query->paginate(10)->withQueryString();
 
-        $stats = $this->getSummaryStats();
-        $alerts = $this->getAlerts();
-        $trendData = $this->getWeeklyTrend();
+        // Ambil kategori unik dari data domba yang ada (bukan enum hardcode)
+        $kategoriList = Domba::whereNull('deleted_at')
+            ->whereNotNull('kategori')
+            ->distinct()
+            ->orderBy('kategori')
+            ->pluck('kategori');
+
+        $stats       = $this->getSummaryStats();
+        $alerts      = $this->getAlerts();
+        $trendData   = $this->getWeeklyTrend();
         $kandangList = DB::table('kandang')->select('kandang_id', 'nama_kandang')->get();
 
         return view('tracking-pertumbuhan.index', compact(
@@ -82,10 +88,11 @@ class TrackingPertumbuhanController extends Controller
             'alerts',
             'trendData',
             'kandangList',
+            'kategoriList',
         ));
     }
 
-        public function show(string $earTagId)
+    public function show(string $earTagId)
     {
         $domba = Domba::with('kandang')
             ->findOrFail($earTagId);
@@ -216,8 +223,8 @@ class TrackingPertumbuhanController extends Controller
             ];
         }
 
-        $lastWeekAvg = $weeks[2]['value'] ?? 0;
-        $thisWeekAvg = $weeks[3]['value'] ?? 0;
+        $lastWeekAvg  = $weeks[2]['value'] ?? 0;
+        $thisWeekAvg  = $weeks[3]['value'] ?? 0;
         $weeklyGrowth = $lastWeekAvg > 0
             ? round((($thisWeekAvg - $lastWeekAvg) / $lastWeekAvg) * 100, 1)
             : 0;
