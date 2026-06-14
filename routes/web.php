@@ -126,8 +126,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('kesehatan',        KesehatanController::class)->except(['create', 'edit', 'show']);
         Route::get('/pakan-individual',          [PakanIndividualController::class, 'index'])->name('pakan-individual.index');
         Route::post('/pakan-individual',         [PakanIndividualController::class, 'store'])->name('pakan-individual.store');
-        Route::get('/pakan-individual/{earTag}', [PakanIndividualController::class, 'show'])->name('pakan-individual.show');
         Route::get('/pakan-individual/search-domba', [PakanIndividualController::class, 'searchDomba'])->name('pakan-individual.search-domba');
+        Route::get('/pakan-individual/{earTag}', [PakanIndividualController::class, 'show'])->name('pakan-individual.show');
         Route::get('/pakan-individual/{earTag}/stats', [PakanIndividualController::class, 'stats'])->name('pakan-individual.stats');
         Route::get('/pakan-individual/{earTagId}/stats', [PakanIndividualController::class, 'stats']);
 
@@ -171,7 +171,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         // ── Notifikasi ───────────────────────────────────────────────────────
-        Route::resource('notifikasi', NotifikasiController::class);
+        Route::resource('notifikasi', NotifikasiController::class)->except(['show', 'create', 'edit']);
         Route::prefix('notifikasi')->name('notifikasi.')->group(function () {
         Route::get('/',                          [NotifikasiController::class, 'index'])       ->name('index');
         Route::post('/{id}/read',               [NotifikasiController::class, 'markAsRead'])  ->name('read');

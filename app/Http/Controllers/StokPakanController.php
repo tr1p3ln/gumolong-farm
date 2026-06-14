@@ -80,18 +80,21 @@ class StokPakanController extends Controller
             'tanggal_pemberian' => 'nullable|date',
         ]);
 
+        // Pre-check for user-friendly error before entering the transaction
+        $pakanCheck = PakanStok::findOrFail($request->pakan_id);
+        if ($request->jumlah > $pakanCheck->jumlah_stok) {
+            return redirect()->back()
+                ->withErrors(['jumlah' => "Jumlah pemberian melebihi stok yang tersedia ({$pakanCheck->jumlah_stok} {$pakanCheck->satuan})."])
+                ->withInput();
+        }
+
         DB::transaction(function () use ($request) {
             $pakan = PakanStok::lockForUpdate()->findOrFail($request->pakan_id);
-
-            if ($request->jumlah > $pakan->jumlah_stok) {
-                throw new \Exception('Jumlah pemberian melebihi stok yang tersedia ('
-                    . $pakan->jumlah_stok . ' ' . $pakan->satuan . ').');
-            }
 
             $pakan->jumlah_stok   -= $request->jumlah;
             $pakan->tanggal_update = now();
             $pakan->save();
-            // ── Notifikasi stok menipis ───────────────────────────────
+
             if ($pakan->jumlah_stok <= ($pakan->stok_minimum ?? 0)) {
                 (new \App\Services\NotifikasiService())->stokTipis(
                     $pakan->nama_pakan,
@@ -101,16 +104,12 @@ class StokPakanController extends Controller
                 );
             }
 
-
             PemberianPakan::create([
                 'pakan_id'          => $pakan->pakan_id,
                 'ear_tag_id'        => $request->ear_tag_id,
                 'user_id'           => Auth::id(),
                 'sesi'              => 'pagi',
                 'jumlah_gram'       => $request->jumlah * 1000,
-                'satuan'            => $pakan->satuan,
-                'sisa_stok'         => $pakan->jumlah_stok,
-                'keterangan'        => $request->keterangan,
                 'tanggal_pemberian' => $request->tanggal_pemberian ?? now(),
             ]);
         });
