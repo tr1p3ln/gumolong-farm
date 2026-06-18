@@ -251,5 +251,56 @@
 </main>
 
 @stack('scripts')
+
+{{-- ═══ GLOBAL TOAST SYSTEM ═══ --}}
+<div id="gf-toast-container"
+     class="fixed top-4 right-4 z-[99999] flex flex-col gap-2 pointer-events-none"
+     style="min-width:280px;max-width:380px">
+</div>
+
+<script>
+window.showToast = function(message, type) {
+    type = type || 'success';
+    var container = document.getElementById('gf-toast-container');
+    if (!container) return;
+    var isSuccess = type === 'success';
+    var toast = document.createElement('div');
+    toast.style.cssText = 'opacity:0;transform:translateX(100%);transition:opacity .25s,transform .25s;';
+    toast.className = 'pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg shadow-xl text-sm font-medium text-white '
+        + (isSuccess ? 'bg-[#2E7D32]' : 'bg-[#B14B6F]');
+    toast.innerHTML = '<svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">'
+        + (isSuccess
+            ? '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>'
+            : '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>')
+        + '</svg><span class="flex-1">' + message + '</span>'
+        + '<button onclick="this.parentElement.remove()" class="ml-1 opacity-70 hover:opacity-100 flex-shrink-0">'
+        + '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>'
+        + '</button>';
+    container.appendChild(toast);
+    requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(0)';
+        });
+    });
+    setTimeout(function() {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(function() { if (toast.parentElement) toast.remove(); }, 280);
+    }, 3800);
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    @if(session('success'))
+        window.showToast(@json(session('success')), 'success');
+    @endif
+    @if(session('error'))
+        window.showToast(@json(session('error')), 'error');
+    @endif
+    @if($errors->any())
+        window.showToast(@json($errors->first()), 'error');
+    @endif
+});
+</script>
 </body>
 </html>

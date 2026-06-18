@@ -33,15 +33,19 @@
                     <div class="relative" x-show="!selectedPejantan">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-xl pointer-events-none">search</span>
                         <input type="text" x-model="pejantanSearch"
-                               placeholder="Cari Ear Tag pejantan..."
+                               @focus="pejantanFocused = true"
+                               @blur="setTimeout(() => pejantanFocused = false, 150)"
+                               @keydown.escape="pejantanFocused = false"
+                               placeholder="Ketik ear tag atau nama pejantan..."
+                               autocomplete="off"
                                class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-sm"/>
                     </div>
 
-                    {{-- Dropdown hasil pencarian --}}
-                    <div x-show="pejantanSearch.length > 0 && !selectedPejantan"
+                    {{-- Dropdown rekomendasi --}}
+                    <div x-show="pejantanFocused && !selectedPejantan"
                          class="border border-outline-variant rounded-lg divide-y divide-surface-container max-h-44 overflow-y-auto bg-white shadow-lg">
                         <template x-for="p in filteredPejantan.slice(0, 8)" :key="p.ear_tag_id">
-                            <div @click="selectedPejantan = p; pejantanSearch = p.ear_tag_id"
+                            <div @mousedown.prevent="selectedPejantan = p; pejantanSearch = p.ear_tag_id; pejantanFocused = false"
                                  class="px-4 py-2.5 flex items-center gap-3 hover:bg-surface-container-low cursor-pointer transition-colors">
                                 <span class="font-bold text-primary text-sm" x-text="p.ear_tag_id"></span>
                                 <span class="text-xs text-outline" x-text="p.nama ? '· ' + p.nama : ''"></span>
@@ -92,15 +96,19 @@
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-xl pointer-events-none">search</span>
                         <input type="text" x-model="indukanSearch"
-                               placeholder="Cari Ear Tag indukan..."
+                               @focus="indukanFocused = true"
+                               @blur="setTimeout(() => indukanFocused = false, 150)"
+                               @keydown.escape="indukanFocused = false"
+                               placeholder="Ketik ear tag atau nama indukan..."
+                               autocomplete="off"
                                class="w-full pl-10 pr-4 py-2.5 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all text-sm"/>
                     </div>
 
-                    {{-- Dropdown --}}
-                    <div x-show="indukanSearch.length > 0"
+                    {{-- Dropdown rekomendasi --}}
+                    <div x-show="indukanFocused"
                          class="border border-outline-variant rounded-lg divide-y divide-surface-container max-h-44 overflow-y-auto bg-white shadow-lg">
                         <template x-for="i in filteredIndukan.slice(0, 8)" :key="i.ear_tag_id">
-                            <div @click="addIndukan(i)"
+                            <div @mousedown.prevent="addIndukan(i)"
                                  class="px-4 py-2.5 flex items-center gap-3 hover:bg-surface-container-low cursor-pointer transition-colors">
                                 <span class="font-bold text-secondary text-sm" x-text="i.ear_tag_id"></span>
                                 <span class="text-xs text-outline" x-text="i.nama ? '· ' + i.nama : ''"></span>

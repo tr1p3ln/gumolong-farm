@@ -6,19 +6,6 @@
      x-data="reproduksiApp()"
      x-init="init()">
 
-    {{-- ── Flash Messages ────────────────────────────────────────────────── --}}
-    @if(session('success'))
-    <div class="mx-6 mt-4 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3 text-green-800 text-sm font-medium">
-        <span class="material-symbols-outlined text-green-500">check_circle</span>
-        {{ session('success') }}
-    </div>
-    @endif
-    @if(session('error'))
-    <div class="mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-800 text-sm font-medium">
-        <span class="material-symbols-outlined text-red-500">error</span>
-        {{ session('error') }}
-    </div>
-    @endif
     @if($errors->any())
     <div class="mx-6 mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-800 text-sm">
         <ul class="list-disc list-inside space-y-1">
@@ -629,8 +616,10 @@ function reproduksiApp() {
 
         // ── Create Perkawinan state ────────────────────────────────────
         pejantanSearch: '',
+        pejantanFocused: false,
         selectedPejantan: null,
         indukanSearch: '',
+        indukanFocused: false,
         selectedIndukanList: [],
         tanggalKawin: '',
         hplText: '',
@@ -689,6 +678,7 @@ function reproduksiApp() {
                 this.selectedIndukanList.push(item);
             }
             this.indukanSearch = '';
+            this.indukanFocused = false;
         },
         removeIndukan(earTagId) {
             this.selectedIndukanList = this.selectedIndukanList.filter(s => s.ear_tag_id !== earTagId);

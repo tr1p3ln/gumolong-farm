@@ -4,24 +4,6 @@
 @section('content')
 <div class="-m-8 bg-[#F8F9F5]" x-data="kesehatanApp()" x-init="init()">
 
-    {{-- ── Flash messages ─────────────────────────────────────── --}}
-    @if(session('success'))
-    <div class="mx-8 mt-6 flex items-center gap-3 px-5 py-3.5 bg-primary/10 border border-primary/20 rounded-xl text-sm text-primary font-semibold"
-        x-data="{ show: true }" x-show="show">
-        <span class="text-lg material-symbols-outlined">check_circle</span>
-        {{ session('success') }}
-        <button @click="show = false" class="ml-auto text-primary/50 hover:text-primary"><span class="text-base material-symbols-outlined">close</span></button>
-    </div>
-    @endif
-    @if(session('error'))
-    <div class="mx-8 mt-6 flex items-center gap-3 px-5 py-3.5 bg-error/10 border border-error/20 rounded-xl text-sm text-error font-semibold"
-        x-data="{ show: true }" x-show="show">
-        <span class="text-lg material-symbols-outlined">error</span>
-        {{ session('error') }}
-        <button @click="show = false" class="ml-auto text-error/50 hover:text-error"><span class="text-base material-symbols-outlined">close</span></button>
-    </div>
-    @endif
-
     {{-- ── Header ──────────────────────────────────────────────── --}}
     <header class="flex items-start justify-between px-8 pt-8 pb-6">
         <div>

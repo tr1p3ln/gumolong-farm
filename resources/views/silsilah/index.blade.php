@@ -279,7 +279,7 @@
 ════════════════════════════════════ --}}
     <div x-show="modalCekInbreeding" @keydown.escape.window="modalCekInbreeding = false"
         class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" style="display: none;">
-        <div class="w-full max-w-2xl overflow-hidden bg-white shadow-2xl rounded-xl">
+        <div class="w-full max-w-3xl bg-white shadow-2xl rounded-xl">
             <div class="flex items-start justify-between px-8 py-6 border-b border-gray-200">
                 <div>
                     <h2 class="text-xl font-bold text-gray-900">Cek Inbreeding</h2>
@@ -307,22 +307,99 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-6">
-                    <div>
+
+                    {{-- ID Induk Betina --}}
+                    <div x-data="{
+                        suggestions: [],
+                        open: false,
+                        timer: null,
+                        fetch(q) {
+                            clearTimeout(this.timer);
+                            this.timer = setTimeout(async () => {
+                                const res = await window.fetch('/domba/suggest?q=' + encodeURIComponent(q) + '&jenis_kelamin=betina', { headers: { 'Accept': 'application/json' } });
+                                this.suggestions = await res.json();
+                            }, 200);
+                        },
+                        pick(item) {
+                            cekForm.induk_id = item.ear_tag_id;
+                            this.open = false;
+                            this.suggestions = [];
+                        }
+                    }" class="relative">
                         <label class="block mb-2 text-xs font-bold tracking-wider text-gray-600 uppercase">
                             ID Induk Betina <span class="text-rose-500">*</span>
                         </label>
-                        <input type="text" x-model="cekForm.induk_id" placeholder="Contoh: B-001"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
-                                  focus:ring-2 focus:ring-[#2E7D32] focus:border-transparent outline-none font-mono">
+                        <input type="text" x-model="cekForm.induk_id"
+                               @focus="open = true; fetch(cekForm.induk_id)"
+                               @input="open = true; fetch($event.target.value)"
+                               @blur="setTimeout(() => open = false, 150)"
+                               @keydown.escape="open = false"
+                               placeholder="Ketik ear tag indukan..."
+                               autocomplete="off"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
+                                     focus:ring-2 focus:ring-[#2E7D32] focus:border-transparent outline-none font-mono">
+                        <div x-show="open && suggestions.length > 0"
+                             class="absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-y-auto max-h-52">
+                            <template x-for="item in suggestions" :key="item.ear_tag_id">
+                                <button type="button" @mousedown.prevent="pick(item)"
+                                        class="w-full text-left px-3 py-2.5 hover:bg-green-50 border-b border-gray-100 last:border-0 transition">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="font-mono font-bold text-[#2E7D32] text-sm" x-text="item.ear_tag_id"></span>
+                                        <span class="text-[10px] text-gray-400 uppercase tracking-wide" x-text="item.kategori"></span>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-0.5 truncate"
+                                         x-text="(item.nama || '—') + ' · ' + item.ras + ' · ' + item.kandang"></div>
+                                </button>
+                            </template>
+                        </div>
                     </div>
-                    <div>
+
+                    {{-- ID Pejantan --}}
+                    <div x-data="{
+                        suggestions: [],
+                        open: false,
+                        timer: null,
+                        fetch(q) {
+                            clearTimeout(this.timer);
+                            this.timer = setTimeout(async () => {
+                                const res = await window.fetch('/domba/suggest?q=' + encodeURIComponent(q) + '&jenis_kelamin=jantan', { headers: { 'Accept': 'application/json' } });
+                                this.suggestions = await res.json();
+                            }, 200);
+                        },
+                        pick(item) {
+                            cekForm.pejantan_id = item.ear_tag_id;
+                            this.open = false;
+                            this.suggestions = [];
+                        }
+                    }" class="relative">
                         <label class="block mb-2 text-xs font-bold tracking-wider text-gray-600 uppercase">
                             ID Pejantan <span class="text-rose-500">*</span>
                         </label>
-                        <input type="text" x-model="cekForm.pejantan_id" placeholder="Contoh: J-001"
-                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
-                                  focus:ring-2 focus:ring-[#2E7D32] focus:border-transparent outline-none font-mono">
+                        <input type="text" x-model="cekForm.pejantan_id"
+                               @focus="open = true; fetch(cekForm.pejantan_id)"
+                               @input="open = true; fetch($event.target.value)"
+                               @blur="setTimeout(() => open = false, 150)"
+                               @keydown.escape="open = false"
+                               placeholder="Ketik ear tag pejantan..."
+                               autocomplete="off"
+                               class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
+                                     focus:ring-2 focus:ring-[#2E7D32] focus:border-transparent outline-none font-mono">
+                        <div x-show="open && suggestions.length > 0"
+                             class="absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-y-auto max-h-52">
+                            <template x-for="item in suggestions" :key="item.ear_tag_id">
+                                <button type="button" @mousedown.prevent="pick(item)"
+                                        class="w-full text-left px-3 py-2.5 hover:bg-green-50 border-b border-gray-100 last:border-0 transition">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <span class="font-mono font-bold text-[#2E7D32] text-sm" x-text="item.ear_tag_id"></span>
+                                        <span class="text-[10px] text-gray-400 uppercase tracking-wide" x-text="item.kategori"></span>
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-0.5 truncate"
+                                         x-text="(item.nama || '—') + ' · ' + item.ras + ' · ' + item.kandang"></div>
+                                </button>
+                            </template>
+                        </div>
                     </div>
+
                 </div>
 
                 <button @click="cekInbreeding()" :disabled="cekLoading"
@@ -393,17 +470,55 @@
             </div>
 
             <div class="p-8 space-y-6 overflow-y-auto">
-                <div>
+                <div x-data="{
+                    suggestions: [],
+                    open: false,
+                    timer: null,
+                    fetchSug(q) {
+                        clearTimeout(this.timer);
+                        this.timer = setTimeout(async () => {
+                            const res = await window.fetch('/domba/suggest?q=' + encodeURIComponent(q) + '&jenis_kelamin=betina', { headers: { 'Accept': 'application/json' } });
+                            this.suggestions = await res.json();
+                        }, 200);
+                    },
+                    pick(item) {
+                        rekForm.induk_id = item.ear_tag_id;
+                        this.open = false;
+                        this.suggestions = [];
+                    }
+                }">
                     <label class="block mb-2 text-xs font-bold tracking-wider text-gray-600 uppercase">
                         ID Induk Betina <span class="text-rose-500">*</span>
                     </label>
-                    <div class="flex gap-3">
-                        <input type="text" x-model="rekForm.induk_id" placeholder="Contoh: B-001"
-                            class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm
-                                  focus:ring-2 focus:ring-[#2E7D32] focus:border-transparent outline-none font-mono">
+                    <div class="flex gap-3 relative">
+                        <div class="relative flex-1">
+                            <input type="text" x-model="rekForm.induk_id"
+                                   @focus="open = true; fetchSug(rekForm.induk_id)"
+                                   @input="open = true; fetchSug($event.target.value)"
+                                   @blur="setTimeout(() => open = false, 150)"
+                                   @keydown.escape="open = false"
+                                   placeholder="Ketik ear tag indukan..."
+                                   autocomplete="off"
+                                   class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
+                                         focus:ring-2 focus:ring-[#2E7D32] focus:border-transparent outline-none font-mono">
+                            <div x-show="open && suggestions.length > 0"
+                                 class="absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-y-auto max-h-52">
+                                <template x-for="item in suggestions" :key="item.ear_tag_id">
+                                    <button type="button" @mousedown.prevent="pick(item)"
+                                            class="w-full text-left px-3 py-2.5 hover:bg-green-50 border-b border-gray-100 last:border-0 transition">
+                                        <div class="flex items-center justify-between gap-2">
+                                            <span class="font-mono font-bold text-[#2E7D32] text-sm" x-text="item.ear_tag_id"></span>
+                                            <span class="text-[10px] text-gray-400 uppercase tracking-wide" x-text="item.kategori"></span>
+                                        </div>
+                                        <div class="text-xs text-gray-500 mt-0.5 truncate"
+                                             x-text="(item.nama || '—') + ' · ' + item.ras + ' · ' + item.kandang"></div>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
                         <button @click="rekomendasiPejantan()" :disabled="rekLoading"
                             class="px-6 py-2 bg-[#2E7D32] text-white text-sm font-bold rounded-lg
-                                   hover:bg-green-800 disabled:opacity-50 transition-colors">
+                                   hover:bg-green-800 disabled:opacity-50 transition-colors flex-shrink-0">
                             <span x-show="!rekLoading">Cari Rekomendasi</span>
                             <span x-show="rekLoading">Mencari...</span>
                         </button>

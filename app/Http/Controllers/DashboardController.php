@@ -11,6 +11,16 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $role = auth()->user()?->role;
+
+        if ($role === 'kepala_kandang') {
+            return redirect()->route('kk.dashboard');
+        }
+
+        if ($role === 'pengurus_kandang') {
+            return redirect()->route('pk.dashboard');
+        }
+
         $data = $this->buildDashboardData();
         return view('dashboard.index', $data);
     }

@@ -68,16 +68,19 @@
                 });
                 const result = await res.json();
                 if (result.success) {
-                    window.location.reload();
+                    window.showToast('Data domba berhasil diperbarui.', 'success');
+                    setTimeout(() => window.location.reload(), 900);
                 } else {
                     this.errors = result.errors || {};
                     if (result.message && !Object.keys(this.errors).length) {
                         this.errors = { general: [result.message] };
                     }
+                    window.showToast(result.message || 'Terdapat kesalahan validasi.', 'error');
                 }
             } catch (err) {
                 console.error('Error saving:', err);
                 this.errors = { general: ['Terjadi kesalahan saat menyimpan data.'] };
+                window.showToast('Gagal terhubung ke server.', 'error');
             } finally {
                 this.loading = false;
             }

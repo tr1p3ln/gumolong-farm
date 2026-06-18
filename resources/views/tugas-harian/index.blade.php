@@ -50,10 +50,12 @@
             });
             const result = await res.json();
             if (result.success) {
-                alert(result.message);
-                window.location.reload();
+                window.showToast(result.message || 'Tugas berhasil di-reassign.', 'success');
+                setTimeout(() => window.location.reload(), 900);
+            } else {
+                window.showToast(result.message || 'Gagal melakukan reassign.', 'error');
             }
-        } catch (err) { console.error(err); }
+        } catch (err) { console.error(err); window.showToast('Gagal terhubung ke server.', 'error'); }
         finally { this.bulkLoading = false; }
     },
 
@@ -76,11 +78,13 @@
             });
             const result = await res.json();
             if (result.success) {
-                alert(result.message);
+                window.showToast(result.message || 'Tugas rutin berhasil di-generate.', 'success');
                 this.modalGenerateRutin = false;
-                window.location.reload();
+                setTimeout(() => window.location.reload(), 900);
+            } else {
+                window.showToast(result.message || 'Gagal generate tugas rutin.', 'error');
             }
-        } catch (err) { console.error(err); }
+        } catch (err) { console.error(err); window.showToast('Gagal terhubung ke server.', 'error'); }
         finally { this.generateLoading = false; }
     },
 
@@ -97,8 +101,13 @@
                 body: JSON.stringify(this.formTambah),
             });
             const result = await res.json();
-            if (result.success) window.location.reload();
-        } catch (err) { console.error(err); }
+            if (result.success) {
+                window.showToast('Tugas berhasil ditambahkan.', 'success');
+                setTimeout(() => window.location.reload(), 900);
+            } else {
+                window.showToast(result.message || 'Gagal menambahkan tugas.', 'error');
+            }
+        } catch (err) { console.error(err); window.showToast('Gagal terhubung ke server.', 'error'); }
     },
 
     async loadEdit(id) {
@@ -133,8 +142,13 @@
                 body: JSON.stringify(this.formEdit),
             });
             const result = await res.json();
-            if (result.success) window.location.reload();
-        } catch (err) { console.error(err); }
+            if (result.success) {
+                window.showToast('Tugas berhasil diperbarui.', 'success');
+                setTimeout(() => window.location.reload(), 900);
+            } else {
+                window.showToast(result.message || 'Gagal memperbarui tugas.', 'error');
+            }
+        } catch (err) { console.error(err); window.showToast('Gagal terhubung ke server.', 'error'); }
     },
 
     async updateStatus(id, status, catatan = '') {
@@ -151,18 +165,31 @@
                 body: JSON.stringify({ status, catatan_penyelesaian: catatan }),
             });
             const result = await res.json();
-            if (result.success) window.location.reload();
-        } catch (err) { console.error(err); }
+            if (result.success) {
+                window.showToast('Status tugas berhasil diperbarui.', 'success');
+                setTimeout(() => window.location.reload(), 900);
+            } else {
+                window.showToast(result.message || 'Gagal memperbarui status.', 'error');
+            }
+        } catch (err) { console.error(err); window.showToast('Gagal terhubung ke server.', 'error'); }
         finally { this.statusLoading = false; }
     },
 
     async hapusTugas(id) {
         if (!confirm('Hapus tugas ini?')) return;
-        await fetch('/tugas-harian/' + id, {
-            method:  'DELETE',
-            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content },
-        });
-        window.location.reload();
+        try {
+            const res = await fetch('/tugas-harian/' + id, {
+                method:  'DELETE',
+                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content, 'Accept': 'application/json' },
+            });
+            const result = await res.json();
+            if (result.success) {
+                window.showToast('Tugas berhasil dihapus.', 'success');
+                setTimeout(() => window.location.reload(), 900);
+            } else {
+                window.showToast(result.message || 'Gagal menghapus tugas.', 'error');
+            }
+        } catch (err) { window.showToast('Gagal terhubung ke server.', 'error'); }
     },
 }">
 

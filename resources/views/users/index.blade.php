@@ -436,21 +436,6 @@
     </div>
 </div>
 
-{{-- ======================== TOAST ======================== --}}
-@if(session('success'))
-<div class="toast toast--success show" id="toast-success">
-    <span class="toast__icon">&#10003;</span>
-    {{ session('success') }}
-</div>
-@endif
-
-@if($errors->any())
-<div class="toast toast--error show" id="toast-error">
-    <span class="toast__icon">&#10007;</span>
-    {{ $errors->first() }}
-</div>
-@endif
-
 @push('scripts')
     @vite('resources/js/manajemen-user/index.js')
 @endpush

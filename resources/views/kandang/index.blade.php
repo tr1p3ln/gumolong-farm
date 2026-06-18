@@ -41,11 +41,13 @@
             });
             const result = await res.json();
             if (result.success) {
-                window.location.reload();
+                window.showToast('Kandang berhasil ditambahkan.', 'success');
+                setTimeout(() => window.location.reload(), 900);
             } else {
                 this.errorMsg = result.message || result.errors?.nama_kandang?.[0] || 'Terjadi kesalahan.';
+                window.showToast(this.errorMsg, 'error');
             }
-        } catch (err) { this.errorMsg = 'Terjadi kesalahan. Coba lagi.'; }
+        } catch (err) { this.errorMsg = 'Terjadi kesalahan. Coba lagi.'; window.showToast(this.errorMsg, 'error'); }
     },
 
     async submitEdit() {
@@ -62,11 +64,13 @@
             });
             const result = await res.json();
             if (result.success) {
-                window.location.reload();
+                window.showToast('Kandang berhasil diperbarui.', 'success');
+                setTimeout(() => window.location.reload(), 900);
             } else {
                 this.errorMsg = result.message || 'Terjadi kesalahan.';
+                window.showToast(this.errorMsg, 'error');
             }
-        } catch (err) { this.errorMsg = 'Terjadi kesalahan. Coba lagi.'; }
+        } catch (err) { this.errorMsg = 'Terjadi kesalahan. Coba lagi.'; window.showToast(this.errorMsg, 'error'); }
     },
 
     async hapusKandang(id) {
@@ -81,11 +85,12 @@
             });
             const result = await res.json();
             if (result.success) {
-                window.location.reload();
+                window.showToast('Kandang berhasil dihapus.', 'success');
+                setTimeout(() => window.location.reload(), 900);
             } else {
-                alert(result.message);
+                window.showToast(result.message || 'Gagal menghapus kandang.', 'error');
             }
-        } catch (err) { alert('Terjadi kesalahan. Coba lagi.'); }
+        } catch (err) { window.showToast('Gagal terhubung ke server.', 'error'); }
     },
 }">
 

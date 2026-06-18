@@ -51,21 +51,9 @@ window.onclick = function(event) {
 }
 
 function showToast(message, type = 'success') {
-    const existing = document.querySelector('.toast.toast--temp');
-    if (existing) {
-        existing.remove();
+    if (typeof window.showToast === 'function') {
+        window.showToast(message, type);
     }
-
-    const toast = document.createElement('div');
-    toast.className = `toast toast--${type} toast--temp show`;
-    toast.innerHTML = `
-        <span class="toast__icon">${type === 'success' ? '&#10003;' : '&#10007;'}</span>
-        ${message}
-    `;
-    document.body.appendChild(toast);
-
-    setTimeout(() => toast.classList.remove('show'), 3000);
-    setTimeout(() => toast.remove(), 3800);
 }
 
 function updateSummaryCount(name, delta) {

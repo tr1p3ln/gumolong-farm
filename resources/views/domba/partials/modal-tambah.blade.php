@@ -98,12 +98,14 @@
                 });
                 const result = await res.json();
                 if (result.success) {
-                    window.location.reload();
+                    window.showToast('Domba baru berhasil ditambahkan.', 'success');
+                    setTimeout(() => window.location.reload(), 900);
                 } else {
                     this.errors = result.errors || {};
                     if (result.message && !Object.keys(this.errors).length) {
                         this.errors = { general: [result.message] };
                     }
+                    window.showToast(result.message || 'Terdapat kesalahan validasi.', 'error');
                     this.loading = false;
                 }
             } catch (e) {
@@ -205,7 +207,9 @@
         <div x-show="step === 1" class="px-8 py-6">
 
             <div class="flex items-start gap-3 bg-blue-50 border-l-4 border-primary rounded-r-md px-4 py-3 mb-6">
-                <span class="text-lg flex-shrink-0 leading-none mt-0.5">ℹ️</span>
+                <svg class="w-4 h-4 flex-shrink-0 mt-0.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
                 <p class="text-sm text-blue-800">
                     Tentukan <strong>Jenis Asal</strong> domba dengan teliti. Pilihan ini akan
                     menentukan riwayat genetik dan proses klasifikasi selanjutnya.
@@ -228,7 +232,7 @@
                                         ? 'border-2 border-primary text-primary bg-white font-semibold shadow-sm'
                                         : 'border border-gray-300 text-gray-600 hover:border-gray-400'"
                                     class="flex-1 py-2.5 px-3 rounded-md text-sm transition-all text-center">
-                                🏠 Lahir di Kandang
+                                Lahir di Kandang
                             </button>
                             <button type="button"
                                     @click="form.asal = 'dari_luar'"
@@ -236,7 +240,7 @@
                                         ? 'border-2 border-primary text-primary bg-white font-semibold shadow-sm'
                                         : 'border border-gray-300 text-gray-600 hover:border-gray-400'"
                                     class="flex-1 py-2.5 px-3 rounded-md text-sm transition-all text-center">
-                                🚚 Dari Luar
+                                Dari Luar
                             </button>
                         </div>
                     </div>
@@ -252,7 +256,7 @@
                                         ? 'border-2 border-primary text-primary bg-white font-semibold shadow-sm'
                                         : 'border border-gray-300 text-gray-600 hover:border-gray-400'"
                                     class="flex-1 py-2.5 px-3 rounded-md text-sm transition-all text-center">
-                                ♂ Jantan
+                                Jantan
                             </button>
                             <button type="button"
                                     @click="form.jenis_kelamin = 'betina'; fetchEarTag()"
@@ -260,7 +264,7 @@
                                         ? 'border-2 border-primary text-primary bg-white font-semibold shadow-sm'
                                         : 'border border-gray-300 text-gray-600 hover:border-gray-400'"
                                     class="flex-1 py-2.5 px-3 rounded-md text-sm transition-all text-center">
-                                ♀ Betina
+                                Betina
                             </button>
                         </div>
                     </div>
@@ -275,7 +279,9 @@
                                    readonly
                                    placeholder="..."
                                    class="w-full border border-gray-200 rounded-md px-3 py-2.5 pr-10 text-sm bg-gray-100 font-mono text-gray-600 cursor-not-allowed">
-                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 select-none">🔒</span>
+                            <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
                         </div>
                         <p class="text-xs text-gray-400 mt-1">Auto-generated berdasarkan jenis kelamin</p>
                     </div>
@@ -354,7 +360,9 @@
         <div x-show="step === 2" class="px-8 py-6">
 
             <div class="flex items-start gap-3 bg-blue-50 border-l-4 border-primary rounded-r-md px-4 py-3 mb-6">
-                <span class="text-lg flex-shrink-0 leading-none mt-0.5">ℹ️</span>
+                <svg class="w-4 h-4 flex-shrink-0 mt-0.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
                 <p class="text-sm text-blue-800">
                     Tentukan <strong>kategori, status awal, dan penempatan kandang</strong> domba.
                     Data berat awal digunakan sebagai titik referensi awal tracking pertumbuhan.
@@ -473,7 +481,9 @@
         <div x-show="step === 3" class="px-8 py-6 space-y-6">
 
             <div class="flex items-start gap-3 bg-blue-50 border-l-4 border-primary rounded-r-md px-4 py-3">
-                <span class="text-lg flex-shrink-0 leading-none mt-0.5">ℹ️</span>
+                <svg class="w-4 h-4 flex-shrink-0 mt-0.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
                 <p class="text-sm text-blue-800">
                     Data <strong>silsilah</strong> digunakan untuk Pedigree Tracking dan deteksi inbreeding.
                     Lewati bagian ini jika domba tidak diketahui asal-usulnya.
@@ -490,23 +500,59 @@
                 <div class="grid md:grid-cols-2 gap-6">
 
                     {{-- Induk Betina --}}
-                    <div>
+                    <div x-data="{
+                        suggestions: [],
+                        showSuggestions: false,
+                        debounceTimer: null,
+                        async fetchSuggestions(q) {
+                            clearTimeout(this.debounceTimer);
+                            if (!q || q.length < 1) { this.suggestions = []; this.showSuggestions = false; return; }
+                            this.debounceTimer = setTimeout(async () => {
+                                const res = await fetch('/domba/suggest?q=' + encodeURIComponent(q) + '&jenis_kelamin=betina', { headers: { 'Accept': 'application/json' } });
+                                this.suggestions = await res.json();
+                                this.showSuggestions = this.suggestions.length > 0;
+                            }, 250);
+                        },
+                        async pick(item) {
+                            form.induk_id = item.ear_tag_id;
+                            this.showSuggestions = false;
+                            this.suggestions = [];
+                            await searchInduk();
+                        }
+                    }" class="relative">
                         <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5">
                             ID Induk Betina / Ibu
                         </label>
-                        <div class="flex gap-2">
-                            <input type="text" x-model="form.induk_id" placeholder="B-001"
-                                   class="flex-1 border border-gray-300 rounded-md px-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary transition">
-                            <button type="button"
-                                    @click="searchInduk()"
-                                    :disabled="indukLoading || !form.induk_id"
-                                    class="px-4 py-2 border border-primary text-primary text-sm font-semibold rounded-md hover:bg-green-50 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5">
-                                <svg x-show="indukLoading" class="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
+                        <div class="relative">
+                            <input type="text" x-model="form.induk_id"
+                                   @input="fetchSuggestions($event.target.value)"
+                                   @keydown.escape="showSuggestions = false"
+                                   @blur="setTimeout(() => showSuggestions = false, 150)"
+                                   placeholder="Ketik ear tag atau nama..."
+                                   autocomplete="off"
+                                   class="w-full border border-gray-300 rounded-md px-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary transition">
+                            <div x-show="indukLoading" class="absolute right-3 top-1/2 -translate-y-1/2">
+                                <svg class="animate-spin w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                                 </svg>
-                                <span x-text="indukLoading ? '' : 'Cari'"></span>
-                            </button>
+                            </div>
+                            {{-- Dropdown suggestions --}}
+                            <div x-show="showSuggestions"
+                                 class="absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg overflow-hidden">
+                                <template x-for="item in suggestions" :key="item.ear_tag_id">
+                                    <button type="button"
+                                            @mousedown.prevent="pick(item)"
+                                            class="w-full text-left px-3 py-2.5 hover:bg-green-50 border-b border-gray-100 last:border-0 transition">
+                                        <div class="flex items-center justify-between gap-2">
+                                            <span class="font-mono font-bold text-primary text-sm" x-text="item.ear_tag_id"></span>
+                                            <span class="text-[10px] text-gray-400 uppercase tracking-wide" x-text="item.kategori"></span>
+                                        </div>
+                                        <div class="text-xs text-gray-500 mt-0.5 truncate"
+                                             x-text="(item.nama || '—') + ' · ' + item.ras + ' · ' + item.kandang"></div>
+                                    </button>
+                                </template>
+                            </div>
                         </div>
                         <p x-show="indukError" x-text="indukError" class="text-xs text-accent mt-1.5"></p>
                         <div x-show="indukData"
@@ -518,7 +564,7 @@
                                 </span>
                             </div>
                             <button type="button" @click="indukData = null; form.induk_id = ''"
-                                    class="text-accent text-xs font-semibold hover:underline flex-shrink-0">× Hapus</button>
+                                    class="text-accent text-xs font-semibold hover:underline flex-shrink-0">Hapus</button>
                         </div>
                         <div x-show="!indukData && !form.induk_id"
                              class="mt-2 border-2 border-dashed border-gray-200 rounded-md py-2 text-xs text-gray-400 text-center">
@@ -527,23 +573,59 @@
                     </div>
 
                     {{-- Pejantan / Ayah --}}
-                    <div>
+                    <div x-data="{
+                        suggestions: [],
+                        showSuggestions: false,
+                        debounceTimer: null,
+                        async fetchSuggestions(q) {
+                            clearTimeout(this.debounceTimer);
+                            if (!q || q.length < 1) { this.suggestions = []; this.showSuggestions = false; return; }
+                            this.debounceTimer = setTimeout(async () => {
+                                const res = await fetch('/domba/suggest?q=' + encodeURIComponent(q) + '&jenis_kelamin=jantan', { headers: { 'Accept': 'application/json' } });
+                                this.suggestions = await res.json();
+                                this.showSuggestions = this.suggestions.length > 0;
+                            }, 250);
+                        },
+                        async pick(item) {
+                            form.ayah_id = item.ear_tag_id;
+                            this.showSuggestions = false;
+                            this.suggestions = [];
+                            await searchAyah();
+                        }
+                    }" class="relative">
                         <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5">
                             ID Pejantan / Ayah
                         </label>
-                        <div class="flex gap-2">
-                            <input type="text" x-model="form.ayah_id" placeholder="J-001"
-                                   class="flex-1 border border-gray-300 rounded-md px-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary transition">
-                            <button type="button"
-                                    @click="searchAyah()"
-                                    :disabled="ayahLoading || !form.ayah_id"
-                                    class="px-4 py-2 border border-primary text-primary text-sm font-semibold rounded-md hover:bg-green-50 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5">
-                                <svg x-show="ayahLoading" class="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
+                        <div class="relative">
+                            <input type="text" x-model="form.ayah_id"
+                                   @input="fetchSuggestions($event.target.value)"
+                                   @keydown.escape="showSuggestions = false"
+                                   @blur="setTimeout(() => showSuggestions = false, 150)"
+                                   placeholder="Ketik ear tag atau nama..."
+                                   autocomplete="off"
+                                   class="w-full border border-gray-300 rounded-md px-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary transition">
+                            <div x-show="ayahLoading" class="absolute right-3 top-1/2 -translate-y-1/2">
+                                <svg class="animate-spin w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                                 </svg>
-                                <span x-text="ayahLoading ? '' : 'Cari'"></span>
-                            </button>
+                            </div>
+                            {{-- Dropdown suggestions --}}
+                            <div x-show="showSuggestions"
+                                 class="absolute z-50 left-0 right-0 top-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg overflow-hidden">
+                                <template x-for="item in suggestions" :key="item.ear_tag_id">
+                                    <button type="button"
+                                            @mousedown.prevent="pick(item)"
+                                            class="w-full text-left px-3 py-2.5 hover:bg-green-50 border-b border-gray-100 last:border-0 transition">
+                                        <div class="flex items-center justify-between gap-2">
+                                            <span class="font-mono font-bold text-primary text-sm" x-text="item.ear_tag_id"></span>
+                                            <span class="text-[10px] text-gray-400 uppercase tracking-wide" x-text="item.kategori"></span>
+                                        </div>
+                                        <div class="text-xs text-gray-500 mt-0.5 truncate"
+                                             x-text="(item.nama || '—') + ' · ' + item.ras + ' · ' + item.kandang"></div>
+                                    </button>
+                                </template>
+                            </div>
                         </div>
                         <p x-show="ayahError" x-text="ayahError" class="text-xs text-accent mt-1.5"></p>
                         <div x-show="ayahData"
@@ -555,7 +637,7 @@
                                 </span>
                             </div>
                             <button type="button" @click="ayahData = null; form.ayah_id = ''"
-                                    class="text-accent text-xs font-semibold hover:underline flex-shrink-0">× Hapus</button>
+                                    class="text-accent text-xs font-semibold hover:underline flex-shrink-0">Hapus</button>
                         </div>
                         <div x-show="!ayahData && !form.ayah_id"
                              class="mt-2 border-2 border-dashed border-gray-200 rounded-md py-2 text-xs text-gray-400 text-center">
@@ -568,7 +650,9 @@
                 <div x-show="form.induk_id && form.ayah_id"
                      class="mt-4 bg-rose-50 border-l-4 border-accent rounded-r-md px-4 py-3">
                     <div class="flex items-start gap-2">
-                        <span class="flex-shrink-0 mt-0.5">⚠️</span>
+                        <svg class="w-4 h-4 flex-shrink-0 mt-0.5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
                         <div>
                             <p class="text-sm font-bold text-accent">Deteksi Inbreeding:</p>
                             <p class="text-xs text-rose-700 mt-0.5">
@@ -618,7 +702,7 @@
                     <div>
                         <p class="text-[10px] uppercase tracking-wider text-gray-400 mb-1">Jenis Kelamin</p>
                         <p class="font-semibold text-gray-900 text-sm"
-                           x-text="form.jenis_kelamin === 'jantan' ? '♂ Jantan' : '♀ Betina'"></p>
+                           x-text="form.jenis_kelamin === 'jantan' ? 'Jantan' : 'Betina'"></p>
                     </div>
                     <div>
                         <p class="text-[10px] uppercase tracking-wider text-gray-400 mb-1">Jenis Asal</p>
@@ -693,7 +777,7 @@
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                             </svg>
-                            <span x-text="loading ? 'Menyimpan...' : '✓ Simpan Domba Baru'"></span>
+                            <span x-text="loading ? 'Menyimpan...' : 'Simpan Domba Baru'"></span>
                         </button>
                     </div>
                 </template>

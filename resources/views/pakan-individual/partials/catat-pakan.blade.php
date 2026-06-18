@@ -10,7 +10,6 @@
         <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0">
             <div>
                 <h2 class="text-base font-bold text-gray-800">Catat Pemberian Pakan</h2>
-                <p class="text-[11px] text-gray-400 mt-0.5 font-mono">TABEL: PEMBERIAN_PAKAN</p>
             </div>
             <button type="button" onclick="closeCatatPakan()"
                 class="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 transition text-xl leading-none">&times;</button>
@@ -449,13 +448,10 @@ window.cpSubmit = function() {
     .then(data => {
         if (data.success) {
             closeCatatPakan();
-            const flash = document.createElement('div');
-            flash.className = 'fixed top-4 right-4 z-[9999] flex items-center gap-2 bg-green-600 text-white text-sm font-semibold px-4 py-3 rounded-lg shadow-lg';
-            flash.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>' + data.message;
-            document.body.appendChild(flash);
-            setTimeout(() => window.location.reload(), 1000);
+            window.showToast(data.message || 'Pemberian pakan berhasil dicatat.', 'success');
+            setTimeout(() => window.location.reload(), 900);
         } else {
-            alert('Gagal: ' + (data.message || 'Terjadi kesalahan.'));
+            window.showToast('Gagal: ' + (data.message || 'Terjadi kesalahan.'), 'error');
             btn.disabled = false;
             btnTxt.textContent = 'Simpan Pemberian Pakan';
         }

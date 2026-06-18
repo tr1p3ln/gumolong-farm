@@ -364,21 +364,6 @@ Terapkan Filter</button>
     </div>
 </div>
 
-{{-- ======================== TOAST ======================== --}}
-@if(session('success'))
-<div class="toast show" id="toast-success">
-    <span class="toast-icon"><i class="bi bi-check-circle-fill"></i></span>
-    {{ session('success') }}
-</div>
-@endif
-
-@if($errors->any())
-<div class="toast show" id="toast-error" style="border-color:#F5C6C4;">
-    <span class="toast-icon" style="color:var(--gf-red);"><i class="bi bi-x-circle-fill"></i></span>
-    {{ $errors->first() }}
-</div>
-@endif
-
 @push('scripts')
 <script>
     // ---- Modal helpers ----
@@ -409,12 +394,6 @@ Terapkan Filter</button>
                 : '';
         });
     }
-
-    // ---- Auto-dismiss toast ----
-    ['toast-success','toast-error'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) setTimeout(() => el.classList.remove('show'), 4000);
-    });
 
     // ---- Re-open modal on validation error ----
     @if($errors->has('ear_tag_id') || $errors->has('jumlah') || $errors->has('pakan_id'))

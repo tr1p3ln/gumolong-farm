@@ -205,6 +205,33 @@ class DombaController extends Controller
         return $domba;
     }
 
+    public function suggest(Request $request): JsonResponse
+    {
+        $q  = $request->input('q', '');
+        $jk = $request->input('jenis_kelamin');
+
+        $query = Domba::with('kandang')
+            ->where('status', 'aktif')
+            ->where(function ($sub) use ($q) {
+                $sub->where('ear_tag_id', 'ilike', "%{$q}%")
+                    ->orWhere('nama', 'ilike', "%{$q}%");
+            });
+
+        if ($jk && in_array($jk, ['jantan', 'betina'], true)) {
+            $query->where('jenis_kelamin', $jk);
+        }
+
+        $results = $query->limit(8)->get()->map(fn($d) => [
+            'ear_tag_id'  => $d->ear_tag_id,
+            'nama'        => $d->nama,
+            'ras'         => $d->ras,
+            'kategori'    => $d->kategori,
+            'kandang'     => $d->kandang?->nama_kandang ?? '—',
+        ]);
+
+        return response()->json($results);
+    }
+
     public function show(string $earTagId): JsonResponse
     {
         // Gunakan fungsi helper, lalu return menjadi format JSON untuk Alpine Modal

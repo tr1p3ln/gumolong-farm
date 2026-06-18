@@ -8,11 +8,6 @@
 
 @section('content')
 
-{{-- Flash --}}
-@if (session('success'))
-    <div class="flash flash-success">{{ session('success') }}</div>
-@endif
-
 {{-- Page header --}}
 <div class="pg-header">
     <div>
@@ -29,7 +24,7 @@
             <svg width="28" height="28" fill="none" stroke="#2D7A3A" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         </div>
         <div class="stat-label">Rata-rata ADG Keseluruhan</div>
-        <div class="stat-value">{{ number_format($stats['avg_adg'], 2) }}<span class="unit">g/hari</span></div>
+        <div class="stat-value">{{ number_format($stats['avg_adg'], 2) }}<span class="unit">kg/hari</span></div>
         <div class="stat-sub">
             <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
             {{ $stats['avg_adg_trend'] }}% dari bulan lalu
@@ -142,7 +137,7 @@
                             <td>
                                 @if ($adg !== null)
                                     <span class="adg-val {{ $adg >= 0 ? 'positive' : 'negative' }}">
-                                        {{ number_format($adg, 2) }} g
+                                        {{ number_format($adg, 2) }} kg
                                     </span>
                                 @else
                                     <span style="color:var(--gf-gray-500)">-</span>
@@ -236,7 +231,7 @@
                                 <span class="alert-ear">#{{ $alert->ear_tag_id }}</span>
                                 <span class="alert-nama">({{ $alert->nama }})</span>
                             </div>
-                            <div class="alert-detail">{{ $adgFormatted }} g/hari · {{ $since }}</div>
+                            <div class="alert-detail">{{ $adgFormatted }} kg/hari · {{ $since }}</div>
                         </div>
                     </div>
                 @empty

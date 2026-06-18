@@ -8,9 +8,6 @@
 <div class="flex items-center justify-between mb-5">
     <div>
         <h1 class="text-2xl font-bold text-gray-800">Notifikasi</h1>
-        <p class="text-xs text-gray-400 mt-0.5">
-            Kamus Data: tabel NOTIFIKASI — ENUM tipe: stok_tipis, expired, hpl, vaksin, adg_alert | NFR-02
-        </p>
     </div>
     <div class="flex items-center gap-3">
         @if($unreadCount > 0)
@@ -106,12 +103,6 @@
                     </span>
                     @endif
                 </div>
-                {{-- Meta data --}}
-                @if($notif->ear_tag_id)
-                <p class="text-[10px] text-gray-400 mt-1">
-                    Kamus Data: ear_tag_id: {{ $notif->ear_tag_id }} | tipe={{ $notif->tipe }} | notif_id: NTF-{{ str_pad($notif->notifikasi_id, 3, '0', STR_PAD_LEFT) }}
-                </p>
-                @endif
             </div>
 
             {{-- Tombol aksi --}}

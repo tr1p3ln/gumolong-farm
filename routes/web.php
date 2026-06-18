@@ -95,6 +95,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->middleware('role:super_admin,admin,kepala_kandang');
 
             Route::get('/',           [DombaController::class, 'index'])->name('domba.index');
+            Route::get('/suggest',     [DombaController::class, 'suggest'])->name('domba.suggest');
             Route::get('/{earTagId}/export-pdf', [DombaController::class, 'exportPdf'])
                 ->name('domba.export-pdf');
             Route::get('/{earTagId}', [DombaController::class, 'show'])->name('domba.show');

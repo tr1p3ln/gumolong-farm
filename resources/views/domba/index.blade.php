@@ -62,13 +62,14 @@
                     });
                     const json = await res.json();
                     if (json.success) {
-                        window.location.reload();
+                        window.showToast('Domba berhasil dihapus.', 'success');
+                        setTimeout(() => window.location.reload(), 900);
                     } else {
-                        alert(json.message ?? 'Gagal menghapus.');
+                        window.showToast(json.message ?? 'Gagal menghapus.', 'error');
                         this.deleting = false;
                     }
                 } catch {
-                    alert('Gagal terhubung ke server.');
+                    window.showToast('Gagal terhubung ke server.', 'error');
                     this.deleting = false;
                 }
             }

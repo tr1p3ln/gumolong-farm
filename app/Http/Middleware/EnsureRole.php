@@ -26,7 +26,12 @@ class EnsureRole
 
         // Pengurus kandang should never see web pages → send to mobile home
         if ($user?->role === 'pengurus_kandang') {
-            return redirect()->route('tugas-harian.mobile');
+            return redirect()->route('pk.dashboard');
+        }
+
+        // Kepala kandang trying to access admin-only pages → send to KK mobile home
+        if ($user?->role === 'kepala_kandang') {
+            return redirect()->route('kk.dashboard');
         }
 
         abort(403, 'Anda tidak memiliki akses ke halaman ini.');
