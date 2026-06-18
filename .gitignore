@@ -44,6 +44,9 @@ $RECYCLE.BIN/
 /storage/framework/testing/
 /storage/framework/views/
 
+# ── Laporan & template generator ────────────────────────────
+/laporan-generator/
+
 # ── Misc ─────────────────────────────────────────────────────
 *.log
 *.sql.bak
